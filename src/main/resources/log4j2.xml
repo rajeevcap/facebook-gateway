@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" name="facebbok-gateway" packages="">
+	<Appenders>
+		<Console name="CONSOLE" target="SYSTEM_OUT">
+			<PatternLayout>
+				<!-- Please correct this patter after formatting the xml -->
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%X{requestType}] [%X{requestId}] [%X{requestOrgId}] [%c{1}:%L] [%p] %m%n
+				</Pattern>
+			</PatternLayout>
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="com.capillary" level="DEBUG" additivity="false" includeLocation="true">
+			<AppenderRef ref="CONSOLE" />
+		</Logger>
+		<Root level="INFO">
+			<AppenderRef ref="CONSOLE" />
+		</Root>
+	</Loggers>
+</Configuration>
