@@ -14,16 +14,13 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.CollectionUtils;
 
 import com.capillary.servicediscovery.ServiceDiscovery;
-import com.capillary.servicediscovery.model.KnownService;
 import com.capillary.servicediscovery.model.Module;
-import com.capillary.servicediscovery.model.SelectionPolicy;
-import com.capillary.servicediscovery.services.MySQLDBService;
 import com.capillary.social.base.api.FacebookManager;
 import com.capillary.social.base.impl.FacebookManagerInitializer;
 
 public class FacebookServiceRunner {
 
-	private static Logger logger = LoggerFactory
+	private static final Logger logger = LoggerFactory
 			.getLogger(FacebookServiceRunner.class);
 	private static final String STARTUP_MSG = " Starting Facebook Gateway Service";
 
@@ -139,6 +136,36 @@ public class FacebookServiceRunner {
 
 	public static void stop() {
 		// TODO Auto-generated method stub
+		logger.info( SHUTDOWN_MSG_INIT );
+        logger.info( "EXECUTING SHUTDOWN HOOK" );
+        
+        try{
+        	
+            logger.info( "STOPPING FACEBOOK MANAGER" );
+            FacebookManager venenoManager = 
+            		FacebookManagerInitializer.getFacebookManager();
+
+    		venenoManager.stop();
+            logger.info( "STOPPED FACEBOOK MANAGER" );
+            
+        }catch (Exception e) {
+        	
+        	logger.error( "Error while stopping veneno manager : " , e);
+		}
+        
+        //Release locks
+        logger.info( "Removing lock" );
+        try {
+
+        	ServiceDiscovery.setModule( new Module( "facebook-gateway-service", "1.0.0" ) );
+        	ServiceDiscovery sd = ServiceDiscovery.getInstance();
+        	/*sd.releaseDistributedFileLock( "venenoListenerLock" );*/
+        	sd.close();
+        } catch ( Exception e ) {
+            logger.error( "Unable to release distributed sd lock " + e);
+        }
+        
+        logger.info( SHUTDOWN_MSG );
 
 	}
 }

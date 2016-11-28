@@ -7,4 +7,3 @@ Pre-Depends: common-utils-config, service-discovery, dirsprepare
 Maintainer: Abhinav <abhinav.garg@capillarytech.com>
 Description: Facebook Gateway Service
 Distribution: development
-

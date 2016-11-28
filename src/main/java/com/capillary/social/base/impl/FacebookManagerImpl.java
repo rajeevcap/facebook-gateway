@@ -5,20 +5,19 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
 import com.capillary.commons.thrift.external.RPCManager;
 import com.capillary.commons.thrift.external.RPCService;
-import com.capillary.servicediscovery.Service;
 import com.capillary.servicediscovery.ServiceDiscovery;
 import com.capillary.servicediscovery.model.KnownService;
-import com.capillary.social.base.api.SystemStatus;
 import com.capillary.social.base.api.FacebookManager;
+import com.capillary.social.base.api.SystemStatus;
 import com.capillary.social.systems.config.SystemConfig;
 //import com.capillary.subscriptionservice.SubscriptionService;
 //import com.capillary.facebookservice.FacebookService;
 
-@Controller
+@Service
 public class FacebookManagerImpl implements FacebookManager {
 
 	private static final Logger logger = LoggerFactory
@@ -28,6 +27,9 @@ public class FacebookManagerImpl implements FacebookManager {
 
 	@Autowired
 	private SystemConfig systemConfig;
+	
+	//@Autowired
+	//private SubscriptionService.Iface subscriptionThriftService;
 
 	@Override
 	public SystemStatus start() {
@@ -139,15 +141,14 @@ public class FacebookManagerImpl implements FacebookManager {
 			logger.info("START : Registering subscription manager thrift handler");
 
 			com.capillary.servicediscovery.Service subscriptionService = ServiceDiscovery
-					.getInstance()
-					.get(KnownService.FACEBOOK_THRIFT_SERVICE);
+					.getInstance().get(KnownService.FACEBOOK_THRIFT_SERVICE);
 
 			RPCService rpcService = RPCManager.getINSTANCE().startRPCService(
 					subscriptionService.getPort(), 2,
 					systemConfig.SERVICE_MAX_THREAD);
 
-	//		rpcService.exportService(SubscriptionService.Iface.class,
-		//			subscriptionThriftService);
+			//rpcService.exportService(SubscriptionService.Iface.class,
+			 //subscriptionThriftService);
 
 			return true;
 		} catch (IOException e) {
