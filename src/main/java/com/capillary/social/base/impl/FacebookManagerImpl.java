@@ -14,11 +14,8 @@ import com.capillary.servicediscovery.model.KnownService;
 import com.capillary.social.base.api.FacebookManager;
 import com.capillary.social.base.api.SystemStatus;
 import com.capillary.social.systems.config.SystemConfig;
-//import com.capillary.subscriptionservice.SubscriptionService;
-//import com.capillary.facebookservice.FacebookService;
-//import com.capillary.veneno.VenenoService;
-
-//import com.capillary.veneno.listener.external.impl.VenenoServiceListener;
+import com.capillary.social.FacebookService;
+import com.capillary.social.external.impl.FacebookServiceListener;
 
 @Service
 public class FacebookManagerImpl implements FacebookManager {
@@ -147,10 +144,10 @@ public class FacebookManagerImpl implements FacebookManager {
 					subscriptionService.getPort(), 2,
 					systemConfig.SERVICE_MAX_THREAD);
 
-			//VenenoService.Iface venenoThriftService = new com.capillary.social.external.impl.VenenoServiceListener();
+			FacebookService.Iface facebookThriftService = new FacebookServiceListener();
 
-			//rpcService.exportService(VenenoService.Iface.class,
-				//	venenoThriftService);
+			rpcService.exportService(FacebookService.Iface.class,
+					facebookThriftService);
 
 			return true;
 		} catch (IOException e) {
