@@ -16,6 +16,8 @@ import com.capillary.social.base.api.SystemStatus;
 import com.capillary.social.systems.config.SystemConfig;
 //import com.capillary.subscriptionservice.SubscriptionService;
 //import com.capillary.facebookservice.FacebookService;
+import com.capillary.veneno.VenenoService;
+//import com.capillary.veneno.listener.external.impl.VenenoServiceListener;
 
 @Service
 public class FacebookManagerImpl implements FacebookManager {
@@ -27,9 +29,7 @@ public class FacebookManagerImpl implements FacebookManager {
 
 	@Autowired
 	private SystemConfig systemConfig;
-	
-	//@Autowired
-	//private SubscriptionService.Iface subscriptionThriftService;
+
 
 	@Override
 	public SystemStatus start() {
@@ -146,6 +146,13 @@ public class FacebookManagerImpl implements FacebookManager {
 			RPCService rpcService = RPCManager.getINSTANCE().startRPCService(
 					subscriptionService.getPort(), 2,
 					systemConfig.SERVICE_MAX_THREAD);
+			
+			VenenoService.Iface venenoThriftService =
+					new com.capillary.social.external.impl.VenenoServiceListener();
+
+
+				rpcService.exportService( VenenoService.Iface.class,
+						venenoThriftService );
 
 			//rpcService.exportService(SubscriptionService.Iface.class,
 			 //subscriptionThriftService);
