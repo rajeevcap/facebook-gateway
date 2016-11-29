@@ -89,10 +89,17 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<dependency>
+		<!-- <dependency>
   	   <groupId>com.capillary.commons</groupId>
 	   <artifactId>thrift-ifaces-veneno</artifactId>
 	   <version>1.4.1</version>
+	   <scope>compile</scope>
+	  </dependency> -->
+	  
+	  <dependency>
+  	   <groupId>com.capillary.commons</groupId>
+	   <artifactId>thrift-ifaces-facebook</artifactId>
+	   <version>1.0-SNAPSHOT</version>
 	   <scope>compile</scope>
 	  </dependency>
 		
