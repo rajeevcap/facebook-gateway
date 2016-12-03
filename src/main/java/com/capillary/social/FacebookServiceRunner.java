@@ -142,10 +142,10 @@ public class FacebookServiceRunner {
         try{
         	
             logger.info( "STOPPING FACEBOOK MANAGER" );
-            FacebookManager venenoManager = 
+            FacebookManager facebookManager = 
             		FacebookManagerInitializer.getFacebookManager();
 
-    		venenoManager.stop();
+            facebookManager.stop();
             logger.info( "STOPPED FACEBOOK MANAGER" );
             
         }catch (Exception e) {
