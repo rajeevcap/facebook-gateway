@@ -49,6 +49,8 @@ public class FacebookAccountDetails {
 					AuthenticationKey
 							.generateKey(com.capillary.common.crypto.AuthenticationKey.Module.CAMPAIGN_SHARD));
 			RPCService.setHttpHeaders(httpClient, headers);
+			
+			logger.debug("here");
 
 			accountDetails = httpClient.getAccountDetailsByChannel(orgId,
 					pageId, "FACEBOOK");

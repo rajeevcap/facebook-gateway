@@ -3,23 +3,23 @@ package com.capillary.social.external.impl;
 import com.capillary.social.ButtonMessage;
 import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookService.Iface;
+import com.capillary.social.GenericMessage;
+import com.capillary.social.QuickReplyMessage;
+import com.capillary.social.TextMessage;
 import com.capillary.social.services.api.FacebookMessage;
-import com.capillary.social.services.impl.FacebookSendTextMessage;
-import com.capillary.social.systems.config.SystemConfig;
+import com.capillary.social.services.impl.FacebookGenericMessage;
+import com.capillary.social.services.impl.FacebookQuickReply;
+import com.capillary.social.services.impl.FacebookTextMessage;
+import com.capillary.social.services.impl.FacebookButtonMessage;
 
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.capillary.social.services.impl.FacebookSendButtonMessage;
 
 public class FacebookServiceListener implements Iface {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookServiceListener.class);
-    @Autowired
-    private SystemConfig systemConfig;
 
     @Override
     public boolean isAlive() throws TException {
@@ -29,31 +29,31 @@ public class FacebookServiceListener implements Iface {
     }
 
     @Override
-    public boolean sendMessage(String recipientId, String messageText, String pageId, int orgId)
+    public boolean sendTextMessage(String recipientId, TextMessage textMessage, String senderId, int orgId)
             throws FacebookException, TException {
 
-        logger.info("send message called: Recipient Id: "
+        logger.info("send message called for recipient id: "
                     + recipientId
-                    + "Message Text: "
-                    + messageText
-                    + "Page Id: "
-                    + pageId
-                    + "Org Id: "
+                    + " message text: "
+                    + textMessage.text
+                    + " sender id: "
+                    + senderId
+                    + " org id: "
                     + orgId);
 
         MDC.put("requestOrgId", "ORG_ID_" + orgId);
-        MDC.put("requestId", "PAGE_ID_" + pageId);
+        MDC.put("requestId", "PAGE_ID_" + senderId);
         MDC.put("requestType", System.currentTimeMillis() + "");
         MDC.put("userID", "USER_ID_" + recipientId);
 
+        boolean isMessageSent = false;
         try {
 
-            FacebookMessage facebookMessage = new FacebookSendTextMessage(messageText);
-            facebookMessage.send(recipientId, pageId, orgId);
+            FacebookMessage facebookMessage = new FacebookTextMessage(textMessage);
+            isMessageSent = facebookMessage.send(recipientId, senderId, orgId);
 
         } catch (Exception e) {
             logger.error("exception in sending message", e);
-            return false;
         } finally {
             MDC.remove("requestOrgId");
             MDC.remove("requestId");
@@ -61,27 +61,69 @@ public class FacebookServiceListener implements Iface {
             MDC.remove("userID");
 
         }
-        return true;
+        return isMessageSent;
 
     }
 
     @Override
-    public boolean sendButtonMessage(String recipientId, ButtonMessage buttonMessage, String pageId, int orgId)
+    public boolean sendButtonMessage(String recipientId, ButtonMessage buttonMessage, String senderId, int orgId)
             throws FacebookException, TException {
         logger.info("send button message called for recipient id : "
                     + recipientId
-                    + " page id : "
-                    + pageId
+                    + "button message : "
+                    + buttonMessage
+                    + " sender id : "
+                    + senderId
                     + " org id : "
                     + orgId);
+        boolean isMessageSent = false;
         try {
-            FacebookMessage facebookSendButtonMessage = new FacebookSendButtonMessage(buttonMessage);
-            facebookSendButtonMessage.send(recipientId, pageId, orgId);
-
+            FacebookMessage facebookButtonMessage = new FacebookButtonMessage(buttonMessage);
+            isMessageSent = facebookButtonMessage.send(recipientId, senderId, orgId);
         } catch (Exception e) {
             logger.error("exception occured in sending button message", e);
-            return false;
         }
-        return true;
+        return isMessageSent;
+    }
+
+    @Override
+    public boolean sendGenericMessage(String recipientId, GenericMessage genericMessage, String senderId, int orgId)
+            throws FacebookException, TException {
+        logger.info("send generic message called for recipient id : "
+                    + recipientId
+                    + "generic message : "
+                    + genericMessage
+                    + " sender id : "
+                    + senderId
+                    + " org id : "
+                    + orgId);
+        boolean isMessageSent = false;
+        try {
+            FacebookMessage facebookGenericMessage = new FacebookGenericMessage(genericMessage);
+            isMessageSent = facebookGenericMessage.send(recipientId, senderId, orgId);
+        } catch (Exception e) {
+            logger.error("exception occured in sending button message", e);
+        }
+        return isMessageSent;
+    }
+
+    public boolean sendQuickReplyMessage(String recipientId, QuickReplyMessage quickReplyMessage, String senderId,
+            int orgId) throws FacebookException, TException {
+        logger.info("send quick reply called for recipient id : "
+                    + recipientId
+                    + "quick reply : "
+                    + quickReplyMessage
+                    + " sender id : "
+                    + senderId
+                    + " org id : "
+                    + orgId);
+        boolean isMessageSent = false;
+        try {
+            FacebookMessage facebookQuickReply = new FacebookQuickReply(quickReplyMessage);
+            isMessageSent = facebookQuickReply.send(recipientId, senderId, orgId);
+        } catch (Exception e) {
+            logger.error("exception occured in sending quick reply", e);
+        }
+        return isMessageSent;
     }
 }
