@@ -34,10 +34,10 @@ public class FacebookServiceListener implements Iface {
 	}
 
 	@Override
-	public int sendMessage(String recipientID, String messageText)
+	public boolean sendMessage(String recipientID, String messageText)
 			throws FacebookException, TException {
 		// TODO Auto-generated method stub
-		logger.info("send message called");
+		logger.info("send message called: Recipient Id: " + recipientID + "Message Text: "+messageText );
 		String url = "";
 		StringBuffer result = new StringBuffer();
 
@@ -50,11 +50,14 @@ public class FacebookServiceListener implements Iface {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post = new HttpPost(url);
 
-			// adding headers and requesting for authentication for :
-			// campaign.api.users
-
 			post.setHeader("Content-Type", "application/json");
-			String str = "{ \"recipient\": { \"id\": \"806245566145063\" },\"message\": { \"text\": \"wassup?\", \"metadata\": \"DEVELOPER_DEFINED_METADATA\" } }";
+
+			String str = "{ \"recipient\": { \"id\":  " + recipientID + " }"
+					+ ",\"message\": { \"text\": " + messageText + " } }";
+
+			logger.info("Final String: " + str);
+			// String str =
+			// "{ \"recipient\": { \"id\": \"806245566145063\" },\"message\": { \"text\": \"wassup?\", \"metadata\": \"DEVELOPER_DEFINED_METADATA\" } }";
 			Gson gson = new Gson();
 
 			post.setEntity(new StringEntity(str));
@@ -64,9 +67,7 @@ public class FacebookServiceListener implements Iface {
 						"Recieved Error code while doing a post request: errorCode : {}, response: {}",
 						response.getStatusLine().getStatusCode(), response);
 
-				System.out.println("error");
-				return 20;
-				//return result.toString();
+				return false;
 
 			}
 			BufferedReader rd = new BufferedReader(new InputStreamReader(
@@ -82,10 +83,7 @@ public class FacebookServiceListener implements Iface {
 		} catch (Exception e) {
 			logger.error("exception in fetching intouch backend bulk api", e);
 		}
-		System.out.println("abhi");
-		System.out.println(result);
-		return 20;
-		//return result.toString();
+		return true;
 
 	}
 
