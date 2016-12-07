@@ -37,7 +37,7 @@ public class FacebookServiceListener implements Iface {
 	public int sendMessage(String recipientID, String messageText)
 			throws FacebookException, TException {
 		// TODO Auto-generated method stub
-		
+		logger.info("send message called");
 		String url = "";
 		StringBuffer result = new StringBuffer();
 
