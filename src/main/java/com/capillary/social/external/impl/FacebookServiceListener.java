@@ -43,7 +43,7 @@ public class FacebookServiceListener implements Iface {
 
 		try {
 			url = "https://graph.facebook.com/v2.6/me/messages?"
-					+ "access_token=EAAKPVQEsKeEBAEu7gLAnSYK"
+					+ "access_token="
 					+ "EAARlLJ0mBswBAJ3AywiSIoVRAeOEdZBZBxBLOMGagzbY8s7SncAjmC9j0ZAgF7MDvLXW8qTadZCDJOJl3hAHZB1wmWQqPktJVDMZC12WNDuAXhi5qvd05YiPzxQ0QQEg7jLOsGWMoWkLinTyPxT7ZCZB0qxASdSxisekQsUiK47E7wZDZD";
 					//+ "Y3bAdfVTZBcQMWZBiN3kZAJKiUH7fnK5R0SJ6FbXJ5RJdSZBhifgKY2BC7gPxiaCZCzw1S9g2q0ZCeRS3HW67rZA8TiOKNSAZA3PyZAEn29scb9rtttwVfRdA02ZCZCfPl4uv9tFV99lG2flY4RShD2PKwZDZD";
 			logger.info("trying to get intouch bulk api call: {}", url);
