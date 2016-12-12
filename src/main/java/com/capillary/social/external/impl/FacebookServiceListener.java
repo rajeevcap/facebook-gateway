@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.capillary.social.library.api.FacebookAccountDetails;
 import com.capillary.social.systems.config.SystemConfig;
 import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookService.Iface;
@@ -38,20 +37,17 @@ public class FacebookServiceListener implements Iface {
 	public boolean sendMessage(String recipientID, String messageText)
 			throws FacebookException, TException {
 		// TODO Auto-generated method stub
-		logger.info("send message called: Recipient Id: " + recipientID + "Message Text: "+messageText );
+		logger.info("send message called: Recipient Id: " + recipientID
+				+ "Message Text: " + messageText);
 		String url = "";
 		StringBuffer result = new StringBuffer();
-		
-		
-		FacebookAccountDetails facebookAccountDetails = new FacebookAccountDetails();
-		String resp = facebookAccountDetails.getAccountDetails(0, "127834024337613");
-		logger.info("Result: {}",resp);
 
 		try {
 			url = "https://graph.facebook.com/v2.6/me/messages?"
 					+ "access_token="
 					+ "EAARlLJ0mBswBAJ3AywiSIoVRAeOEdZBZBxBLOMGagzbY8s7SncAjmC9j0ZAgF7MDvLXW8qTadZCDJOJl3hAHZB1wmWQqPktJVDMZC12WNDuAXhi5qvd05YiPzxQ0QQEg7jLOsGWMoWkLinTyPxT7ZCZB0qxASdSxisekQsUiK47E7wZDZD";
-					//+ "Y3bAdfVTZBcQMWZBiN3kZAJKiUH7fnK5R0SJ6FbXJ5RJdSZBhifgKY2BC7gPxiaCZCzw1S9g2q0ZCeRS3HW67rZA8TiOKNSAZA3PyZAEn29scb9rtttwVfRdA02ZCZCfPl4uv9tFV99lG2flY4RShD2PKwZDZD";
+			// +
+			// "Y3bAdfVTZBcQMWZBiN3kZAJKiUH7fnK5R0SJ6FbXJ5RJdSZBhifgKY2BC7gPxiaCZCzw1S9g2q0ZCeRS3HW67rZA8TiOKNSAZA3PyZAEn29scb9rtttwVfRdA02ZCZCfPl4uv9tFV99lG2flY4RShD2PKwZDZD";
 			logger.info("trying to get intouch bulk api call: {}", url);
 
 			HttpClient client = new DefaultHttpClient();

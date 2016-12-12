@@ -88,34 +88,21 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
-		
-		<!-- <dependency>
-  	   <groupId>com.capillary.commons</groupId>
-	   <artifactId>thrift-ifaces-veneno</artifactId>
-	   <version>1.4.1</version>
-	   <scope>compile</scope>
-	  </dependency> -->
-	  
-	  <dependency>
-  	   <groupId>com.capillary.commons</groupId>
-	   <artifactId>thrift-ifaces-facebook</artifactId>
-	   <version>1.0-SNAPSHOT</version>
-	   <scope>compile</scope>
-	  </dependency>
-	  
-	  <dependency>
-           <groupId>com.capillary.commons</groupId>
-           <artifactId>thrift-ifaces-shopbook</artifactId>
-           <version>3.9-SNAPSHOT</version>
-           <scope>compile</scope>
-          </dependency>
-		
-		<!-- <dependency>
+
+		<!-- <dependency> <groupId>com.capillary.commons</groupId> <artifactId>thrift-ifaces-veneno</artifactId> 
+			<version>1.4.1</version> <scope>compile</scope> </dependency> -->
+
+		<dependency>
 			<groupId>com.capillary.commons</groupId>
-			<artifactId>thrift-ifaces-subscription-service</artifactId>
-			<version>8.2-SNAPSHOT</version>
+			<artifactId>thrift-ifaces-facebook</artifactId>
+			<version>1.0-SNAPSHOT</version>
 			<scope>compile</scope>
-		</dependency>-->
+		</dependency>
+
+
+
+		<!-- <dependency> <groupId>com.capillary.commons</groupId> <artifactId>thrift-ifaces-subscription-service</artifactId> 
+			<version>8.2-SNAPSHOT</version> <scope>compile</scope> </dependency> -->
 		<!-- <dependency> <groupId>com.capillary.service-discovery</groupId> <artifactId>service-discovery</artifactId> 
 			<type>jar</type> <scope>compile</scope> </dependency> -->
 		<dependency>
