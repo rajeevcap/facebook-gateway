@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.capillary.social.library.api.FacebookAccountDetails;
 import com.capillary.social.systems.config.SystemConfig;
 import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookService.Iface;
@@ -40,6 +41,11 @@ public class FacebookServiceListener implements Iface {
 		logger.info("send message called: Recipient Id: " + recipientID + "Message Text: "+messageText );
 		String url = "";
 		StringBuffer result = new StringBuffer();
+		
+		
+		FacebookAccountDetails facebookAccountDetails = new FacebookAccountDetails();
+		String resp = facebookAccountDetails.getAccountDetails(0, "127834024337613");
+		logger.info("Result: {}",resp);
 
 		try {
 			url = "https://graph.facebook.com/v2.6/me/messages?"
