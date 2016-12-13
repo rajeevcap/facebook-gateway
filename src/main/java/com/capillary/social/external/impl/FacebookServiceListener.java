@@ -34,18 +34,18 @@ public class FacebookServiceListener implements Iface {
 	}
 
 	@Override
-	public boolean sendMessage(String recipientID, String messageText)
-			throws FacebookException, TException {
+	public boolean sendMessage(String recipientID, String messageText,
+			String accessToken) throws FacebookException, TException {
 		// TODO Auto-generated method stub
 		logger.info("send message called: Recipient Id: " + recipientID
-				+ "Message Text: " + messageText);
+				+ "Message Text: " + messageText + "Access Token: "
+				+ accessToken);
 		String url = "";
 		StringBuffer result = new StringBuffer();
 
 		try {
 			url = "https://graph.facebook.com/v2.6/me/messages?"
-					+ "access_token="
-					+ "EAARlLJ0mBswBAJ3AywiSIoVRAeOEdZBZBxBLOMGagzbY8s7SncAjmC9j0ZAgF7MDvLXW8qTadZCDJOJl3hAHZB1wmWQqPktJVDMZC12WNDuAXhi5qvd05YiPzxQ0QQEg7jLOsGWMoWkLinTyPxT7ZCZB0qxASdSxisekQsUiK47E7wZDZD";
+					+ "access_token=" + accessToken;
 			// +
 			// "Y3bAdfVTZBcQMWZBiN3kZAJKiUH7fnK5R0SJ6FbXJ5RJdSZBhifgKY2BC7gPxiaCZCzw1S9g2q0ZCeRS3HW67rZA8TiOKNSAZA3PyZAEn29scb9rtttwVfRdA02ZCZCfPl4uv9tFV99lG2flY4RShD2PKwZDZD";
 			logger.info("trying to get intouch bulk api call: {}", url);
