@@ -1,7 +1,5 @@
 package com.capillary.social.external.impl;
 
-import in.capillary.ifaces.Shopbook.AccountDetails;
-
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookService.Iface;
-import com.capillary.social.library.api.FacebookAccountDetails;
 import com.capillary.social.services.impl.FacebookSendTextMessage;
 import com.capillary.social.systems.config.SystemConfig;
 
@@ -58,17 +55,6 @@ public class FacebookServiceListener implements Iface {
 
 		}
 		return true;
-
-	}
-
-	public String getAccessToken(Integer orgId, String pageId) {
-		logger.info("Inside Access Token of Facebook Listener Service");
-		FacebookAccountDetails facebookAccountDetails = new FacebookAccountDetails();
-		AccountDetails result = facebookAccountDetails.getAccountDetails(orgId,
-				pageId.replace("\"", ""));
-		String accessToken = result.pageAccessToken;
-		logger.info("Access Token: " + accessToken);
-		return accessToken;
 
 	}
 
