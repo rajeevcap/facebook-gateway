@@ -8,7 +8,7 @@
 			filePattern="${logFolder}facebook-gateway-service.log.%d{yyyyMMdd}"
 			append="true">
 			<PatternLayout>
-				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%X{requestType}] [%X{requestId}] [%X{requestOrgId}] [%c{1}:%L] [%p] %m%n</Pattern>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%X{requestType}] [%X{requestId}] [%X{requestOrgId}] [%X{userID}] [%c{1}:%L] [%p] %m%n</Pattern>
 			</PatternLayout>
 			<Policies>
 				<TimeBasedTriggeringPolicy interval="1" />
@@ -16,7 +16,7 @@
 		</RollingFile>
 		<Console name="CONSOLE" target="SYSTEM_OUT" >
 			<PatternLayout>
-				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%X{requestType}] [%X{requestId}] [%X{requestOrgId}] [%c{1}:%L] [%p] %m%n</Pattern>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%X{requestType}] [%X{requestId}] [%X{requestOrgId}] [%X{userID}] [%c{1}:%L] [%p] %m%n</Pattern>
 			</PatternLayout>
 		</Console>
 	</Appenders>

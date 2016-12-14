@@ -11,6 +11,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.slf4j.MDC;
 import org.apache.thrift.TException;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.slf4j.Logger;
@@ -47,6 +48,11 @@ public class FacebookServiceListener implements Iface {
 				+ "Message Text: " + messageText + "Page Id: " + pageId
 				+ "Org Id: " + orgId);
 		StringBuffer result = new StringBuffer();
+
+		MDC.put("requestOrgId", "ORG_ID_" + orgId);
+		MDC.put("requestId", "PAGE_ID_" + pageId);
+		MDC.put("requestType", System.currentTimeMillis() + "");
+		MDC.put("userID", "USER_ID_" + recipientId);
 
 		try {
 
@@ -94,6 +100,12 @@ public class FacebookServiceListener implements Iface {
 		} catch (Exception e) {
 			logger.error("exception in sending message", e);
 			return false;
+		} finally {
+			MDC.remove("requestOrgId");
+			MDC.remove("requestId");
+			MDC.remove("requestType");
+			MDC.remove("userID");
+
 		}
 		return true;
 
