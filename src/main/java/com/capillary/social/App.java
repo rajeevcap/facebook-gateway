@@ -81,19 +81,22 @@ public class App {
 
 	public static void main(String[] args) {
 
-		System.out.println("Hello World!");
-		System.out.println("Abhinav");
-		App a = new App();
-		Gson gson = new Gson();
-		String str = "{ \"recipient\": { \"id\": \"806245566145063\" },\"message\": { \"text\": \"wassup\", \"metadata\": \"DEVELOPER_DEFINED_METADATA\" } }";
-		String postBody = gson.toJson(str);
-		System.out.println(postBody);
-		try {
-			a.sendPost();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+//		System.out.println("Hello World!");
+//		System.out.println("Abhinav");
+//		App a = new App();
+//		Gson gson = new Gson();
+//		String str = "{ \"recipient\": { \"id\": \"806245566145063\" },\"message\": { \"text\": \"wassup\", \"metadata\": \"DEVELOPER_DEFINED_METADATA\" } }";
+//		String postBody = gson.toJson(str);
+//		System.out.println(postBody);
+//		try {
+//			a.sendPost();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		String s = "\"fg\"hj\"";
+		System.out.println(s);
+		s = s.replaceAll("^\"|\"$", "");
+		System.out.println(s);
 	}
 }

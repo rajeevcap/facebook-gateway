@@ -56,9 +56,9 @@ public class FacebookServiceListener implements Iface {
 
 			post.setHeader("Content-Type", "application/json");
 			JsonObject recipientEntry = new JsonObject();
-			recipientEntry.addProperty("id", recipientID.replace("\"", ""));
+			recipientEntry.addProperty("id", recipientID.replaceAll("^\"|\"$", ""));
 			JsonObject messageEntry = new JsonObject();
-			messageEntry.addProperty("text", messageText.replace("\"", ""));
+			messageEntry.addProperty("text", messageText.replaceAll("^\"|\"$", ""));
 			JsonObject messagePayload = new JsonObject();
 			messagePayload.add("recipient", recipientEntry);
 			messagePayload.add("message", messageEntry);
