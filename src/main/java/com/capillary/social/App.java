@@ -94,9 +94,11 @@ public class App {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		String s = "\"fg\"hj\"";
-		System.out.println(s);
-		s = s.replaceAll("^\"|\"$", "");
-		System.out.println(s);
+//		String s = "\"fg\"hj\"";
+//		System.out.println(s);
+//		s = s.replaceAll("^\"|\"$", "");
+//		System.out.println(s);
+		A a = new A();
+		a.tel();
 	}
 }
