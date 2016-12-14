@@ -1,16 +1,12 @@
 package com.capillary.social.services.api;
 
 import static com.capillary.social.external.impl.FacebookConstants.SEND_MESSAGE_URL;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-
 import in.capillary.ifaces.Shopbook.AccountDetails;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
