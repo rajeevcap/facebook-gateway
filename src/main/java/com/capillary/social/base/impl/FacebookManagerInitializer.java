@@ -13,22 +13,11 @@ public class FacebookManagerInitializer {
 
 	private static FacebookManager instance = null;
 
-	private static ApplicationContext springAppContext = null;
-
 	public static void init(ApplicationContext springApplicationContext) {
-
 		if (instance == null) {
-
-			springAppContext = springApplicationContext;
-			loadFacebookManager();
+			logger.info("Creating Event Manager instance through spring application context");
+			instance = springApplicationContext.getBean(FacebookManager.class);
 		}
-	}
-
-	private static void loadFacebookManager() {
-
-		logger.info("Creating Event Manager instance through spring application context");
-
-		instance = springAppContext.getBean(FacebookManager.class);
 	}
 
 	/**
@@ -37,7 +26,6 @@ public class FacebookManagerInitializer {
 	 * @return
 	 */
 	public static FacebookManager getFacebookManager() {
-
 		return instance;
 	}
 }

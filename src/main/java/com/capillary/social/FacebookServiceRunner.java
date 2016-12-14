@@ -1,5 +1,7 @@
 package com.capillary.social;
 
+import static com.capillary.social.FacebookServiceRunnerConstants.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -19,30 +21,8 @@ import com.capillary.social.base.api.FacebookManager;
 import com.capillary.social.base.impl.FacebookManagerInitializer;
 
 public class FacebookServiceRunner {
-
 	private static final Logger logger = LoggerFactory
 			.getLogger(FacebookServiceRunner.class);
-	private static final String STARTUP_MSG = " Starting Facebook Gateway Service";
-
-	private static final String SHUTDOWN_MSG_INIT = " Stopping Facebook Gateway Service";
-
-	private static final String SHUTDOWN_MSG = "\n"
-			+ "   SSSSSSSSSSSSSSS  TTTTTTTTTTTTTTTTTTTTTTT      OOOOOOOOO      PPPPPPPPPPPPPPPPP    PPPPPPPPPPPPPPPPP    EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDD\n"
-			+ " SS:::::::::::::::S T:::::::::::::::::::::T    OO:::::::::OO    P::::::::::::::::P   P::::::::::::::::P   E::::::::::::::::::::E D::::::::::::DDD\n"
-			+ "S:::::SSSSSS::::::S T:::::::::::::::::::::T  OO:::::::::::::OO  P::::::PPPPPP:::::P  P::::::PPPPPP:::::P  E::::::::::::::::::::E D:::::::::::::::DD\n"
-			+ "S:::::S     SSSSSSS T:::::TT:::::::TT:::::T O:::::::OOO:::::::O PP:::::P     P:::::P PP:::::P     P:::::P EE::::::EEEEEEEEE::::E DDD:::::DDDDD:::::D\n"
-			+ "S:::::S             TTTTTT  T:::::T  TTTTTT O::::::O   O::::::O   P::::P     P:::::P   P::::P     P:::::P   E:::::E       EEEEEE   D:::::D    D:::::D\n"
-			+ "S:::::S                     T:::::T         O:::::O     O:::::O   P::::P     P:::::P   P::::P     P:::::P   E:::::E                D:::::D     D:::::D\n"
-			+ " S::::SSSS                  T:::::T         O:::::O     O:::::O   P::::PPPPPP:::::P    P::::PPPPPP:::::P    E::::::EEEEEEEEEE      D:::::D     D:::::D\n"
-			+ "  SS::::::SSSSS             T:::::T         O:::::O     O:::::O   P:::::::::::::PP     P:::::::::::::PP     E:::::::::::::::E      D:::::D     D:::::D\n"
-			+ "    SSS::::::::SS           T:::::T         O:::::O     O:::::O   P::::PPPPPPPPP       P::::PPPPPPPPP       E:::::::::::::::E      D:::::D     D:::::D\n"
-			+ "       SSSSSS::::S          T:::::T         O:::::O     O:::::O   P::::P               P::::P               E::::::EEEEEEEEEE      D:::::D     D:::::D\n"
-			+ "            S:::::S         T:::::T         O:::::O     O:::::O   P::::P               P::::P               E:::::E                D:::::D     D:::::D\n"
-			+ "            S:::::S         T:::::T         O::::::O   O::::::O   P::::P               P::::P               E:::::E       EEEEEE   D:::::D    D:::::D\n"
-			+ "SSSSSSS     S:::::S       TT:::::::TT       O:::::::OOO:::::::O PP::::::PP           PP::::::PP           EE::::::EEEEEEEE:::::E DDD:::::DDDDD:::::D\n"
-			+ "S::::::SSSSSS:::::S       T:::::::::T        OO:::::::::::::OO  P::::::::P           P::::::::P           E::::::::::::::::::::E D:::::::::::::::DD\n"
-			+ "S:::::::::::::::SS        T:::::::::T          OO:::::::::OO    P::::::::P           P::::::::P           E::::::::::::::::::::E D::::::::::::DDD\n"
-			+ " SSSSSSSSSSSSSSS          TTTTTTTTTTT            OOOOOOOOO      PPPPPPPPPP           PPPPPPPPPP           EEEEEEEEEEEEEEEEEEEEEE DDDDDDDDDDDDD";
 
 	private static final String PROPERTIES_FILE = "facebook-gateway-config.properties";
 
@@ -50,8 +30,8 @@ public class FacebookServiceRunner {
 
 		logger.info("Main method of facebook gateway entered.");
 
-		ServiceDiscovery.setModule(new Module("facebook-gateway-service",
-				"1.0.0"));
+		ServiceDiscovery.setModule(new Module(FACEBOOK_GATEWAY_SERVICE_NAME,
+				FACEBOOK_GATEWAY_SERVICE_VERSION));
 
 		try {
 
@@ -82,6 +62,33 @@ public class FacebookServiceRunner {
 		logger.info("Trying to read spring configuration from : " + configFile);
 
 		// Read the application context
+		ClassPathXmlApplicationContext springAppContext = setupSpringContext(configFile);
+		springAppContext.refresh();
+
+		// Create the event manager and then start it first
+		logger.info("Initializing facebook manager first");
+
+		FacebookManagerInitializer.init(springAppContext);
+
+		FacebookManager facebookManager = FacebookManagerInitializer
+				.getFacebookManager();
+
+		logger.info("Facebook Manager has been initialized, next start the service");
+		facebookManager.start();
+
+		// Add the shutdown hook
+		logger.info("Adding the shutdown hook to stop the event manager");
+		Runtime.getRuntime().addShutdownHook(new Thread("ShutdownHook") {
+			@Override
+			public void run() {
+				facebookManager.stop();
+			}
+		});
+
+	}
+
+	private static ClassPathXmlApplicationContext setupSpringContext(
+			String configFile) {
 		ClassPathXmlApplicationContext springAppContext = new ClassPathXmlApplicationContext();
 		Properties facebookProps = null;
 
@@ -110,62 +117,6 @@ public class FacebookServiceRunner {
 		springAppContext
 				.addBeanFactoryPostProcessor(facebookPropertyPlaceholderConfigurer);
 		springAppContext.setConfigLocation(configFile);
-		springAppContext.refresh();
-
-		// Create the event manager and then start it first
-		logger.info("Initializing facebook manager first");
-
-		FacebookManagerInitializer.init(springAppContext);
-
-		FacebookManager facebookManager = FacebookManagerInitializer
-				.getFacebookManager();
-
-		logger.info("Facebook Manager has been initialized, next start the service");
-		facebookManager.start();
-
-		// Add the shutdown hook
-		logger.info("Adding the shutdown hook to stop the event manager");
-		Runtime.getRuntime().addShutdownHook(new Thread("ShutdownHook") {
-			@Override
-			public void run() {
-				FacebookServiceRunner.stop();
-			}
-		});
-
-	}
-
-	public static void stop() {
-		// TODO Auto-generated method stub
-		logger.info( SHUTDOWN_MSG_INIT );
-        logger.info( "EXECUTING SHUTDOWN HOOK" );
-        
-        try{
-        	
-            logger.info( "STOPPING FACEBOOK MANAGER" );
-            FacebookManager facebookManager = 
-            		FacebookManagerInitializer.getFacebookManager();
-
-            facebookManager.stop();
-            logger.info( "STOPPED FACEBOOK MANAGER" );
-            
-        }catch (Exception e) {
-        	
-        	logger.error( "Error while stopping veneno manager : " , e);
-		}
-        
-        //Release locks
-        logger.info( "Removing lock" );
-        try {
-
-        	ServiceDiscovery.setModule( new Module( "facebook-gateway-service", "1.0.0" ) );
-        	ServiceDiscovery sd = ServiceDiscovery.getInstance();
-        	/*sd.releaseDistributedFileLock( "venenoListenerLock" );*/
-        	sd.close();
-        } catch ( Exception e ) {
-            logger.error( "Unable to release distributed sd lock " + e);
-        }
-        
-        logger.info( SHUTDOWN_MSG );
-
+		return springAppContext;
 	}
 }

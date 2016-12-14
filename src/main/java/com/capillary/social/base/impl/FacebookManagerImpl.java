@@ -1,5 +1,10 @@
 package com.capillary.social.base.impl;
 
+import static com.capillary.social.FacebookServiceRunnerConstants.FACEBOOK_GATEWAY_SERVICE_NAME;
+import static com.capillary.social.FacebookServiceRunnerConstants.FACEBOOK_GATEWAY_SERVICE_VERSION;
+import static com.capillary.social.FacebookServiceRunnerConstants.SHUTDOWN_MSG;
+import static com.capillary.social.FacebookServiceRunnerConstants.SHUTDOWN_MSG_INIT;
+
 import java.io.IOException;
 
 import org.slf4j.Logger;
@@ -11,14 +16,18 @@ import com.capillary.commons.thrift.external.RPCManager;
 import com.capillary.commons.thrift.external.RPCService;
 import com.capillary.servicediscovery.ServiceDiscovery;
 import com.capillary.servicediscovery.model.KnownService;
+import com.capillary.servicediscovery.model.Module;
 import com.capillary.social.base.api.FacebookManager;
 import com.capillary.social.base.api.SystemStatus;
 import com.capillary.social.systems.config.SystemConfig;
 import com.capillary.social.FacebookService;
+import com.capillary.social.FacebookServiceRunner;
 import com.capillary.social.external.impl.FacebookServiceListener;
 
 @Service
 public class FacebookManagerImpl implements FacebookManager {
+
+	private static final int MIN_THREADS = 2;
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(FacebookManagerImpl.class);
@@ -45,12 +54,6 @@ public class FacebookManagerImpl implements FacebookManager {
 
 			// WAIT QUEUE / THREAD POOL
 			try {
-				/*
-				 * com.capillary.servicediscovery.Service service =
-				 * ServiceFactory
-				 * .createService(com.capillary.servicediscovery.ServiceType
-				 * .THRIFT);
-				 */
 
 				ServiceDiscovery.getInstance().register(
 						KnownService.FACEBOOK_THRIFT_SERVICE.createInstance());
@@ -103,6 +106,8 @@ public class FacebookManagerImpl implements FacebookManager {
 
 			logger.info("Stopping Event manager");
 			this.systemStatus = SystemStatus.STOPPING;
+			
+			stopService();
 
 			logger.info("STOP -> DONE");
 			this.systemStatus = SystemStatus.STOPPED;
@@ -130,18 +135,18 @@ public class FacebookManagerImpl implements FacebookManager {
 		return this.systemStatus;
 	}
 
-	private boolean registerAsThriftService() {
+	private boolean startAsThriftService() {
 
 		// Start the thrift service
 		try {
 
 			logger.info("START : Registering subscription manager thrift handler");
 
-			com.capillary.servicediscovery.Service subscriptionService = ServiceDiscovery
+			com.capillary.servicediscovery.Service service = ServiceDiscovery
 					.getInstance().get(KnownService.FACEBOOK_THRIFT_SERVICE);
 
 			RPCService rpcService = RPCManager.getINSTANCE().startRPCService(
-					subscriptionService.getPort(), 2,
+					service.getPort(), MIN_THREADS,
 					systemConfig.SERVICE_MAX_THREAD);
 
 			FacebookService.Iface facebookThriftService = new FacebookServiceListener();
@@ -150,29 +155,21 @@ public class FacebookManagerImpl implements FacebookManager {
 					facebookThriftService);
 
 			return true;
-		} catch (IOException e) {
-
-			logger.error("START -> Unable to start thrift server : "
-					+ "Exception : " + e.getMessage());
-			logger.error("Thrift server exception stack trace "
-					+ e.getStackTrace());
-
-			return false;
 		} catch (Exception e) {
 			logger.error("START -> Unable to start thrift server : "
 					+ "Exception : " + e.getMessage());
 			logger.error("Thrift server exception stack trace "
 					+ e.getStackTrace());
-			return false;
 		}
+		return false;
 	}
 
 	@Override
 	public void startEngine() {
 
-		boolean status = registerAsThriftService();
+		boolean hasServiceStarted = startAsThriftService();
 
-		if (!status)
+		if (!hasServiceStarted)
 			throw new RuntimeException("Service Could Not Be started!!");
 
 	}
@@ -187,5 +184,23 @@ public class FacebookManagerImpl implements FacebookManager {
 	public SystemConfig getSystemConfig() {
 
 		return this.systemConfig;
+	}
+
+	private void stopService() {
+		// TODO Auto-generated method stub
+		logger.info( SHUTDOWN_MSG_INIT );
+	    
+	    try {
+	
+	    	ServiceDiscovery.setModule( new Module( FACEBOOK_GATEWAY_SERVICE_NAME, FACEBOOK_GATEWAY_SERVICE_VERSION ) );
+	    	ServiceDiscovery sd = ServiceDiscovery.getInstance();
+	    	/*sd.releaseDistributedFileLock( "venenoListenerLock" );*/
+	    	sd.close();
+	    } catch ( Exception e ) {
+	        logger.error( "Unable to release distributed sd lock " + e);
+	    }
+	    
+	    logger.info( SHUTDOWN_MSG );
+	
 	}
 }
