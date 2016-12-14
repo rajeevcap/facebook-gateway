@@ -37,7 +37,6 @@ public class FacebookServiceListener implements Iface {
 		logger.info("send message called: Recipient Id: " + recipientId
 				+ "Message Text: " + messageText + "Page Id: " + pageId
 				+ "Org Id: " + orgId);
-		StringBuffer result = new StringBuffer();
 
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
 		MDC.put("requestId", "PAGE_ID_" + pageId);
