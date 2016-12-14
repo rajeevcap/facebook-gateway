@@ -1,6 +1,7 @@
 package com.capillary.social.external.impl;
 
 import static com.capillary.social.external.impl.FacebookConstants.SEND_MESSAGE_URL;
+import in.capillary.ifaces.Shopbook.AccountDetails;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -16,10 +17,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.capillary.social.systems.config.SystemConfig;
 import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookService.Iface;
-import com.google.gson.Gson;
+import com.capillary.social.library.api.FacebookAccountDetails;
+import com.capillary.social.systems.config.SystemConfig;
 import com.google.gson.JsonObject;
 
 public class FacebookServiceListener implements Iface {
@@ -36,18 +37,21 @@ public class FacebookServiceListener implements Iface {
 		return true;
 	}
 
-	//TODO: remove accessToken on the method contract
+	// TODO: remove accessToken on the method contract
 	// Receive senderId=pageId and retrieve accessToken
 	@Override
-	public boolean sendMessage(String recipientID, String messageText,
-			String accessToken) throws FacebookException, TException {
+	public boolean sendMessage(String recipientId, String messageText,
+			String pageId, int orgId) throws FacebookException, TException {
 		// TODO Auto-generated method stub
-		logger.info("send message called: Recipient Id: " + recipientID
-				+ "Message Text: " + messageText + "Access Token: "
-				+ accessToken);
+		logger.info("send message called: Recipient Id: " + recipientId
+				+ "Message Text: " + messageText + "Page Id: " + pageId
+				+ "Org Id: " + orgId);
 		StringBuffer result = new StringBuffer();
 
 		try {
+
+			String accessToken = getAccessToken(orgId, pageId);
+
 			String url = SEND_MESSAGE_URL + accessToken;
 			logger.info("send_message_url: {}", url);
 
@@ -56,19 +60,21 @@ public class FacebookServiceListener implements Iface {
 
 			post.setHeader("Content-Type", "application/json");
 			JsonObject recipientEntry = new JsonObject();
-			recipientEntry.addProperty("id", recipientID.replaceAll("^\"|\"$", ""));
+			recipientEntry.addProperty("id",
+					recipientId.replaceAll("^\"|\"$", ""));
 			JsonObject messageEntry = new JsonObject();
-			messageEntry.addProperty("text", messageText.replaceAll("^\"|\"$", ""));
+			messageEntry.addProperty("text",
+					messageText.replaceAll("^\"|\"$", ""));
 			JsonObject messagePayload = new JsonObject();
 			messagePayload.add("recipient", recipientEntry);
 			messagePayload.add("message", messageEntry);
 
 			logger.info("Final String: " + messagePayload.toString());
 
-
 			post.setEntity(new StringEntity(messagePayload.toString()));
 			HttpResponse response = client.execute(post);
-			if (response.getStatusLine().getStatusCode() != HttpResponseStatus.OK.getCode()) {
+			if (response.getStatusLine().getStatusCode() != HttpResponseStatus.OK
+					.getCode()) {
 				logger.info(
 						"Recieved Error code while doing a post request: errorCode : {}, response: {}",
 						response.getStatusLine().getStatusCode(), response);
@@ -90,6 +96,17 @@ public class FacebookServiceListener implements Iface {
 			return false;
 		}
 		return true;
+
+	}
+
+	public String getAccessToken(Integer orgId, String pageId) {
+		logger.info("Inside Access Token of Facebook Listener Service");
+		FacebookAccountDetails facebookAccountDetails = new FacebookAccountDetails();
+		AccountDetails result = facebookAccountDetails.getAccountDetails(orgId,
+				pageId.replace("\"", ""));
+		String accessToken = result.pageAccessToken;
+		logger.info("Access Token: " + accessToken);
+		return accessToken;
 
 	}
 
