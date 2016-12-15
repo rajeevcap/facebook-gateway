@@ -1,15 +1,15 @@
 package com.capillary.social.external.impl;
 
+import com.capillary.social.FacebookException;
+import com.capillary.social.FacebookService.Iface;
+import com.capillary.social.services.api.FacebookMessage;
+import com.capillary.social.services.impl.FacebookSendTextMessage;
+import com.capillary.social.systems.config.SystemConfig;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.capillary.social.FacebookException;
-import com.capillary.social.FacebookService.Iface;
-import com.capillary.social.services.impl.FacebookSendTextMessage;
-import com.capillary.social.systems.config.SystemConfig;
 
 public class FacebookServiceListener implements Iface {
 
@@ -40,9 +40,8 @@ public class FacebookServiceListener implements Iface {
 
 		try {
 
-			FacebookSendTextMessage facebookSendTextMessage = new FacebookSendTextMessage();
-			facebookSendTextMessage.send(recipientId, messageText, pageId,
-					orgId);
+			FacebookMessage facebookMessage = new FacebookSendTextMessage();
+			facebookMessage.send(recipientId, messageText, pageId, orgId);
 
 		} catch (Exception e) {
 			logger.error("exception in sending message", e);
