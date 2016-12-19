@@ -34,8 +34,8 @@ public class FacebookAccountDetails {
 
 			logger.info("Shopbook Service: {} ",service);
 			
-			int readTimeout = 5000;
-			int connectTimeout = 5000;
+			int readTimeout = 10000;
+			int connectTimeout = 10000;
 			ShopbookService.Iface httpClient = RPCService.httpClient(
 					ShopbookService.Iface.class, service.getURI()
 							+ "/shopbook_service.php", connectTimeout,
