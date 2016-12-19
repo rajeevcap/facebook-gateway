@@ -10,14 +10,20 @@ public class FacebookSendTextMessage extends FacebookMessage {
 
 	private static Logger logger = LoggerFactory
 			.getLogger(FacebookSendTextMessage.class);
+	
+	private String message;
+	
+	public FacebookSendTextMessage(String message) {
+	    this.message = message;
+	}
 
 	@Override
-	public String messagePayload(String recipientId, String messageText) {
+	public String messagePayload(String recipientId) {
 
 		JsonObject recipientEntry = new JsonObject();
 		recipientEntry.addProperty("id", recipientId.replaceAll("^\"|\"$", ""));
 		JsonObject messageEntry = new JsonObject();
-		messageEntry.addProperty("text", messageText.replaceAll("^\"|\"$", ""));
+		messageEntry.addProperty("text", message.replaceAll("^\"|\"$", ""));
 		JsonObject messagePayload = new JsonObject();
 		messagePayload.add("recipient", recipientEntry);
 		messagePayload.add("message", messageEntry);
@@ -26,5 +32,10 @@ public class FacebookSendTextMessage extends FacebookMessage {
 		return messagePayload.toString();
 
 	}
+
+    @Override
+    public boolean validateMessage() {
+        return true;
+    }
 
 }

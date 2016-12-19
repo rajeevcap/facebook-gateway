@@ -22,12 +22,15 @@ public abstract class FacebookMessage {
 	private static Logger logger = LoggerFactory
 			.getLogger(FacebookMessage.class);
 
-	public abstract String messagePayload(String recipientId, String messageText);
+	public abstract String messagePayload(String recipientId);
+	
+	public abstract boolean validateMessage();
 
-	public boolean send(String recipientId, String messageText, String pageId,
-			int orgId) {
+	public boolean send(String recipientId, String pageId, int orgId) {
 
 		try {
+			boolean isValid = validateMessage();
+			if (!isValid) return false;
 			String accessToken = getAccessToken(orgId, pageId);
 
 			StringBuffer result = new StringBuffer();
@@ -38,7 +41,7 @@ public abstract class FacebookMessage {
 			HttpPost post = new HttpPost(url);
 
 			post.setHeader("Content-Type", "application/json");
-			String payload = messagePayload(recipientId, messageText);
+			String payload = messagePayload(recipientId);
 			post.setEntity(new StringEntity(payload));
 			HttpResponse response = client.execute(post);
 			if (response.getStatusLine().getStatusCode() != HttpResponseStatus.OK
