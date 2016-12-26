@@ -90,7 +90,6 @@ public class FacebookServiceRunner {
 	private static ClassPathXmlApplicationContext setupSpringContext(
 			String configFile) {
 		ClassPathXmlApplicationContext springAppContext = new ClassPathXmlApplicationContext();
-		Properties facebookProps = null;
 
 		// Local Properties
 		Properties localProperties = new Properties();
@@ -109,7 +108,7 @@ public class FacebookServiceRunner {
 		}
 
 		Properties result = new Properties();
-		CollectionUtils.mergePropertiesIntoMap(facebookProps, result);
+		CollectionUtils.mergePropertiesIntoMap(localProperties, result);
 
 		PropertyPlaceholderConfigurer facebookPropertyPlaceholderConfigurer = new PropertyPlaceholderConfigurer();
 		facebookPropertyPlaceholderConfigurer.setProperties(result);
