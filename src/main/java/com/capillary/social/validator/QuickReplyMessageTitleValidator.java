@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public class QuickReplyMessageTitleValidator extends MessageFieldValidator {
 
-    private static Logger logger = LoggerFactory.getLogger(ButtonMessageTextValidator.class);
+    private static Logger logger = LoggerFactory.getLogger(QuickReplyMessageTitleValidator.class);
 
     public QuickReplyMessageTitleValidator(String field) {
         super(field, QUICK_REPLY_MESSAGE_TITLE_LIMIT);

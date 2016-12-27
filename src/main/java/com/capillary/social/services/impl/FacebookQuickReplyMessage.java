@@ -24,13 +24,13 @@ import com.capillary.social.validator.QuickReplyMessageTextValidator;
 import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 
-public class FacebookQuickReply extends FacebookMessage {
+public class FacebookQuickReplyMessage extends FacebookMessage {
 
-    private static Logger logger = LoggerFactory.getLogger(FacebookQuickReply.class);
+    private static Logger logger = LoggerFactory.getLogger(FacebookQuickReplyMessage.class);
 
     private QuickReplyMessage quickReplyMessage;
 
-    public FacebookQuickReply(QuickReplyMessage quickReplyMessage) {
+    public FacebookQuickReplyMessage(QuickReplyMessage quickReplyMessage) {
         this.quickReplyMessage = quickReplyMessage;
     }
 
@@ -70,13 +70,13 @@ public class FacebookQuickReply extends FacebookMessage {
 
     private JsonObject generateQuickReply(QuickReply quickReply) {
         JsonObject quickReplyJson = new JsonObject();
-        quickReplyJson.addProperty(CONTENT_TYPE, quickReply.content_type.toString());
+        quickReplyJson.addProperty(CONTENT_TYPE, quickReply.contentType.toString());
         if (!Strings.isNullOrEmpty(quickReply.title))
             quickReplyJson.addProperty(TITLE, quickReply.title);
         if (!Strings.isNullOrEmpty(quickReply.payload))
             quickReplyJson.addProperty(PAYLOAD, quickReply.payload);
-        if (!Strings.isNullOrEmpty(quickReply.image_url))
-            quickReplyJson.addProperty(IMAGE_URL, quickReply.image_url);
+        if (!Strings.isNullOrEmpty(quickReply.imageUrl))
+            quickReplyJson.addProperty(IMAGE_URL, quickReply.imageUrl);
         return quickReplyJson;
     }
 

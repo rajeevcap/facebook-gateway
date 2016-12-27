@@ -11,7 +11,7 @@ import com.capillary.social.QuickReply;
 
 public class QuickReplyListValidator {
 
-    private static Logger logger = LoggerFactory.getLogger(ButtonListValidator.class);
+    private static Logger logger = LoggerFactory.getLogger(QuickReplyListValidator.class);
 
     private List<QuickReply> quickReplyList;
 
@@ -29,11 +29,11 @@ public class QuickReplyListValidator {
             isValid = false;
         }
         for (QuickReply quickReply : quickReplyList) {
-            if (quickReply.content_type != null) {
-                switch (quickReply.content_type) {
+            if (quickReply.contentType != null) {
+                switch (quickReply.contentType) {
                     case text:
                         isValid &= new QuickReplyMessageTitleValidator(quickReply.title).validate()
-                                   && new QuickReplyMessagepayloadValidator(quickReply.payload).validate();
+                                   && new QuickReplyMessagePayloadValidator(quickReply.payload).validate();
                         break;
                     case location:
                         break;

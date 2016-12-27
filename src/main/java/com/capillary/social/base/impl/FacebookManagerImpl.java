@@ -27,180 +27,171 @@ import com.capillary.social.external.impl.FacebookServiceListener;
 @Service
 public class FacebookManagerImpl implements FacebookManager {
 
-	private static final int MIN_THREADS = 2;
+    private static final int MIN_THREADS = 2;
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(FacebookManagerImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FacebookManagerImpl.class);
 
-	private SystemStatus systemStatus;
+    private SystemStatus systemStatus;
 
-	@Autowired
-	private SystemConfig systemConfig;
+    @Autowired
+    private SystemConfig systemConfig;
 
-	@Override
-	public SystemStatus start() {
-		try {
+    @Override
+    public SystemStatus start() {
+        try {
 
-			logger.info("START -> Obtained System operations monitor");
+            logger.info("START -> Obtained System operations monitor");
 
-			if (this.systemStatus == SystemStatus.READY) {
+            if (this.systemStatus == SystemStatus.READY) {
 
-				logger.info("START -> Already started");
-				return this.systemStatus;
-			}
+                logger.info("START -> Already started");
+                return this.systemStatus;
+            }
 
-			logger.info("Starting Event manager");
-			this.systemStatus = SystemStatus.STARTING;
+            logger.info("Starting Event manager");
+            this.systemStatus = SystemStatus.STARTING;
 
-			// WAIT QUEUE / THREAD POOL
-			try {
+            // WAIT QUEUE / THREAD POOL
+            try {
 
-				ServiceDiscovery.getInstance().register(
-						KnownService.FACEBOOK_THRIFT_SERVICE.createInstance());
+                ServiceDiscovery.getInstance().register(KnownService.FACEBOOK_THRIFT_SERVICE.createInstance());
 
-			} catch (IOException e) {
+            } catch (IOException e) {
 
-				logger.error("Facebook Manager : Error while starting RPC service. "
-						+ "Exception : " + e.getMessage());
-				throw new RuntimeException("Service could not be started");
-			} catch (Exception e) {
+                logger.error("Facebook Manager : Error while starting RPC service. " + "Exception : " + e.getMessage());
+                throw new RuntimeException("Service could not be started");
+            } catch (Exception e) {
 
-				logger.error("Facebook Manager : Error while registering RPC service. "
-						+ "Exception : " + e.getMessage());
-				throw new RuntimeException(
-						"Service could not be registered with ZooKeeper");
-			}
+                logger.error("Facebook Manager : Error while registering RPC service. "
+                             + "Exception : "
+                             + e.getMessage());
+                throw new RuntimeException("Service could not be registered with ZooKeeper");
+            }
 
-			logger.info("Facebook Manager : Starting Engine : ");
-			startEngine();
+            logger.info("Facebook Manager : Starting Engine : ");
+            startEngine();
 
-			logger.info("START -> DONE");
-			this.systemStatus = SystemStatus.READY;
+            logger.info("START -> DONE");
+            this.systemStatus = SystemStatus.READY;
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 
-			logger.info("Exception "
-					+ "while starting facebook service with msg "
-					+ e.getMessage());
-		} finally {
+            logger.info("Exception " + "while starting facebook service with msg " + e.getMessage());
+        } finally {
 
-			if (this.systemStatus != SystemStatus.READY)
-				this.systemStatus = SystemStatus.STOPPED;
-		}
+            if (this.systemStatus != SystemStatus.READY)
+                this.systemStatus = SystemStatus.STOPPED;
+        }
 
-		return this.systemStatus;
+        return this.systemStatus;
 
-	}
+    }
 
-	@Override
-	public SystemStatus stop() {
-		try {
+    @Override
+    public SystemStatus stop() {
+        try {
 
-			logger.info("STOP -> Obtained System operations monitor");
+            logger.info("STOP -> Obtained System operations monitor");
 
-			if (this.systemStatus == SystemStatus.STOPPED) {
+            if (this.systemStatus == SystemStatus.STOPPED) {
 
-				logger.info("STOP -> Already STOPPING");
-				return this.systemStatus;
-			}
+                logger.info("STOP -> Already STOPPING");
+                return this.systemStatus;
+            }
 
-			logger.info("Stopping Event manager");
-			this.systemStatus = SystemStatus.STOPPING;
-			
-			stopService();
+            logger.info("Stopping Event manager");
+            this.systemStatus = SystemStatus.STOPPING;
 
-			logger.info("STOP -> DONE");
-			this.systemStatus = SystemStatus.STOPPED;
+            stopService();
 
-			return this.systemStatus;
-		} finally {
+            logger.info("STOP -> DONE");
+            this.systemStatus = SystemStatus.STOPPED;
 
-			if (this.systemStatus != SystemStatus.STARTING)
-				this.systemStatus = SystemStatus.STOPPED;
+            return this.systemStatus;
+        } finally {
 
-			logger.info("STOP -> Leaving System operations monitor");
-		}
-	}
+            if (this.systemStatus != SystemStatus.STARTING)
+                this.systemStatus = SystemStatus.STOPPED;
 
-	@Override
-	public SystemStatus restart() {
-		this.stop();
-		this.start();
+            logger.info("STOP -> Leaving System operations monitor");
+        }
+    }
 
-		return this.getCurrentStatus();
-	}
+    @Override
+    public SystemStatus restart() {
+        this.stop();
+        this.start();
 
-	@Override
-	public SystemStatus getCurrentStatus() {
-		return this.systemStatus;
-	}
+        return this.getCurrentStatus();
+    }
 
-	private boolean startAsThriftService() {
+    @Override
+    public SystemStatus getCurrentStatus() {
+        return this.systemStatus;
+    }
 
-		// Start the thrift service
-		try {
+    private boolean startAsThriftService() {
 
-			logger.info("START : Registering subscription manager thrift handler");
+        // Start the thrift service
+        try {
 
-			com.capillary.servicediscovery.Service service = ServiceDiscovery
-					.getInstance().get(KnownService.FACEBOOK_THRIFT_SERVICE);
+            logger.info("START : Registering subscription manager thrift handler");
 
-			RPCService rpcService = RPCManager.getINSTANCE().startRPCService(
-					service.getPort(), MIN_THREADS,
-					systemConfig.SERVICE_MAX_THREAD);
+            com.capillary.servicediscovery.Service service = ServiceDiscovery.getInstance().get(
+                    KnownService.FACEBOOK_THRIFT_SERVICE);
 
-			FacebookService.Iface facebookThriftService = new FacebookServiceListener();
+            RPCService rpcService = RPCManager.getINSTANCE().startRPCService(service.getPort(), MIN_THREADS,
+                    systemConfig.SERVICE_MAX_THREAD);
 
-			rpcService.exportService(FacebookService.Iface.class,
-					facebookThriftService);
+            FacebookService.Iface facebookThriftService = new FacebookServiceListener();
 
-			return true;
-		} catch (Exception e) {
-			logger.error("START -> Unable to start thrift server : "
-					+ "Exception : " + e.getMessage());
-			logger.error("Thrift server exception stack trace "
-					+ e.getStackTrace());
-		}
-		return false;
-	}
+            rpcService.exportService(FacebookService.Iface.class, facebookThriftService);
 
-	@Override
-	public void startEngine() {
+            return true;
+        } catch (Exception e) {
+            logger.error("START -> Unable to start thrift server : " + "Exception : " + e.getMessage());
+            logger.error("Thrift server exception stack trace " + e.getStackTrace());
+        }
+        return false;
+    }
 
-		boolean hasServiceStarted = startAsThriftService();
+    @Override
+    public void startEngine() {
 
-		if (!hasServiceStarted)
-			throw new RuntimeException("Service Could Not Be started!!");
+        boolean hasServiceStarted = startAsThriftService();
 
-	}
+        if (!hasServiceStarted)
+            throw new RuntimeException("Service Could Not Be started!!");
 
-	@Override
-	public RunningMode getRunningMode() {
+    }
 
-		return RunningMode.valueOf(systemConfig.RUNNING_MODE);
-	}
+    @Override
+    public RunningMode getRunningMode() {
 
-	@Override
-	public SystemConfig getSystemConfig() {
+        return RunningMode.valueOf(systemConfig.RUNNING_MODE);
+    }
 
-		return this.systemConfig;
-	}
+    @Override
+    public SystemConfig getSystemConfig() {
 
-	private void stopService() {
-		// TODO Auto-generated method stub
-		logger.info( SHUTDOWN_MSG_INIT );
-	    
-	    try {
-	
-	    	ServiceDiscovery.setModule( new Module( FACEBOOK_GATEWAY_SERVICE_NAME, FACEBOOK_GATEWAY_SERVICE_VERSION ) );
-	    	ServiceDiscovery sd = ServiceDiscovery.getInstance();
-	    	/*sd.releaseDistributedFileLock( "venenoListenerLock" );*/
-	    	sd.close();
-	    } catch ( Exception e ) {
-	        logger.error( "Unable to release distributed sd lock " + e);
-	    }
-	    
-	    logger.info( SHUTDOWN_MSG );
-	
-	}
+        return this.systemConfig;
+    }
+
+    private void stopService() {
+        // TODO Auto-generated method stub
+        logger.info(SHUTDOWN_MSG_INIT);
+
+        try {
+
+            ServiceDiscovery.setModule(new Module(FACEBOOK_GATEWAY_SERVICE_NAME, FACEBOOK_GATEWAY_SERVICE_VERSION));
+            ServiceDiscovery sd = ServiceDiscovery.getInstance();
+            /*sd.releaseDistributedFileLock( "venenoListenerLock" );*/
+            sd.close();
+        } catch (Exception e) {
+            logger.error("Unable to release distributed sd lock " + e);
+        }
+
+        logger.info(SHUTDOWN_MSG);
+
+    }
 }

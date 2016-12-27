@@ -5,10 +5,12 @@ import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookService.Iface;
 import com.capillary.social.GenericMessage;
 import com.capillary.social.QuickReplyMessage;
+import com.capillary.social.ReceiptMessage;
 import com.capillary.social.TextMessage;
 import com.capillary.social.services.api.FacebookMessage;
 import com.capillary.social.services.impl.FacebookGenericMessage;
-import com.capillary.social.services.impl.FacebookQuickReply;
+import com.capillary.social.services.impl.FacebookQuickReplyMessage;
+import com.capillary.social.services.impl.FacebookReceiptMessage;
 import com.capillary.social.services.impl.FacebookTextMessage;
 import com.capillary.social.services.impl.FacebookButtonMessage;
 
@@ -119,10 +121,31 @@ public class FacebookServiceListener implements Iface {
                     + orgId);
         boolean isMessageSent = false;
         try {
-            FacebookMessage facebookQuickReply = new FacebookQuickReply(quickReplyMessage);
-            isMessageSent = facebookQuickReply.send(recipientId, senderId, orgId);
+            FacebookMessage facebookQuickReplyMessage = new FacebookQuickReplyMessage(quickReplyMessage);
+            isMessageSent = facebookQuickReplyMessage.send(recipientId, senderId, orgId);
         } catch (Exception e) {
             logger.error("exception occured in sending quick reply", e);
+        }
+        return isMessageSent;
+    }
+
+    @Override
+    public boolean sendReceiptMessage(String recipientId, ReceiptMessage receiptMessage, String senderId, int orgId)
+            throws FacebookException, TException {
+        logger.info("send receipt message called for recipient id : "
+                    + recipientId
+                    + "receipt message : "
+                    + receiptMessage
+                    + "sender id : "
+                    + senderId
+                    + "org id : "
+                    + orgId);
+        boolean isMessageSent = false;
+        try {
+            FacebookMessage facebookReceiptMessage = new FacebookReceiptMessage(receiptMessage);
+            isMessageSent = facebookReceiptMessage.send(recipientId, senderId, orgId);
+        } catch (Exception e) {
+            logger.error("exception occured in sending receipt : ");
         }
         return isMessageSent;
     }

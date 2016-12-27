@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public class ButtonMessagePayloadValidator extends MessageFieldValidator {
 
-    private static Logger logger = LoggerFactory.getLogger(ButtonMessageTextValidator.class);
+    private static Logger logger = LoggerFactory.getLogger(ButtonMessagePayloadValidator.class);
 
     public ButtonMessagePayloadValidator(String payload) {
         super(payload, MESSAGE_PAYLOAD_LENGTH_LIMIT);

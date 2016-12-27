@@ -23,7 +23,7 @@ public class FacebookTextMessageTest extends FacebookMessageStub {
 
     @Ignore("test by actually sending message")
     @Test
-    public void textMessageSender() throws FacebookException, TException {
+    public void shouldBeValidWhenMessageIsActuallySent() throws FacebookException, TException {
         TextMessage textMessage = FacebookEntityGenerator.generateTextMessage();
         Assert.assertEquals(
                 FacebookClient.getFacebookServiceClient().sendTextMessage("1307450979317568", textMessage,

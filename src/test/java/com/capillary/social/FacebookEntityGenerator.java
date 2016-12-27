@@ -6,6 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 public class FacebookEntityGenerator {
+    
+    public static String generateRandomString(int length) {
+        String str = new String();
+        for(int i = 0; i < length; i++) str += 'a';
+        return str;        
+    }
 
     public static TextMessage generateTextMessage() {
         TextMessage textMessage = new TextMessage();
@@ -62,13 +68,13 @@ public class FacebookEntityGenerator {
         QuickReply quickReply1 = new QuickReply();
         QuickReply quickReply2 = new QuickReply();
         QuickReply quickReply3 = new QuickReply();
-        quickReply1.content_type = quickReply2.content_type = quickReply3.content_type = QuickReplyContentType.text;
+        quickReply1.contentType = quickReply2.contentType = quickReply3.contentType = QuickReplyContentType.text;
         quickReply1.title = "alpha";
-        quickReply1.image_url = "http://www.thepointless.com/images/reddot.jpg";
+        quickReply1.imageUrl = "http://www.thepointless.com/images/reddot.jpg";
         quickReply2.title = "bravo";
-        quickReply2.image_url = "http://www.thepointless.com/images/greendot.jpg";
+        quickReply2.imageUrl = "http://www.thepointless.com/images/greendot.jpg";
         quickReply3.title = "charlie";
-        quickReply3.image_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Bluedot.svg/402px-Bluedot.svg.png";
+        quickReply3.imageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Bluedot.svg/402px-Bluedot.svg.png";
         quickReply1.payload = quickReply2.payload = quickReply3.payload = "thereisnothinghere";
         quickReplyList.add(quickReply1);
         quickReplyList.add(quickReply2);
@@ -82,11 +88,54 @@ public class FacebookEntityGenerator {
         QuickReplyMessage quickReplyMessage = new QuickReplyMessage();
         List<QuickReply> quickReplyList = new ArrayList<QuickReply>();
         QuickReply quickReply = new QuickReply();
-        quickReply.content_type = QuickReplyContentType.location;
+        quickReply.contentType = QuickReplyContentType.location;
         quickReplyList.add(quickReply);
         quickReplyMessage.quickReplyList = quickReplyList;
         quickReplyMessage.text = "Please share your location";
         return quickReplyMessage;
+    }
+    
+    public static ReceiptMessage generateReceiptMessage() {
+        ReceiptMessage receiptMessage = new ReceiptMessage();
+        Summary summary = new Summary();
+        receiptMessage.recipientName = "Rajeev Kumar";
+        receiptMessage.orderNumber = "CAP-1256";
+        receiptMessage.currency = "INR";
+        receiptMessage.paymentMethod = "Kotak Credit Card";
+        receiptMessage.timestamp = "20161226101010";
+        summary.totalCost = 10;
+        receiptMessage.summary = summary; 
+        return receiptMessage;
+    }
+    
+    public static Address generateAddress() {
+        Address address = new Address();
+        address.streetOne = "street1";
+        address.streetTwo = "street2";
+        address.city = "city";
+        address.postalCode = "postal code";
+        address.state = "state";
+        address.country = "country";
+        return address;
+    }
+    
+    public static List<ReceiptElement> generateReceiptElementList() {
+        List<ReceiptElement> receiptElementList = new ArrayList<ReceiptElement>();
+        receiptElementList.add(generateReceiptElement());
+        return receiptElementList;
+    }
+    
+    public static ReceiptElement generateReceiptElement() {
+        ReceiptElement receiptElement = new ReceiptElement();
+        receiptElement.title = "receipt element title";
+        receiptElement.price = 100;
+        return receiptElement;
+    }
+    
+    public static Summary generateSummary() {
+        Summary summary = new Summary();
+        summary.totalCost = 100;
+        return summary;
     }
 
 }

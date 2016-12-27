@@ -34,12 +34,12 @@ public class FacebookGenericMessageTest extends FacebookMessageStub {
         Assert.assertEquals(true, new FacebookGenericMessageStub(genericMessage).send("", "", 100));
     }
 
-    @Ignore("test by actually sending message")
+//    @Ignore("test by actually sending message")
     @Test
     public void shouldBeValidWhenMessageIsSentSuccessfully() throws FacebookException, TException {
         GenericMessage genericMessage = FacebookEntityGenerator.generateGenericMessage();
         Assert.assertEquals(
-                false,
+                true,
                 FacebookClient.getFacebookServiceClient().sendGenericMessage("1307450979317568", genericMessage,
                         "127834024337613", 0));
     }

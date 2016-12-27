@@ -11,12 +11,11 @@ import com.capillary.social.Button;
 import com.capillary.social.ButtonField;
 import com.capillary.social.ButtonType;
 import com.capillary.social.Element;
-import com.capillary.social.services.impl.FacebookGenericMessage;
 import com.google.common.base.Strings;
 
 public class ElementListValidator {
 
-    private static Logger logger = LoggerFactory.getLogger(FacebookGenericMessage.class);
+    private static Logger logger = LoggerFactory.getLogger(ElementListValidator.class);
 
     private List<Element> elementList;
 
