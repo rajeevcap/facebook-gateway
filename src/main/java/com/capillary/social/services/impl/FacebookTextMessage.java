@@ -30,7 +30,7 @@ public class FacebookTextMessage extends FacebookMessage {
     }
 
     @Override
-    public String messagePayload(String recipientId) {
+    public JsonObject messagePayload(String recipientId) {
 
         JsonObject recipientEntry = new JsonObject();
         recipientEntry.addProperty(ID, recipientId);
@@ -39,7 +39,7 @@ public class FacebookTextMessage extends FacebookMessage {
         JsonObject messagePayload = new JsonObject();
         messagePayload.add(RECIPIENT, recipientEntry);
         messagePayload.add(MESSAGE, messageEntry);
-        return messagePayload.toString();
+        return messagePayload;
 
     }
 

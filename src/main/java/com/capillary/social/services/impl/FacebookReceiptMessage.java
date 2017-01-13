@@ -73,13 +73,13 @@ public class FacebookReceiptMessage extends FacebookMessage {
     }
 
     @Override
-    public String messagePayload(String recipientId) {
+    public JsonObject messagePayload(String recipientId) {
         JsonObject messageJson = new JsonObject();
         JsonObject recipientBody = new JsonObject();
         recipientBody.addProperty(ID, recipientId);
         messageJson.add(RECIPIENT, recipientBody);
         messageJson.add(MESSAGE, getMessageBody());
-        return messageJson.toString();
+        return messageJson;
     }
 
     private JsonObject getMessageBody() {

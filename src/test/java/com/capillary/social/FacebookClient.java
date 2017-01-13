@@ -11,7 +11,7 @@ import com.capillary.social.FacebookService;
 public class FacebookClient {
 
     public static FacebookService.Client getFacebookServiceClient() {
-        TTransport transport = new TSocket("192.168.33.103", 9232);
+        TTransport transport = new TSocket("192.168.33.1", 9232);
         try {
             transport.open();
         } catch (TTransportException e) {

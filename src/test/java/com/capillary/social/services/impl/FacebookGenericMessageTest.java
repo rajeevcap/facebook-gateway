@@ -18,20 +18,23 @@ public class FacebookGenericMessageTest extends FacebookMessageStub {
     public void shouldBeInvalidWhenNoElementIsPresent() throws FacebookException, TException {
         GenericMessage genericMessage = FacebookEntityGenerator.generateGenericMessage();
         genericMessage.elementList = null;
-        Assert.assertEquals(false, new FacebookGenericMessageStub(genericMessage).send("", "", 100));
+        Assert.assertEquals(true,
+                new FacebookGenericMessageStub(genericMessage).send("", "", 100).toString().equals("{}"));
     }
 
     @Test
     public void shouldBeInvalidWhenInvalidElementIsPresent() throws FacebookException, TException {
         GenericMessage genericMessage = FacebookEntityGenerator.generateGenericMessage();
         genericMessage.elementList.get(0).title = null;
-        Assert.assertEquals(false, new FacebookGenericMessageStub(genericMessage).send("", "", 100));
+        Assert.assertEquals(true,
+                new FacebookGenericMessageStub(genericMessage).send("", "", 100).toString().equals("{}"));
     }
 
     @Test
     public void shouldBeValidWhenElementsAreValidAndResponseIsOk() throws FacebookException, TException {
         GenericMessage genericMessage = FacebookEntityGenerator.generateGenericMessage();
-        Assert.assertEquals(true, new FacebookGenericMessageStub(genericMessage).send("", "", 100));
+        Assert.assertEquals(false,
+                new FacebookGenericMessageStub(genericMessage).send("", "", 100).toString().equals("{}"));
     }
 
     @Ignore("test by actually sending message")
@@ -39,9 +42,12 @@ public class FacebookGenericMessageTest extends FacebookMessageStub {
     public void shouldBeValidWhenMessageIsSentSuccessfully() throws FacebookException, TException {
         GenericMessage genericMessage = FacebookEntityGenerator.generateGenericMessage();
         Assert.assertEquals(
-                true,
-                FacebookClient.getFacebookServiceClient().sendGenericMessage("1307450979317568", genericMessage,
-                        "127834024337613", 0));
+                false,
+                FacebookClient
+                        .getFacebookServiceClient()
+                        .sendGenericMessage("1307450979317568", genericMessage, "127834024337613", 0)
+                        .toString()
+                        .equals("{}"));
     }
 
 }

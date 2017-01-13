@@ -15,22 +15,25 @@ public class ReceiptElementValidatorTest extends FacebookMessageStub {
         ReceiptMessage receiptMessage = FacebookEntityGenerator.generateReceiptMessage();
         receiptMessage.receiptElementList = FacebookEntityGenerator.generateReceiptElementList();
         receiptMessage.receiptElementList.get(0).title = null;
-        Assert.assertEquals(false, new FacebookReceiptMessageStub(receiptMessage).send("", "", 100));
+        Assert.assertEquals(true,
+                new FacebookReceiptMessageStub(receiptMessage).send("", "", 100).toString().equals("{}"));
     }
-    
+
     @Test
     public void shouldBeInvalidWhenPriceIsNegativePresent() {
         ReceiptMessage receiptMessage = FacebookEntityGenerator.generateReceiptMessage();
         receiptMessage.receiptElementList = FacebookEntityGenerator.generateReceiptElementList();
         receiptMessage.receiptElementList.get(0).price = -1;
-        Assert.assertEquals(false, new FacebookReceiptMessageStub(receiptMessage).send("", "", 100));
+        Assert.assertEquals(true,
+                new FacebookReceiptMessageStub(receiptMessage).send("", "", 100).toString().equals("{}"));
     }
-    
+
     @Test
     public void shouldBeValid() {
         ReceiptMessage receiptMessage = FacebookEntityGenerator.generateReceiptMessage();
         receiptMessage.receiptElementList = FacebookEntityGenerator.generateReceiptElementList();
-        Assert.assertEquals(true, new FacebookReceiptMessageStub(receiptMessage).send("", "", 100));
+        Assert.assertEquals(false,
+                new FacebookReceiptMessageStub(receiptMessage).send("", "", 100).toString().equals("{}"));
     }
-    
+
 }

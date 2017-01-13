@@ -19,7 +19,7 @@ public class ButtonMessageTitleValidator extends MessageFieldValidator {
 
     private boolean nullAndEmptyCheck() {
         boolean validTitle = validateNotNullOrEmpty();
-        if (validTitle) {
+        if (!validTitle) {
             logger.debug("button message title is null or empty");
         }
         return validTitle;

@@ -22,6 +22,7 @@ import com.capillary.social.services.impl.FacebookGenericMessage;
 import com.capillary.social.services.impl.FacebookQuickReplyMessage;
 import com.capillary.social.services.impl.FacebookReceiptMessage;
 import com.capillary.social.services.impl.FacebookTextMessage;
+import com.google.gson.JsonObject;
 
 public class FacebookMessageStub {
 
@@ -31,7 +32,7 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected HttpResponse sendMessage(String pageId, int orgId, String payload)
+        protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload)
                 throws UnsupportedEncodingException, IOException, ClientProtocolException {
             return getDummyResponse(pageId, orgId, payload);
         }
@@ -43,7 +44,7 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected HttpResponse sendMessage(String pageId, int orgId, String payload)
+        protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload)
                 throws UnsupportedEncodingException, IOException, ClientProtocolException {
             return getDummyResponse(pageId, orgId, payload);
         }
@@ -57,7 +58,7 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected HttpResponse sendMessage(String pageId, int orgId, String payload)
+        protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload)
                 throws UnsupportedEncodingException, IOException, ClientProtocolException {
             return getDummyResponse(pageId, orgId, payload);
         }
@@ -71,7 +72,7 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected HttpResponse sendMessage(String pageId, int orgId, String payload)
+        protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload)
                 throws UnsupportedEncodingException, IOException, ClientProtocolException {
             return getDummyResponse(pageId, orgId, payload);
         }
@@ -84,13 +85,13 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected HttpResponse sendMessage(String pageId, int orgId, String payload)
+        protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload)
                 throws UnsupportedEncodingException, IOException, ClientProtocolException {
             return getDummyResponse(pageId, orgId, payload);
         }
     }
 
-    public HttpResponse getDummyResponse(String pageId, int orgId, String payload) {
+    public HttpResponse getDummyResponse(String pageId, long orgId, JsonObject payload) {
         HttpResponseFactory factory = new DefaultHttpResponseFactory();
         HttpResponse response = factory.newHttpResponse((StatusLine) new BasicStatusLine(HttpVersion.HTTP_1_1,
                 HttpStatus.SC_OK, "abc"), null);
@@ -145,7 +146,7 @@ public class FacebookMessageStub {
 
             @Override
             public InputStream getContent() throws IOException, IllegalStateException {
-                return new ByteArrayInputStream("messge".getBytes());
+                return new ByteArrayInputStream("message".getBytes());
             }
 
             @Override

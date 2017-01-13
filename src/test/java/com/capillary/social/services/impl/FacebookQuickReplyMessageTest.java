@@ -18,28 +18,40 @@ public class FacebookQuickReplyMessageTest extends FacebookMessageStub {
     public void shouldBeInvalidWhenMessageTextIsNull() {
         QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
         quickReplyMessage.text = null;
-        Assert.assertEquals(false, new FacebookQuickReplyMessageStub(quickReplyMessage).send("", "", 100));
+        Assert.assertEquals(true, new FacebookQuickReplyMessageStub(quickReplyMessage)
+                .send("", "", 100)
+                .toString()
+                .equals("{}"));
     }
 
     @Test
     public void shouldBeInvalidWhenMessageTextIsEmpty() {
         QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
         quickReplyMessage.text = "";
-        Assert.assertEquals(false, new FacebookQuickReplyMessageStub(quickReplyMessage).send("", "", 100));
+        Assert.assertEquals(true, new FacebookQuickReplyMessageStub(quickReplyMessage)
+                .send("", "", 100)
+                .toString()
+                .equals("{}"));
     }
 
     @Test
     public void shouldBeInvalidWhenMessageQuickReplyListIsEmpty() {
         QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
         quickReplyMessage.quickReplyList.clear();
-        Assert.assertEquals(false, new FacebookQuickReplyMessageStub(quickReplyMessage).send("", "", 100));
+        Assert.assertEquals(true, new FacebookQuickReplyMessageStub(quickReplyMessage)
+                .send("", "", 100)
+                .toString()
+                .equals("{}"));
     }
 
     @Test
     public void shouldBeInvalidWhenQuickReplyContentIsInvalid() {
         QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
         quickReplyMessage.quickReplyList.get(0).title = null;
-        Assert.assertEquals(false, new FacebookQuickReplyMessageStub(quickReplyMessage).send("", "", 100));
+        Assert.assertEquals(true, new FacebookQuickReplyMessageStub(quickReplyMessage)
+                .send("", "", 100)
+                .toString()
+                .equals("{}"));
     }
 
     @Ignore("test by actually sending the message")
@@ -47,9 +59,12 @@ public class FacebookQuickReplyMessageTest extends FacebookMessageStub {
     public void shouldBeValidWhenQuickReplyTextMessageIsSentSuccessfully() throws FacebookException, TException {
         QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
         Assert.assertEquals(
-                true,
-                FacebookClient.getFacebookServiceClient().sendQuickReplyMessage("1307450979317568", quickReplyMessage,
-                        "127834024337613", 0));
+                false,
+                FacebookClient
+                        .getFacebookServiceClient()
+                        .sendQuickReplyMessage("1307450979317568", quickReplyMessage, "127834024337613", 0)
+                        .toString()
+                        .equals("{}"));
     }
 
     @Ignore("test by actually sending the message")
@@ -57,9 +72,12 @@ public class FacebookQuickReplyMessageTest extends FacebookMessageStub {
     public void shouldBevalidWhenQuickReplyLocationMessageIsSentSuccessfully() throws FacebookException, TException {
         QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyLocationMessage();
         Assert.assertEquals(
-                true,
-                FacebookClient.getFacebookServiceClient().sendQuickReplyMessage("1307450979317568", quickReplyMessage,
-                        "127834024337613", 100));
+                false,
+                FacebookClient
+                        .getFacebookServiceClient()
+                        .sendQuickReplyMessage("1307450979317568", quickReplyMessage, "127834024337613", 0)
+                        .toString()
+                        .equals("{}"));
     }
 
 }

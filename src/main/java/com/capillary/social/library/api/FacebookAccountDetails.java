@@ -19,7 +19,7 @@ public class FacebookAccountDetails {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookAccountDetails.class);
 
-    public AccountDetails getAccountDetails(Integer orgId, String pageId) {
+    public AccountDetails getAccountDetails(long orgId, String pageId) {
 
         AccountDetails accountDetails = null;
 
@@ -44,9 +44,7 @@ public class FacebookAccountDetails {
                     AuthenticationKey.generateKey(com.capillary.common.crypto.AuthenticationKey.Module.CAMPAIGN_SHARD));
             RPCService.setHttpHeaders(httpClient, headers);
 
-            logger.debug("here");
-
-            accountDetails = httpClient.getAccountDetailsByChannel(orgId, pageId, "FACEBOOK");
+            accountDetails = httpClient.getAccountDetailsByChannel((int)orgId, pageId, "FACEBOOK");
 
         } catch (Exception e) {
             logger.error("Unable to connect to the shopbook thrift service", e);

@@ -18,20 +18,27 @@ public class FacebookButtonMessageTest extends FacebookMessageStub {
     public void shouldBeInvalidWhenNoButtonIsPresent() {
         ButtonMessage buttonMessage = FacebookEntityGenerator.generateButtonMessage();
         buttonMessage.buttonList.clear();
-        Assert.assertEquals(false, new FacebookButtonMessageStub(buttonMessage).send("", "", 100));
+        Assert.assertEquals(true, new FacebookButtonMessageStub(buttonMessage)
+                .send("", "", 100)
+                .toString()
+                .equals("{}"));
     }
 
     @Test
     public void shouldBeInvalidWhenMessageContentIsInvalid() {
         ButtonMessage buttonMessage = FacebookEntityGenerator.generateButtonMessage();
         buttonMessage.text = null;
-        Assert.assertEquals(false, new FacebookButtonMessageStub(buttonMessage).send("", "", 100));
+        Assert.assertEquals(true, new FacebookButtonMessageStub(buttonMessage)
+                .send("", "", 100)
+                .toString()
+                .equals("{}"));
     }
 
     @Test
     public void shouldBeValidWhenMessageContentIsValidAndResponseIsOK() {
         ButtonMessage buttonMessage = FacebookEntityGenerator.generateButtonMessage();
-        Assert.assertEquals(true, new FacebookButtonMessageStub(buttonMessage).send("", "", 100));
+        Assert.assertEquals(false,
+                new FacebookButtonMessageStub(buttonMessage).send("", "", 100).toString().equals("{}"));
     }
 
     @Ignore("test by actually sending message")
@@ -39,8 +46,11 @@ public class FacebookButtonMessageTest extends FacebookMessageStub {
     public void shouldBeValidWhenMessageIsSuccessfullySent() throws FacebookException, TException {
         ButtonMessage buttonMessage = FacebookEntityGenerator.generateButtonMessage();
         Assert.assertEquals(
-                true,
-                FacebookClient.getFacebookServiceClient().sendButtonMessage("1307450979317568", buttonMessage,
-                        "127834024337613", 0));
+                false,
+                FacebookClient
+                        .getFacebookServiceClient()
+                        .sendButtonMessage("1307450979317568", buttonMessage, "127834024337613", 0)
+                        .toString()
+                        .equals("{}"));
     }
 }
