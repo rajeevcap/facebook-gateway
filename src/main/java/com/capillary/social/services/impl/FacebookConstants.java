@@ -28,6 +28,8 @@ public class FacebookConstants {
     
     public static final String CURRENCY = "currency";
     
+    public static final String COMPACT = "compact";
+    
     public static final String ADDRESS = "address";
 
     public static final String MESSAGE = "message";
@@ -51,6 +53,8 @@ public class FacebookConstants {
     public static final String TYPE = "type";
     
     public static final String CITY = "city";
+    
+    public static final String LIST = "list";
 
     public static final String TITLE = "title";
     
@@ -91,6 +95,8 @@ public class FacebookConstants {
     public static final String MERCHANT_NAME = "merchant_name";
     
     public static final String RECIPIENT_NAME = "recipient_name";
+    
+    public static final String TOP_ELEMENT_STYLE = "top_element_style";
 
     public static final String SEND_MESSAGE_URL = "https://graph.facebook.com/v2.6/me/messages?access_token=";
 
@@ -115,5 +121,17 @@ public class FacebookConstants {
     public static final int MESSAGE_PAYLOAD_LENGTH_LIMIT = 1000;
 
     public static final int QUICK_REPLY_MESSAGE_PAYLOAD_LENGTH_LIMIT = 1000;
+    
+    public static final int GENERIC_MESSAGE_BUTTON_LIST_SIZE_LIMIT = 3;
+    
+    public static final int LIST_MESSAGE_BUTTON_LIST_SIZE_LIMIT = 1;
+    
+    public static final int LIST_MESSAGE_ELEMENT_LIST_MIN_SIZE = 2;
+    
+    public static final int LIST_MESSAGE_ELEMENT_LIST_MAX_SIZE = 4;
+    
+    public static final int GENERIC_MESSAGE_ELEMENT_LIST_MIN_SIZE = 1;
+    
+    public static final int GENERIC_MESSAGE_ELEMENT_LIST_MAX_SIZE = 10;
 
 }

@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.capillary.social.Button;
 import com.capillary.social.FacebookEntityGenerator;
+import com.capillary.social.MessageType;
 
 public class ButtonListValidatorTest {
 
@@ -21,7 +22,7 @@ public class ButtonListValidatorTest {
         for (int i = 0; i < BUTTON_LIST_SIZE_LIMIT + 1; i++) {
             buttonList.add(button);
         }
-        Assert.assertEquals(false, new ButtonListValidator(buttonList).validate());
+        Assert.assertEquals(false, new ButtonListValidator(buttonList, MessageType.buttonMessage).validate());
     }
 
     @Test
@@ -29,13 +30,13 @@ public class ButtonListValidatorTest {
         List<Button> buttonList = new ArrayList<Button>();
         Button button = FacebookEntityGenerator.generateButton();
         buttonList.add(button);
-        Assert.assertEquals(true, new ButtonListValidator(buttonList).validate());
+        Assert.assertEquals(true, new ButtonListValidator(buttonList, MessageType.buttonMessage).validate());
     }
 
     @Test
     public void shouldBeInvalidWhenNoButtonsAdded() {
         List<Button> buttonList = new ArrayList<Button>();
-        Assert.assertEquals(false, new ButtonListValidator(buttonList).validate());
+        Assert.assertEquals(false, new ButtonListValidator(buttonList, MessageType.buttonMessage).validate());
     }
 
 }

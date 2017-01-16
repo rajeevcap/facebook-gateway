@@ -1,12 +1,15 @@
 package com.capillary.social.services.impl;
 
+import static com.capillary.social.ListMessageTopElementStyle.large;
 import static com.capillary.social.services.impl.FacebookConstants.ATTACHMENT;
 import static com.capillary.social.services.impl.FacebookConstants.BUTTONS;
+import static com.capillary.social.services.impl.FacebookConstants.COMPACT;
 import static com.capillary.social.services.impl.FacebookConstants.DEFAULT_ACTION;
 import static com.capillary.social.services.impl.FacebookConstants.ELEMENTS;
 import static com.capillary.social.services.impl.FacebookConstants.GENERIC;
 import static com.capillary.social.services.impl.FacebookConstants.ID;
 import static com.capillary.social.services.impl.FacebookConstants.IMAGE_URL;
+import static com.capillary.social.services.impl.FacebookConstants.LIST;
 import static com.capillary.social.services.impl.FacebookConstants.MESSAGE;
 import static com.capillary.social.services.impl.FacebookConstants.PAYLOAD;
 import static com.capillary.social.services.impl.FacebookConstants.RECIPIENT;
@@ -14,6 +17,7 @@ import static com.capillary.social.services.impl.FacebookConstants.SUBTITLE;
 import static com.capillary.social.services.impl.FacebookConstants.TEMPLATE;
 import static com.capillary.social.services.impl.FacebookConstants.TEMPLATE_TYPE;
 import static com.capillary.social.services.impl.FacebookConstants.TITLE;
+import static com.capillary.social.services.impl.FacebookConstants.TOP_ELEMENT_STYLE;
 import static com.capillary.social.services.impl.FacebookConstants.TYPE;
 import static com.capillary.social.services.impl.FacebookConstants.WEB_URL;
 
@@ -27,31 +31,35 @@ import org.slf4j.LoggerFactory;
 import com.capillary.social.Button;
 import com.capillary.social.ButtonField;
 import com.capillary.social.Element;
-import com.capillary.social.GenericMessage;
+import com.capillary.social.ListMessage;
 import com.capillary.social.MessageType;
 import com.capillary.social.services.api.FacebookMessage;
 import com.capillary.social.validator.ElementListValidator;
 import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 
-public class FacebookGenericMessage extends FacebookMessage {
+public class FacebookListMessage extends FacebookMessage {
 
-    private static Logger logger = LoggerFactory.getLogger(FacebookGenericMessage.class);
+    private static Logger logger = LoggerFactory.getLogger(FacebookListMessage.class);
 
-    private GenericMessage genericMessage;
+    private ListMessage listMessage;
 
-    public FacebookGenericMessage(GenericMessage genericMessage) {
-        this.genericMessage = genericMessage;
-    }
-
-    private boolean isNotNull(Object obj) {
-        return obj != null;
+    public FacebookListMessage(ListMessage listMessage) {
+        this.listMessage = listMessage;
     }
 
     @Override
     public boolean validateMessage() {
-        logger.info("validating generic message : " + genericMessage);
-        return new ElementListValidator(genericMessage.elementList, MessageType.genericMessage).validate();
+        logger.info("validating list message : " + listMessage);
+        return true;
+//        if ((listMessage.topElementStyle == large && Strings.isNullOrEmpty(listMessage.elementList.get(0).imageUrl))
+//            || listMessage.buttonList.size() > 2)
+//            return false;
+//        return new ElementListValidator(listMessage.elementList, MessageType.listMessage).validate();
+    }
+
+    private boolean isNotNull(Object obj) {
+        return obj != null;
     }
 
     @Override
@@ -70,10 +78,14 @@ public class FacebookGenericMessage extends FacebookMessage {
         JsonObject attachmentBody = new JsonObject();
         JsonObject payloadBody = new JsonObject();
 
-        List<JsonObject> elements = getElementJsonObjects(genericMessage.elementList);
+        List<JsonObject> elements = getElementJsonObjects(listMessage.elementList);
 
-        payloadBody.addProperty(TEMPLATE_TYPE, GENERIC);
+        payloadBody.addProperty(TEMPLATE_TYPE, LIST);
         payloadBody.addProperty(ELEMENTS, elements.toString());
+        if (isNotNull(listMessage.topElementStyle))
+            payloadBody.addProperty(TOP_ELEMENT_STYLE, listMessage.topElementStyle.toString());
+        if (isNotNull(listMessage.buttonList))
+            payloadBody.add(BUTTONS, generateButton(listMessage.buttonList.get(0)));
 
         attachmentBody.addProperty(TYPE, TEMPLATE);
         attachmentBody.add(PAYLOAD, payloadBody);
@@ -130,4 +142,5 @@ public class FacebookGenericMessage extends FacebookMessage {
         }
         return buttonJson;
     }
+
 }

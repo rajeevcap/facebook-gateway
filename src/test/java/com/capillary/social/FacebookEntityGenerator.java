@@ -1,5 +1,7 @@
 package com.capillary.social;
 
+import static com.capillary.social.ListMessageTopElementStyle.large;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -136,6 +138,25 @@ public class FacebookEntityGenerator {
         Summary summary = new Summary();
         summary.totalCost = 100;
         return summary;
+    }
+    
+    public static ListMessage generateListMessage() {
+        ListMessage listMessage = new ListMessage();
+        List<Element> elementList = new ArrayList<Element>();
+        listMessage.topElementStyle = large;
+        Element element = new Element();
+        element.title = "Welcome to Capillary!";
+        element.subtitle = "How may I help you?";
+        element.imageUrl = "https://cabinetm-stag.s3.amazonaws.com/0000014b-2c03-e32f-d99e-d1b144b662d8.jpg";
+        element.defaultAction = generateButton();
+        ArrayList<Button> buttonList = new ArrayList<Button>();
+        Button button = generateButton();
+        buttonList.add(button);
+        element.buttonList = buttonList;
+        elementList.add(element);
+        elementList.add(element);
+        listMessage.elementList = elementList;
+        return listMessage;
     }
 
 }

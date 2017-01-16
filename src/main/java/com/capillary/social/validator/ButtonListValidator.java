@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.capillary.social.Button;
 import com.capillary.social.ButtonField;
+import com.capillary.social.MessageType;
 
 public class ButtonListValidator {
 
@@ -16,14 +17,17 @@ public class ButtonListValidator {
 
     private List<Button> buttonList;
 
-    public ButtonListValidator(List<Button> buttonList) {
+    private MessageType messageType;
+
+    public ButtonListValidator(List<Button> buttonList, MessageType messageType) {
         this.buttonList = buttonList;
+        this.messageType = messageType;
     }
 
     public boolean validate() {
         boolean isValid = true;
-        if (buttonList.size() > BUTTON_LIST_SIZE_LIMIT) {
-            logger.debug("button list count provided is greater the limit");
+        if (!new ButtonListCountValidator(buttonList.size(), messageType).validate()) {
+            logger.error("button list count " + buttonList.size() + " is invalid for : " + messageType);
             isValid = false;
         } else if (buttonList.isEmpty() || buttonList == null) {
             logger.debug("button list is empty in button message");

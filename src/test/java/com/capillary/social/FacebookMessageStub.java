@@ -19,6 +19,7 @@ import org.apache.http.message.BasicStatusLine;
 
 import com.capillary.social.services.impl.FacebookButtonMessage;
 import com.capillary.social.services.impl.FacebookGenericMessage;
+import com.capillary.social.services.impl.FacebookListMessage;
 import com.capillary.social.services.impl.FacebookQuickReplyMessage;
 import com.capillary.social.services.impl.FacebookReceiptMessage;
 import com.capillary.social.services.impl.FacebookTextMessage;
@@ -82,6 +83,19 @@ public class FacebookMessageStub {
 
         public FacebookReceiptMessageStub(ReceiptMessage receiptMessage) {
             super(receiptMessage);
+        }
+
+        @Override
+        protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload)
+                throws UnsupportedEncodingException, IOException, ClientProtocolException {
+            return getDummyResponse(pageId, orgId, payload);
+        }
+    }
+
+    protected class FacebookListMessageStub extends FacebookListMessage {
+
+        public FacebookListMessageStub(ListMessage listMessage) {
+            super(listMessage);
         }
 
         @Override

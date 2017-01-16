@@ -4,11 +4,13 @@ import com.capillary.social.ButtonMessage;
 import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookService.Iface;
 import com.capillary.social.GenericMessage;
+import com.capillary.social.ListMessage;
 import com.capillary.social.QuickReplyMessage;
 import com.capillary.social.ReceiptMessage;
 import com.capillary.social.TextMessage;
 import com.capillary.social.services.api.FacebookMessage;
 import com.capillary.social.services.impl.FacebookGenericMessage;
+import com.capillary.social.services.impl.FacebookListMessage;
 import com.capillary.social.services.impl.FacebookQuickReplyMessage;
 import com.capillary.social.services.impl.FacebookReceiptMessage;
 import com.capillary.social.services.impl.FacebookTextMessage;
@@ -27,7 +29,7 @@ public class FacebookServiceListener implements Iface {
     @Override
     public boolean isAlive() throws TException {
 
-        logger.info("Is alive called");
+        logger.info("is alive called");
         return true;
     }
 
@@ -54,7 +56,7 @@ public class FacebookServiceListener implements Iface {
             FacebookMessage facebookMessage = new FacebookTextMessage(textMessage);
             response = facebookMessage.send(recipientId, senderId, orgId);
         } catch (Exception e) {
-            logger.error("exception in sending message", e);
+            logger.error("exception occured in sending text message", e);
         } finally {
             MDC.remove("requestOrgId");
             MDC.remove("requestId");
@@ -69,7 +71,7 @@ public class FacebookServiceListener implements Iface {
             throws FacebookException, TException {
         logger.info("send button message called for recipient id : "
                     + recipientId
-                    + "button message : "
+                    + " button message : "
                     + buttonMessage
                     + " sender id : "
                     + senderId
@@ -99,7 +101,7 @@ public class FacebookServiceListener implements Iface {
             throws FacebookException, TException {
         logger.info("send generic message called for recipient id : "
                     + recipientId
-                    + "generic message : "
+                    + " generic message : "
                     + genericMessage
                     + " sender id : "
                     + senderId
@@ -114,7 +116,7 @@ public class FacebookServiceListener implements Iface {
             FacebookMessage facebookGenericMessage = new FacebookGenericMessage(genericMessage);
             response = facebookGenericMessage.send(recipientId, senderId, orgId);
         } catch (Exception e) {
-            logger.error("exception occured in sending button message", e);
+            logger.error("exception occured in sending generic message", e);
         } finally {
             MDC.remove("requestOrgId");
             MDC.remove("requestId");
@@ -128,7 +130,7 @@ public class FacebookServiceListener implements Iface {
             long orgId) throws FacebookException, TException {
         logger.info("send quick reply called for recipient id : "
                     + recipientId
-                    + "quick reply : "
+                    + " quick reply : "
                     + quickReplyMessage
                     + " sender id : "
                     + senderId
@@ -143,7 +145,7 @@ public class FacebookServiceListener implements Iface {
             FacebookMessage facebookQuickReplyMessage = new FacebookQuickReplyMessage(quickReplyMessage);
             response = facebookQuickReplyMessage.send(recipientId, senderId, orgId);
         } catch (Exception e) {
-            logger.error("exception occured in sending quick reply", e);
+            logger.error("exception occured in sending quick reply message", e);
         } finally {
             MDC.remove("requestOrgId");
             MDC.remove("requestId");
@@ -158,11 +160,11 @@ public class FacebookServiceListener implements Iface {
             throws FacebookException, TException {
         logger.info("send receipt message called for recipient id : "
                     + recipientId
-                    + "receipt message : "
+                    + " receipt message : "
                     + receiptMessage
-                    + "sender id : "
+                    + " sender id : "
                     + senderId
-                    + "org id : "
+                    + " org id : "
                     + orgId);
         MDC.put("requestOrgId", "ORG_ID_" + orgId);
         MDC.put("requestId", "PAGE_ID_" + senderId);
@@ -173,12 +175,37 @@ public class FacebookServiceListener implements Iface {
             FacebookMessage facebookReceiptMessage = new FacebookReceiptMessage(receiptMessage);
             response = facebookReceiptMessage.send(recipientId, senderId, orgId);
         } catch (Exception e) {
-            logger.error("exception occured in sending receipt : ");
+            logger.error("exception occured in sending receipt message", e);
         } finally {
             MDC.remove("requestOrgId");
             MDC.remove("requestId");
             MDC.remove("requestType");
             MDC.remove("userID");
+        }
+        return response.toString();
+    }
+
+    @Override
+    public String sendListMessage(String recipientId, ListMessage listMessage, String senderId, long orgId)
+            throws FacebookException, TException {
+        logger.info("send list message called for recipient id : "
+                    + recipientId
+                    + " list message : "
+                    + listMessage
+                    + " sender id : "
+                    + senderId
+                    + " orgId : "
+                    + orgId);
+        MDC.put("requestOrgId", "ORG_ID_" + orgId);
+        MDC.put("requestId", "PAGE_ID_" + senderId);
+        MDC.put("requestType", System.currentTimeMillis() + "");
+        MDC.put("userID", "USER_ID_" + recipientId);
+        JsonObject response = null;
+        try {
+            FacebookMessage facebookListMessage = new FacebookListMessage(listMessage);
+            response = facebookListMessage.send(recipientId, senderId, orgId);
+        } catch (Exception e) {
+            logger.error("exception occured in sending list ");
         }
         return response.toString();
     }

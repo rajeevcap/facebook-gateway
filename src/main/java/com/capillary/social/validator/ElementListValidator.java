@@ -1,7 +1,5 @@
 package com.capillary.social.validator;
 
-import static com.capillary.social.services.impl.FacebookConstants.ELEMENT_LIST_SIZE_LIMIT;
-
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,6 +9,7 @@ import com.capillary.social.Button;
 import com.capillary.social.ButtonField;
 import com.capillary.social.ButtonType;
 import com.capillary.social.Element;
+import com.capillary.social.MessageType;
 import com.google.common.base.Strings;
 
 public class ElementListValidator {
@@ -18,19 +17,22 @@ public class ElementListValidator {
     private static Logger logger = LoggerFactory.getLogger(ElementListValidator.class);
 
     private List<Element> elementList;
+    
+    private MessageType messageType;
 
-    public ElementListValidator(List<Element> elementList) {
+    public ElementListValidator(List<Element> elementList, MessageType messageType) {
         this.elementList = elementList;
+        this.messageType = messageType;
     }
-
-    private boolean isNotNull(Object obj) {
+    
+    public boolean isNotNull(Object obj) {
         return obj != null;
     }
 
     public boolean validate() {
         boolean isValid = true;
-        if (elementList.size() > ELEMENT_LIST_SIZE_LIMIT) {
-            logger.debug("number of elements provided exceeds the limit");
+        if(new ElementListCountValidator(elementList.size(), messageType).validate()) {
+            logger.error("element list count " + elementList.size() + " is invalid for : " + messageType);
             isValid = false;
         }
         for (Element element : elementList) {
@@ -44,7 +46,7 @@ public class ElementListValidator {
                 isValid &= new ButtonMessageUrlValidator(webUrlButton.data.get(ButtonField.url)).validate();
             }
             if (isNotNull(element.buttonList)) {
-                isValid &= new ButtonListValidator(element.buttonList).validate();
+                isValid &= new ButtonListValidator(element.buttonList, messageType).validate();
             }
         }
         return isValid;

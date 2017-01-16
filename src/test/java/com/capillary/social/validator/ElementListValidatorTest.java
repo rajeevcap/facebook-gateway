@@ -8,6 +8,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import com.capillary.social.Element;
+import com.capillary.social.MessageType;
 
 public class ElementListValidatorTest {
 
@@ -18,7 +19,7 @@ public class ElementListValidatorTest {
         for (int i = 0; i < 11; i++) {
             elementList.add(element);
         }
-        Assert.assertEquals(false, new ElementListValidator(elementList).validate());
+        Assert.assertEquals(false, new ElementListValidator(elementList, MessageType.genericMessage).validate());
     }
 
 }

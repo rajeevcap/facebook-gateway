@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import com.capillary.social.Button;
 import com.capillary.social.ButtonField;
 import com.capillary.social.ButtonMessage;
+import com.capillary.social.MessageType;
 import com.capillary.social.services.api.FacebookMessage;
 import com.capillary.social.validator.ButtonMessageTextValidator;
 import com.capillary.social.validator.ButtonListValidator;
@@ -42,7 +43,7 @@ public class FacebookButtonMessage extends FacebookMessage {
     public boolean validateMessage() {
         logger.info("validating button message : " + buttonMessage);
         return new ButtonMessageTextValidator(buttonMessage.text).validate()
-               && new ButtonListValidator(buttonMessage.buttonList).validate();
+               && new ButtonListValidator(buttonMessage.buttonList, MessageType.buttonMessage).validate();
     }
 
     @Override
