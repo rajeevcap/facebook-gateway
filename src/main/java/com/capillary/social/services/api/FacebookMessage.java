@@ -86,11 +86,11 @@ public abstract class FacebookMessage {
     }
 
     public String getAccessToken(long orgId, String pageId) {
-//        logger.info("Inside Access Token of Facebook Listener Service");
-//        FacebookAccountDetails facebookAccountDetails = new FacebookAccountDetails();
-//        AccountDetails result = facebookAccountDetails.getAccountDetails(orgId, pageId);
-//        String accessToken = result.pageAccessToken;
-        String accessToken = "EAARlLJ0mBswBAJ3AywiSIoVRAeOEdZBZBxBLOMGagzbY8s7SncAjmC9j0ZAgF7MDvLXW8qTadZCDJOJl3hAHZB1wmWQqPktJVDMZC12WNDuAXhi5qvd05YiPzxQ0QQEg7jLOsGWMoWkLinTyPxT7ZCZB0qxASdSxisekQsUiK47E7wZDZD";
+        logger.info("Inside Access Token of Facebook Listener Service");
+        FacebookAccountDetails facebookAccountDetails = new FacebookAccountDetails();
+        AccountDetails result = facebookAccountDetails.getAccountDetails(orgId, pageId);
+        String accessToken = result.pageAccessToken;
+        //String accessToken = "EAARlLJ0mBswBAJ3AywiSIoVRAeOEdZBZBxBLOMGagzbY8s7SncAjmC9j0ZAgF7MDvLXW8qTadZCDJOJl3hAHZB1wmWQqPktJVDMZC12WNDuAXhi5qvd05YiPzxQ0QQEg7jLOsGWMoWkLinTyPxT7ZCZB0qxASdSxisekQsUiK47E7wZDZD";
         return accessToken;
 
     }
