@@ -1,7 +1,5 @@
 package com.capillary.social.validator;
 
-import static com.capillary.social.services.impl.FacebookConstants.BUTTON_LIST_SIZE_LIMIT;
-
 import java.util.List;
 
 import org.slf4j.Logger;

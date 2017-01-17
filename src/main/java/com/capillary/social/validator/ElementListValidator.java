@@ -31,8 +31,8 @@ public class ElementListValidator {
 
     public boolean validate() {
         boolean isValid = true;
-        if(new ElementListCountValidator(elementList.size(), messageType).validate()) {
-            logger.error("element list count " + elementList.size() + " is invalid for : " + messageType);
+        if(!new ElementListCountValidator(elementList.size(), messageType).validate()) {
+            logger.error("element list count " + elementList.size() + " is invalid for " + messageType);
             isValid = false;
         }
         for (Element element : elementList) {

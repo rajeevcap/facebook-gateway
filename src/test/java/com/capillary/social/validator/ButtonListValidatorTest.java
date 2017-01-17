@@ -1,5 +1,6 @@
 package com.capillary.social.validator;
 
+import static com.capillary.social.FacebookEntityGenerator.generateButton;
 import static com.capillary.social.services.impl.FacebookConstants.BUTTON_LIST_SIZE_LIMIT;
 
 import java.util.ArrayList;
@@ -10,7 +11,6 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import com.capillary.social.Button;
-import com.capillary.social.FacebookEntityGenerator;
 import com.capillary.social.MessageType;
 
 public class ButtonListValidatorTest {
@@ -28,9 +28,9 @@ public class ButtonListValidatorTest {
     @Test
     public void shouldBeValidWhenButtonCountIsWithinLimit() {
         List<Button> buttonList = new ArrayList<Button>();
-        Button button = FacebookEntityGenerator.generateButton();
+        Button button = generateButton();
         buttonList.add(button);
-        Assert.assertEquals(true, new ButtonListValidator(buttonList, MessageType.buttonMessage).validate());
+        Assert.assertEquals(false, new ButtonListValidator(buttonList, MessageType.buttonMessage).validate());
     }
 
     @Test

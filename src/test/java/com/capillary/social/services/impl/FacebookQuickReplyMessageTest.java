@@ -1,5 +1,7 @@
 package com.capillary.social.services.impl;
 
+import static com.capillary.social.FacebookEntityGenerator.generateQuickReplyLocationMessage;
+import static com.capillary.social.FacebookEntityGenerator.generateQuickReplyTextMessage;
 import junit.framework.Assert;
 
 import org.apache.thrift.TException;
@@ -16,7 +18,7 @@ public class FacebookQuickReplyMessageTest extends FacebookMessageStub {
 
     @Test
     public void shouldBeInvalidWhenMessageTextIsNull() {
-        QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
+        QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         quickReplyMessage.text = null;
         Assert.assertEquals(true, new FacebookQuickReplyMessageStub(quickReplyMessage)
                 .send("", "", 100)
@@ -26,7 +28,7 @@ public class FacebookQuickReplyMessageTest extends FacebookMessageStub {
 
     @Test
     public void shouldBeInvalidWhenMessageTextIsEmpty() {
-        QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
+        QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         quickReplyMessage.text = "";
         Assert.assertEquals(true, new FacebookQuickReplyMessageStub(quickReplyMessage)
                 .send("", "", 100)
@@ -36,7 +38,7 @@ public class FacebookQuickReplyMessageTest extends FacebookMessageStub {
 
     @Test
     public void shouldBeInvalidWhenMessageQuickReplyListIsEmpty() {
-        QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
+        QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         quickReplyMessage.quickReplyList.clear();
         Assert.assertEquals(true, new FacebookQuickReplyMessageStub(quickReplyMessage)
                 .send("", "", 100)
@@ -46,7 +48,7 @@ public class FacebookQuickReplyMessageTest extends FacebookMessageStub {
 
     @Test
     public void shouldBeInvalidWhenQuickReplyContentIsInvalid() {
-        QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
+        QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         quickReplyMessage.quickReplyList.get(0).title = null;
         Assert.assertEquals(true, new FacebookQuickReplyMessageStub(quickReplyMessage)
                 .send("", "", 100)
@@ -57,7 +59,7 @@ public class FacebookQuickReplyMessageTest extends FacebookMessageStub {
     @Ignore("test by actually sending the message")
     @Test
     public void shouldBeValidWhenQuickReplyTextMessageIsSentSuccessfully() throws FacebookException, TException {
-        QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
+        QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         Assert.assertEquals(
                 false,
                 FacebookClient
@@ -70,7 +72,7 @@ public class FacebookQuickReplyMessageTest extends FacebookMessageStub {
     @Ignore("test by actually sending the message")
     @Test
     public void shouldBevalidWhenQuickReplyLocationMessageIsSentSuccessfully() throws FacebookException, TException {
-        QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyLocationMessage();
+        QuickReplyMessage quickReplyMessage = generateQuickReplyLocationMessage();
         Assert.assertEquals(
                 false,
                 FacebookClient
