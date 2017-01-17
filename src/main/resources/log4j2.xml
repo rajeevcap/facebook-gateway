@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="debug" name="facebook-gateway-service" packages="">
 	<Properties>
-<<<<<<< HEAD
 		<Property name="logFolder">/var/log/capillary/facebook-gateway-service/</Property>
-=======
-		<Property name="logFolder">/var/log/capillary/facebook-listener-service/</Property>
->>>>>>> 22b20a6fd3c74be426823babdf74bd7066b6c028
 	</Properties>
 	<Appenders>
 		<RollingFile name="LOGFILE" fileName="${logFolder}facebook-gateway-service.log"
