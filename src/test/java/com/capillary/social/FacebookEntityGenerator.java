@@ -156,6 +156,8 @@ public class FacebookEntityGenerator {
         elementList.add(element);
         elementList.add(element);
         listMessage.elementList = elementList;
+        listMessage.buttonList = new ArrayList<Button>();
+        listMessage.buttonList.add(generateButton());
         return listMessage;
     }
 

@@ -1,5 +1,6 @@
 package com.capillary.social.validator;
 
+import static com.capillary.social.FacebookEntityGenerator.generateQuickReplyTextMessage;
 import static com.capillary.social.services.impl.FacebookConstants.QUICK_REPLY_LIST_SIZE_LIMIT;
 import static com.capillary.social.services.impl.FacebookConstants.QUICK_REPLY_MESSAGE_PAYLOAD_LENGTH_LIMIT;
 import static com.capillary.social.services.impl.FacebookConstants.QUICK_REPLY_MESSAGE_TITLE_LIMIT;
@@ -20,7 +21,7 @@ public class QuickReplyListValidatorTest extends FacebookMessageStub {
 
     @Test
     public void shouldBeInvalidWhenQuickReplyListSizeExceedsLimit() {
-        QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
+        QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         List<QuickReply> quickReplyList = new ArrayList<QuickReply>();
         QuickReply quickReply = new QuickReply();
         for (int i = 0; i < QUICK_REPLY_LIST_SIZE_LIMIT + 1; i++) {
@@ -35,7 +36,7 @@ public class QuickReplyListValidatorTest extends FacebookMessageStub {
 
     @Test
     public void shouldBeInvalidWhenQuickReplyListSizeIsEmpty() {
-        QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
+        QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         quickReplyMessage.quickReplyList.clear();
         Assert.assertEquals(true, new FacebookQuickReplyMessageStub(quickReplyMessage)
                 .send("", "", 100)
@@ -54,7 +55,7 @@ public class QuickReplyListValidatorTest extends FacebookMessageStub {
 
     @Test
     public void shouldBeInvalidWhenQuickReplyContentTypeIsNull() {
-        QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
+        QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         quickReplyMessage.quickReplyList.get(0).contentType = null;
         Assert.assertEquals(true, new FacebookQuickReplyMessageStub(quickReplyMessage)
                 .send("", "", 100)
@@ -64,7 +65,7 @@ public class QuickReplyListValidatorTest extends FacebookMessageStub {
 
     @Test
     public void shouldBeInvalidWhenQuickReplyMessageTitleIsNull() {
-        QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
+        QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         quickReplyMessage.quickReplyList.get(0).title = null;
         Assert.assertEquals(true, new FacebookQuickReplyMessageStub(quickReplyMessage)
                 .send("", "", 100)
@@ -74,7 +75,7 @@ public class QuickReplyListValidatorTest extends FacebookMessageStub {
 
     @Test
     public void shouldBeInvalidWhenQuickReplyMessageTitleExceedsLimit() {
-        QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
+        QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         quickReplyMessage.quickReplyList.get(0).title = FacebookEntityGenerator
                 .generateRandomString(QUICK_REPLY_MESSAGE_TITLE_LIMIT + 1);
         Assert.assertEquals(true, new FacebookQuickReplyMessageStub(quickReplyMessage)
@@ -85,7 +86,7 @@ public class QuickReplyListValidatorTest extends FacebookMessageStub {
 
     @Test
     public void shouldBeInvalidWhenQuickReplyMessagePayloadIsNull() {
-        QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
+        QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         quickReplyMessage.quickReplyList.get(0).payload = null;
         Assert.assertEquals(true, new FacebookQuickReplyMessageStub(quickReplyMessage)
                 .send("", "", 100)
@@ -95,7 +96,7 @@ public class QuickReplyListValidatorTest extends FacebookMessageStub {
 
     @Test
     public void shouldBeInvalidWhenQuickReplyMessagePayloadSizeExceedsLimit() {
-        QuickReplyMessage quickReplyMessage = FacebookEntityGenerator.generateQuickReplyTextMessage();
+        QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         quickReplyMessage.quickReplyList.get(0).payload = FacebookEntityGenerator
                 .generateRandomString(QUICK_REPLY_MESSAGE_PAYLOAD_LENGTH_LIMIT + 1);
         Assert.assertEquals(true, new FacebookQuickReplyMessageStub(quickReplyMessage)

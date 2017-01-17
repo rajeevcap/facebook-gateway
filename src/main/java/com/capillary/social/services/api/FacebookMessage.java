@@ -90,7 +90,11 @@ public abstract class FacebookMessage {
         FacebookAccountDetails facebookAccountDetails = new FacebookAccountDetails();
         AccountDetails result = facebookAccountDetails.getAccountDetails(orgId, pageId);
         String accessToken = result.pageAccessToken;
+<<<<<<< HEAD
         //String accessToken = "EAARlLJ0mBswBAJ3AywiSIoVRAeOEdZBZBxBLOMGagzbY8s7SncAjmC9j0ZAgF7MDvLXW8qTadZCDJOJl3hAHZB1wmWQqPktJVDMZC12WNDuAXhi5qvd05YiPzxQ0QQEg7jLOsGWMoWkLinTyPxT7ZCZB0qxASdSxisekQsUiK47E7wZDZD";
+=======
+//        String accessToken = "EAARlLJ0mBswBAJ3AywiSIoVRAeOEdZBZBxBLOMGagzbY8s7SncAjmC9j0ZAgF7MDvLXW8qTadZCDJOJl3hAHZB1wmWQqPktJVDMZC12WNDuAXhi5qvd05YiPzxQ0QQEg7jLOsGWMoWkLinTyPxT7ZCZB0qxASdSxisekQsUiK47E7wZDZD";
+>>>>>>> 22b20a6fd3c74be426823babdf74bd7066b6c028
         return accessToken;
 
     }

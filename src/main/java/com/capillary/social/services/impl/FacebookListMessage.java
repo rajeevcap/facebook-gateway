@@ -3,10 +3,8 @@ package com.capillary.social.services.impl;
 import static com.capillary.social.ListMessageTopElementStyle.large;
 import static com.capillary.social.services.impl.FacebookConstants.ATTACHMENT;
 import static com.capillary.social.services.impl.FacebookConstants.BUTTONS;
-import static com.capillary.social.services.impl.FacebookConstants.COMPACT;
 import static com.capillary.social.services.impl.FacebookConstants.DEFAULT_ACTION;
 import static com.capillary.social.services.impl.FacebookConstants.ELEMENTS;
-import static com.capillary.social.services.impl.FacebookConstants.GENERIC;
 import static com.capillary.social.services.impl.FacebookConstants.ID;
 import static com.capillary.social.services.impl.FacebookConstants.IMAGE_URL;
 import static com.capillary.social.services.impl.FacebookConstants.LIST;
@@ -51,11 +49,10 @@ public class FacebookListMessage extends FacebookMessage {
     @Override
     public boolean validateMessage() {
         logger.info("validating list message : " + listMessage);
-        return true;
-//        if ((listMessage.topElementStyle == large && Strings.isNullOrEmpty(listMessage.elementList.get(0).imageUrl))
-//            || listMessage.buttonList.size() > 2)
-//            return false;
-//        return new ElementListValidator(listMessage.elementList, MessageType.listMessage).validate();
+        return new ElementListValidator(listMessage.elementList, MessageType.listMessage).validate()
+               && !(listMessage.topElementStyle == large && Strings
+                       .isNullOrEmpty(listMessage.elementList.get(0).imageUrl))
+               && (listMessage.buttonList == null || listMessage.buttonList.size() <= 1);
     }
 
     private boolean isNotNull(Object obj) {

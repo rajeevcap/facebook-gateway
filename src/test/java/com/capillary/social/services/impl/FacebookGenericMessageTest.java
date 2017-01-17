@@ -1,5 +1,6 @@
 package com.capillary.social.services.impl;
 
+import static com.capillary.social.FacebookEntityGenerator.generateGenericMessage;
 import junit.framework.Assert;
 
 import org.apache.thrift.TException;
@@ -7,7 +8,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.capillary.social.FacebookClient;
-import com.capillary.social.FacebookEntityGenerator;
 import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookMessageStub;
 import com.capillary.social.GenericMessage;
@@ -16,7 +16,7 @@ public class FacebookGenericMessageTest extends FacebookMessageStub {
 
     @Test
     public void shouldBeInvalidWhenNoElementIsPresent() throws FacebookException, TException {
-        GenericMessage genericMessage = FacebookEntityGenerator.generateGenericMessage();
+        GenericMessage genericMessage = generateGenericMessage();
         genericMessage.elementList = null;
         Assert.assertEquals(true,
                 new FacebookGenericMessageStub(genericMessage).send("", "", 100).toString().equals("{}"));
@@ -24,7 +24,7 @@ public class FacebookGenericMessageTest extends FacebookMessageStub {
 
     @Test
     public void shouldBeInvalidWhenInvalidElementIsPresent() throws FacebookException, TException {
-        GenericMessage genericMessage = FacebookEntityGenerator.generateGenericMessage();
+        GenericMessage genericMessage = generateGenericMessage();
         genericMessage.elementList.get(0).title = null;
         Assert.assertEquals(true,
                 new FacebookGenericMessageStub(genericMessage).send("", "", 100).toString().equals("{}"));
@@ -32,7 +32,7 @@ public class FacebookGenericMessageTest extends FacebookMessageStub {
 
     @Test
     public void shouldBeValidWhenElementsAreValidAndResponseIsOk() throws FacebookException, TException {
-        GenericMessage genericMessage = FacebookEntityGenerator.generateGenericMessage();
+        GenericMessage genericMessage = generateGenericMessage();
         Assert.assertEquals(false,
                 new FacebookGenericMessageStub(genericMessage).send("", "", 100).toString().equals("{}"));
     }
@@ -40,7 +40,7 @@ public class FacebookGenericMessageTest extends FacebookMessageStub {
     @Ignore("test by actually sending message")
     @Test
     public void shouldBeValidWhenMessageIsSentSuccessfully() throws FacebookException, TException {
-        GenericMessage genericMessage = FacebookEntityGenerator.generateGenericMessage();
+        GenericMessage genericMessage = generateGenericMessage();
         Assert.assertEquals(
                 false,
                 FacebookClient
