@@ -7,7 +7,6 @@ import org.apache.thrift.TException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.capillary.social.FacebookClient;
 import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookMessageStub;
 import com.capillary.social.ReceiptMessage;
@@ -63,17 +62,6 @@ public class ReceiptMessageValidatorTest extends FacebookMessageStub {
                 new FacebookReceiptMessageStub(receiptMessage).send("", "", 100).toString().equals("{}"));
     }
 
-    @Ignore
-    @Test
-    public void shouldBeValidWhenMessageIsSent() throws FacebookException, TException {
-        ReceiptMessage receiptMessage = generateReceiptMessage();
-        Assert.assertEquals(
-                false,
-                FacebookClient
-                        .getFacebookServiceClient()
-                        .sendReceiptMessage("1307450979317568", receiptMessage, "127834024337613", 0)
-                        .toString()
-                        .equals("{}"));
-    }
+    
 
 }

@@ -4,10 +4,8 @@ import static com.capillary.social.FacebookEntityGenerator.generateGenericMessag
 import junit.framework.Assert;
 
 import org.apache.thrift.TException;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import com.capillary.social.FacebookClient;
 import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookMessageStub;
 import com.capillary.social.GenericMessage;
@@ -37,7 +35,7 @@ public class FacebookGenericMessageTest extends FacebookMessageStub {
                 new FacebookGenericMessageStub(genericMessage).send("", "", 100).toString().equals("{}"));
     }
 
-    @Ignore("test by actually sending message")
+    /*@Ignore("test by actually sending message")
     @Test
     public void shouldBeValidWhenMessageIsSentSuccessfully() throws FacebookException, TException {
         GenericMessage genericMessage = generateGenericMessage();
@@ -45,9 +43,9 @@ public class FacebookGenericMessageTest extends FacebookMessageStub {
                 false,
                 FacebookClient
                         .getFacebookServiceClient()
-                        .sendGenericMessage("1307450979317568", genericMessage, "127834024337613", 0)
+                        .sendGenericMessage("1307450979317568", genericMessage, "127834024337613", 0,"")
                         .toString()
                         .equals("{}"));
-    }
+    }*/
 
 }

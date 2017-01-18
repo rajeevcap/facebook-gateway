@@ -34,8 +34,8 @@ public class FacebookServiceListener implements Iface {
     }
 
     @Override
-    public String sendTextMessage(String recipientId, TextMessage textMessage, String senderId, long orgId)
-            throws FacebookException, TException {
+    public String sendTextMessage(String recipientId, TextMessage textMessage, String senderId, long orgId,
+            String requestId) throws FacebookException, TException {
 
         logger.info("send text message called for recipient id: "
                     + recipientId
@@ -47,8 +47,8 @@ public class FacebookServiceListener implements Iface {
                     + orgId);
 
         MDC.put("requestOrgId", "ORG_ID_" + orgId);
-        MDC.put("requestId", "PAGE_ID_" + senderId);
-        MDC.put("requestType", System.currentTimeMillis() + "");
+        MDC.put("requestId", requestId);
+        MDC.put("requestType", "PAGE_ID_" + senderId);
         MDC.put("userID", "USER_ID_" + recipientId);
         JsonObject response = null;
         try {
@@ -67,8 +67,8 @@ public class FacebookServiceListener implements Iface {
     }
 
     @Override
-    public String sendButtonMessage(String recipientId, ButtonMessage buttonMessage, String senderId, long orgId)
-            throws FacebookException, TException {
+    public String sendButtonMessage(String recipientId, ButtonMessage buttonMessage, String senderId, long orgId,
+            String requestId) throws FacebookException, TException {
         logger.info("send button message called for recipient id : "
                     + recipientId
                     + " button message : "
@@ -78,8 +78,8 @@ public class FacebookServiceListener implements Iface {
                     + " org id : "
                     + orgId);
         MDC.put("requestOrgId", "ORG_ID_" + orgId);
-        MDC.put("requestId", "PAGE_ID_" + senderId);
-        MDC.put("requestType", System.currentTimeMillis() + "");
+        MDC.put("requestId", requestId);
+        MDC.put("requestType", "PAGE_ID_" + senderId);
         MDC.put("userID", "USER_ID_" + recipientId);
         JsonObject response = null;
         try {
@@ -97,8 +97,8 @@ public class FacebookServiceListener implements Iface {
     }
 
     @Override
-    public String sendGenericMessage(String recipientId, GenericMessage genericMessage, String senderId, long orgId)
-            throws FacebookException, TException {
+    public String sendGenericMessage(String recipientId, GenericMessage genericMessage, String senderId, long orgId,
+            String requestId) throws FacebookException, TException {
         logger.info("send generic message called for recipient id : "
                     + recipientId
                     + " generic message : "
@@ -108,8 +108,8 @@ public class FacebookServiceListener implements Iface {
                     + " org id : "
                     + orgId);
         MDC.put("requestOrgId", "ORG_ID_" + orgId);
-        MDC.put("requestId", "PAGE_ID_" + senderId);
-        MDC.put("requestType", System.currentTimeMillis() + "");
+        MDC.put("requestId", requestId);
+        MDC.put("requestType", "PAGE_ID_" + senderId);
         MDC.put("userID", "USER_ID_" + recipientId);
         JsonObject response = null;
         try {
@@ -126,8 +126,9 @@ public class FacebookServiceListener implements Iface {
         return response.toString();
     }
 
+    @Override
     public String sendQuickReplyMessage(String recipientId, QuickReplyMessage quickReplyMessage, String senderId,
-            long orgId) throws FacebookException, TException {
+            long orgId, String requestId) throws FacebookException, TException {
         logger.info("send quick reply message called for recipient id : "
                     + recipientId
                     + " quick reply : "
@@ -137,8 +138,8 @@ public class FacebookServiceListener implements Iface {
                     + " org id : "
                     + orgId);
         MDC.put("requestOrgId", "ORG_ID_" + orgId);
-        MDC.put("requestId", "PAGE_ID_" + senderId);
-        MDC.put("requestType", System.currentTimeMillis() + "");
+        MDC.put("requestId", requestId);
+        MDC.put("requestType", "PAGE_ID_" + senderId);
         MDC.put("userID", "USER_ID_" + recipientId);
         JsonObject response = null;
         try {
@@ -156,8 +157,8 @@ public class FacebookServiceListener implements Iface {
     }
 
     @Override
-    public String sendReceiptMessage(String recipientId, ReceiptMessage receiptMessage, String senderId, long orgId)
-            throws FacebookException, TException {
+    public String sendReceiptMessage(String recipientId, ReceiptMessage receiptMessage, String senderId, long orgId,
+            String requestId) throws FacebookException, TException {
         logger.info("send receipt message called for recipient id : "
                     + recipientId
                     + " receipt message : "
@@ -167,8 +168,8 @@ public class FacebookServiceListener implements Iface {
                     + " org id : "
                     + orgId);
         MDC.put("requestOrgId", "ORG_ID_" + orgId);
-        MDC.put("requestId", "PAGE_ID_" + senderId);
-        MDC.put("requestType", System.currentTimeMillis() + "");
+        MDC.put("requestId", requestId);
+        MDC.put("requestType", "PAGE_ID_" + senderId);
         MDC.put("userID", "USER_ID_" + recipientId);
         JsonObject response = null;
         try {
@@ -186,8 +187,8 @@ public class FacebookServiceListener implements Iface {
     }
 
     @Override
-    public String sendListMessage(String recipientId, ListMessage listMessage, String senderId, long orgId)
-            throws FacebookException, TException {
+    public String sendListMessage(String recipientId, ListMessage listMessage, String senderId, long orgId,
+            String requestId) throws FacebookException, TException {
         logger.info("send list message called for recipient id : "
                     + recipientId
                     + " list message : "
@@ -197,8 +198,8 @@ public class FacebookServiceListener implements Iface {
                     + " orgId : "
                     + orgId);
         MDC.put("requestOrgId", "ORG_ID_" + orgId);
-        MDC.put("requestId", "PAGE_ID_" + senderId);
-        MDC.put("requestType", System.currentTimeMillis() + "");
+        MDC.put("requestId", requestId);
+        MDC.put("requestType", "PAGE_ID_" + senderId);
         MDC.put("userID", "USER_ID_" + recipientId);
         JsonObject response = null;
         try {
@@ -209,4 +210,5 @@ public class FacebookServiceListener implements Iface {
         }
         return response.toString();
     }
+
 }
