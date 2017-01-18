@@ -122,9 +122,17 @@ public class FacebookConstants {
 
     public static final int QUICK_REPLY_MESSAGE_PAYLOAD_LENGTH_LIMIT = 1000;
     
-    public static final int GENERIC_MESSAGE_BUTTON_LIST_SIZE_LIMIT = 3;
+    public static final int GENERIC_MESSAGE_BUTTON_LIST_MIN_SIZE = 0;
     
-    public static final int LIST_MESSAGE_BUTTON_LIST_SIZE_LIMIT = 1;
+    public static final int GENERIC_MESSAGE_BUTTON_LIST_MAX_SIZE = 3;
+    
+    public static final int LIST_MESSAGE_BUTTON_LIST_MIN_SIZE = 0;
+    
+    public static final int LIST_MESSAGE_BUTTON_LIST_MAX_SIZE = 1;
+    
+    public static final int BUTTON_MESSAGE_BUTTON_LIST_MIN_SIZE = 1;
+    
+    public static final int BUTTON_MESSAGE_BUTTON_LIST_MAX_SIZE = 3;
     
     public static final int LIST_MESSAGE_ELEMENT_LIST_MIN_SIZE = 2;
     

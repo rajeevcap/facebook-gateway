@@ -13,7 +13,7 @@ import com.capillary.social.services.impl.FacebookConstants;
 
 public class ElementListCountValidator {
 
-    private static Logger logger = LoggerFactory.getLogger(ButtonMessageTextValidator.class);
+    private static Logger logger = LoggerFactory.getLogger(ElementListCountValidator.class);
 
     private int elementListSize;
 

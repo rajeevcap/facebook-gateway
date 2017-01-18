@@ -37,7 +37,7 @@ public class FacebookServiceListener implements Iface {
     public String sendTextMessage(String recipientId, TextMessage textMessage, String senderId, long orgId)
             throws FacebookException, TException {
 
-        logger.info("send message called for recipient id: "
+        logger.info("send text message called for recipient id: "
                     + recipientId
                     + " message text: "
                     + textMessage.text
@@ -128,7 +128,7 @@ public class FacebookServiceListener implements Iface {
 
     public String sendQuickReplyMessage(String recipientId, QuickReplyMessage quickReplyMessage, String senderId,
             long orgId) throws FacebookException, TException {
-        logger.info("send quick reply called for recipient id : "
+        logger.info("send quick reply message called for recipient id : "
                     + recipientId
                     + " quick reply : "
                     + quickReplyMessage
