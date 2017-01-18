@@ -4,8 +4,12 @@ import static com.capillary.social.FacebookEntityGenerator.generateButton;
 import static com.capillary.social.FacebookEntityGenerator.generateListMessage;
 import junit.framework.Assert;
 
+import org.apache.thrift.TException;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import com.capillary.social.FacebookClient;
+import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookMessageStub;
 import com.capillary.social.ListMessage;
 
@@ -47,16 +51,15 @@ public class FacebookListMessageValidatorTest extends FacebookMessageStub {
         Assert.assertEquals(true, new FacebookListMessageStub(listMessage).send("", "", 100).toString().equals("{}"));
     }
 
-   /* @Ignore
+    @Ignore
     @Test
     public void shouldBeValidWhenListMessageIsSentSuccessfully() throws FacebookException, TException {
         ListMessage listMessage = generateListMessage();
-        Assert.assertEquals(
-                false,
+        Assert.assertEquals(false,
                 FacebookClient
                         .getFacebookServiceClient()
-                        .sendListMessage("1307450979317568", listMessage, "127834024337613", 0)
+                        .sendListMessage("", listMessage, "", 0, "requestId")
                         .toString()
                         .equals("{}"));
-    }*/
+    }
 }
