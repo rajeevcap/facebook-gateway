@@ -30,7 +30,7 @@ public class ButtonListValidatorTest {
         List<Button> buttonList = new ArrayList<Button>();
         Button button = generateButton();
         buttonList.add(button);
-        Assert.assertEquals(false, new ButtonListValidator(buttonList, MessageType.buttonMessage).validate());
+        Assert.assertEquals(true, new ButtonListValidator(buttonList, MessageType.buttonMessage).validate());
     }
 
     @Test

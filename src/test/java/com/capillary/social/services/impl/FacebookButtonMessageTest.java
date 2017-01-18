@@ -37,7 +37,7 @@ public class FacebookButtonMessageTest extends FacebookMessageStub {
     @Test
     public void shouldBeValidWhenMessageContentIsValidAndResponseIsOK() {
         ButtonMessage buttonMessage = generateButtonMessage();
-        Assert.assertEquals(true, new FacebookButtonMessageStub(buttonMessage)
+        Assert.assertEquals(false, new FacebookButtonMessageStub(buttonMessage)
                 .send("", "", 100)
                 .toString()
                 .equals("{}"));
