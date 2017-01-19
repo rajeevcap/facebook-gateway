@@ -63,6 +63,7 @@ public class FacebookServiceListener implements Iface {
             MDC.remove("requestType");
             MDC.remove("userID");
         }
+        logger.info("send text message response : " + response);
         return response.toString();
     }
 
@@ -93,6 +94,7 @@ public class FacebookServiceListener implements Iface {
             MDC.remove("requestType");
             MDC.remove("userID");
         }
+        logger.info("send button message response : " + response);
         return response.toString();
     }
 
@@ -123,6 +125,7 @@ public class FacebookServiceListener implements Iface {
             MDC.remove("requestType");
             MDC.remove("userID");
         }
+        logger.info("send generic message response : " + response);
         return response.toString();
     }
 
@@ -153,6 +156,7 @@ public class FacebookServiceListener implements Iface {
             MDC.remove("requestType");
             MDC.remove("userID");
         }
+        logger.info("send quick reply message response : " + response);
         return response.toString();
     }
 
@@ -183,6 +187,7 @@ public class FacebookServiceListener implements Iface {
             MDC.remove("requestType");
             MDC.remove("userID");
         }
+        logger.info("send receipt message response : " + response);
         return response.toString();
     }
 
@@ -208,6 +213,7 @@ public class FacebookServiceListener implements Iface {
         } catch (Exception e) {
             logger.error("exception occured in sending list ");
         }
+        logger.info("send list message response : " + response);
         return response.toString();
     }
 
