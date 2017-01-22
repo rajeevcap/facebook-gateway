@@ -41,7 +41,7 @@ public class FacebookAccountDetails {
 
             Map<String, String> headers = Maps.newHashMap();
             headers.put("X-CAP-SERVICE-AUTH-KEY",
-                    AuthenticationKey.generateKey(com.capillary.common.crypto.AuthenticationKey.Module.CAMPAIGN_SHARD));
+                    AuthenticationKey.generateKey(com.capillary.common.crypto.AuthenticationKey.Module.VENENO));
             RPCService.setHttpHeaders(httpClient, headers);
 
             accountDetails = httpClient.getAccountDetailsByChannel((int)orgId, pageId, "FACEBOOK");
