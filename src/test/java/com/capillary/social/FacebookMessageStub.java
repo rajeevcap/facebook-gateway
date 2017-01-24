@@ -1,5 +1,7 @@
 package com.capillary.social;
 
+import static com.capillary.social.GatewayResponseType.sent;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +19,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.impl.DefaultHttpResponseFactory;
 import org.apache.http.message.BasicStatusLine;
 
+import com.capillary.social.services.api.FacebookMessage;
 import com.capillary.social.services.impl.FacebookButtonMessage;
 import com.capillary.social.services.impl.FacebookGenericMessage;
 import com.capillary.social.services.impl.FacebookListMessage;
@@ -26,6 +29,10 @@ import com.capillary.social.services.impl.FacebookTextMessage;
 import com.google.gson.JsonObject;
 
 public class FacebookMessageStub {
+
+    protected boolean getValidation(FacebookMessage facebookMessage) {
+        return facebookMessage.send("", "", 0).gatewayResponseType == sent;
+    }
 
     protected class FacebookTextMessageStub extends FacebookTextMessage {
         public FacebookTextMessageStub(TextMessage textMessage) {

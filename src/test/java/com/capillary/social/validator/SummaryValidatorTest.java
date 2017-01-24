@@ -16,16 +16,14 @@ public class SummaryValidatorTest extends FacebookMessageStub {
     public void shouldBeInvalidWhenTotalCostIsZero() {
         ReceiptMessage receiptMessage = generateReceiptMessage();
         receiptMessage.summary = new Summary();
-        Assert.assertEquals(true,
-                new FacebookReceiptMessageStub(receiptMessage).send("", "", 100).toString().equals("{}"));
+        Assert.assertEquals(false, getValidation(new FacebookReceiptMessageStub(receiptMessage)));
     }
 
     @Test
     public void shouldBeValid() {
         ReceiptMessage receiptMessage = generateReceiptMessage();
         receiptMessage.summary = FacebookEntityGenerator.generateSummary();
-        Assert.assertEquals(false,
-                new FacebookReceiptMessageStub(receiptMessage).send("", "", 100).toString().equals("{}"));
+        Assert.assertEquals(true, getValidation(new FacebookReceiptMessageStub(receiptMessage)));
     }
 
 }

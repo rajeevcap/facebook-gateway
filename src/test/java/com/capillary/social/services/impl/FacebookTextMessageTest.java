@@ -16,7 +16,7 @@ public class FacebookTextMessageTest extends FacebookMessageStub {
     public void shouldBeInvalidWhenTextIsNotPresent() throws FacebookException, TException {
         TextMessage textMessage = generateTextMessage();
         textMessage.text = null;
-        Assert.assertEquals(true, new FacebookTextMessageStub(textMessage).send("", "", 100).toString().equals("{}"));
+        Assert.assertEquals(false, getValidation(new FacebookTextMessageStub(textMessage)));
     }
 
 }

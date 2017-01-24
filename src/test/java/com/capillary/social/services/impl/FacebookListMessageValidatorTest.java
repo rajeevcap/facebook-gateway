@@ -19,7 +19,7 @@ public class FacebookListMessageValidatorTest extends FacebookMessageStub {
     public void shouldBeInvalidWhenElementListSizeIsLessThanMinLimit() { // < 2
         ListMessage listMessage = generateListMessage();
         listMessage.elementList.remove(listMessage.elementList.size() - 1);
-        Assert.assertEquals(true, new FacebookListMessageStub(listMessage).send("", "", 100).toString().equals("{}"));
+        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage)));
     }
 
     @Test
@@ -27,28 +27,28 @@ public class FacebookListMessageValidatorTest extends FacebookMessageStub {
         ListMessage listMessage = generateListMessage();
         for (int i = 0; i < 3; i++)
             listMessage.elementList.add(listMessage.elementList.get(0));
-        Assert.assertEquals(true, new FacebookListMessageStub(listMessage).send("", "", 100).toString().equals("{}"));
+        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage)));
     }
 
     @Test
     public void shouldBeInvalidWhenAnyElementHasMoreThanOneButton() {
         ListMessage listMessage = generateListMessage();
         listMessage.elementList.get(0).buttonList.add(generateButton());
-        Assert.assertEquals(true, new FacebookListMessageStub(listMessage).send("", "", 100).toString().equals("{}"));
+        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage)));
     }
 
     @Test
     public void shouldBeInvalidWhenPayloadHasMoreThanOneButton() {
         ListMessage listMessage = generateListMessage();
         listMessage.buttonList.add(generateButton());
-        Assert.assertEquals(true, new FacebookListMessageStub(listMessage).send("", "", 100).toString().equals("{}"));
+        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage)));
     }
 
     @Test
     public void shouldBeInvalidWhenTopElementStyleIsLargeAndImageUrlForFirstElementIsNull() {
         ListMessage listMessage = generateListMessage();
         listMessage.elementList.get(0).imageUrl = null;
-        Assert.assertEquals(true, new FacebookListMessageStub(listMessage).send("", "", 100).toString().equals("{}"));
+        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage)));
     }
 
     @Ignore

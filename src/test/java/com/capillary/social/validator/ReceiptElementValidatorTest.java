@@ -16,8 +16,7 @@ public class ReceiptElementValidatorTest extends FacebookMessageStub {
         ReceiptMessage receiptMessage = generateReceiptMessage();
         receiptMessage.receiptElementList = FacebookEntityGenerator.generateReceiptElementList();
         receiptMessage.receiptElementList.get(0).title = null;
-        Assert.assertEquals(true,
-                new FacebookReceiptMessageStub(receiptMessage).send("", "", 100).toString().equals("{}"));
+        Assert.assertEquals(false, getValidation(new FacebookReceiptMessageStub(receiptMessage)));
     }
 
     @Test
@@ -25,16 +24,14 @@ public class ReceiptElementValidatorTest extends FacebookMessageStub {
         ReceiptMessage receiptMessage = generateReceiptMessage();
         receiptMessage.receiptElementList = FacebookEntityGenerator.generateReceiptElementList();
         receiptMessage.receiptElementList.get(0).price = -1;
-        Assert.assertEquals(true,
-                new FacebookReceiptMessageStub(receiptMessage).send("", "", 100).toString().equals("{}"));
+        Assert.assertEquals(false, getValidation(new FacebookReceiptMessageStub(receiptMessage)));
     }
 
     @Test
     public void shouldBeValid() {
         ReceiptMessage receiptMessage = generateReceiptMessage();
         receiptMessage.receiptElementList = FacebookEntityGenerator.generateReceiptElementList();
-        Assert.assertEquals(false,
-                new FacebookReceiptMessageStub(receiptMessage).send("", "", 100).toString().equals("{}"));
+        Assert.assertEquals(true, getValidation(new FacebookReceiptMessageStub(receiptMessage)));
     }
 
 }
