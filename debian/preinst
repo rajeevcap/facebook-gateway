@@ -1,0 +1,21 @@
+#!/bin/bash -e
+
+
+# creating facebook-gateway-service user if he isn't already there
+if ! getent passwd facebook-gateway-service >/dev/null; then
+        # Adding system user: mysql.
+        adduser \
+          --system \
+          --disabled-login \
+          --ingroup sdiscovery \
+          --no-create-home \
+          --home /nonexistent \
+          --gecos "facebook-gateway-service" \
+          --shell /bin/false \
+          facebook-gateway-service  >/dev/null
+
+fi
+
+#logdir=/var/log/capillary/facebook-gateway-service
+#if [ ! -d "$logdir"      -a ! -L "$logdir"      ]; then mkdir -p $logdir;chown -R facebook-gateway-service:sdiscovery $logdir; fi
+

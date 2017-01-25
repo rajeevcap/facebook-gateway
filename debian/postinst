@@ -1,0 +1,4 @@
+#!/bin/bash -e
+chown -R facebook-gateway-service:sdiscovery /usr/local/share/java/capillary/facebook-gateway-service
+dirsprepare facebook-gateway-service.conf 
+
