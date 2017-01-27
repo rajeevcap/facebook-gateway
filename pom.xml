@@ -3,7 +3,7 @@
 	<groupId>com.capillary.social</groupId>
 	<artifactId>facebook-gateway-service</artifactId>
 	<!-- <packaging>jar</packaging> -->
-	<version>1.1</version>
+	<version>1.2</version>
 	<name>FacebookGatewayService</name>
 	<url>http://maven.apache.org</url>
 
@@ -79,7 +79,7 @@
 		<dependency>
 			<groupId>com.capillary.commons</groupId>
 			<artifactId>thrift-ifaces-shopbook</artifactId>
-			<version>3.9-SNAPSHOT</version>
+			<version>3.9.2</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
