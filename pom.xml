@@ -101,7 +101,7 @@
 		<dependency>
 			<groupId>com.capillary.commons</groupId>
 			<artifactId>thrift-ifaces-fb-gateway</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.0</version>
 			<scope>compile</scope>
 		</dependency>
 
@@ -157,7 +157,7 @@
 		<dependency>
 			<groupId>com.capillary.service-discovery</groupId>
 			<artifactId>service-discovery</artifactId>
-			<version>3.9.1-SNAPSHOT</version>
+			<version>3.8.3</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-api</artifactId>
