@@ -42,7 +42,7 @@ public class FacebookGenericMessageTest extends FacebookMessageStub {
                 false,
                 FacebookClient
                         .getFacebookServiceClient()
-                        .sendGenericMessage("1307450979317568", genericMessage, "127834024337613", 0,"")
+                        .sendGenericMessage("1307450979317568", genericMessage, "127834024337613", 0, "")
                         .toString()
                         .equals("{}"));
     }

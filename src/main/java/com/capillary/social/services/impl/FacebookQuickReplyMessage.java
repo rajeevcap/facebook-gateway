@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.capillary.social.QuickReply;
 import com.capillary.social.QuickReplyMessage;
@@ -24,15 +25,12 @@ import com.capillary.social.validator.QuickReplyMessageTextValidator;
 import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 
+@Component
 public class FacebookQuickReplyMessage extends FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookQuickReplyMessage.class);
 
     private QuickReplyMessage quickReplyMessage;
-
-    public FacebookQuickReplyMessage(QuickReplyMessage quickReplyMessage) {
-        this.quickReplyMessage = quickReplyMessage;
-    }
 
     @Override
     public boolean validateMessage() {
@@ -78,6 +76,10 @@ public class FacebookQuickReplyMessage extends FacebookMessage {
         if (!Strings.isNullOrEmpty(quickReply.imageUrl))
             quickReplyJson.addProperty(IMAGE_URL, quickReply.imageUrl);
         return quickReplyJson;
+    }
+
+    public void setQuickReplyMessage(QuickReplyMessage quickReplyMessage) {
+        this.quickReplyMessage = quickReplyMessage;
     }
 
 }

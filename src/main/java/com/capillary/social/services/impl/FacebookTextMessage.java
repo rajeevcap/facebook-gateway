@@ -7,21 +7,20 @@ import static com.capillary.social.services.impl.FacebookConstants.TEXT;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import com.capillary.social.TextMessage;
 import com.capillary.social.services.api.FacebookMessage;
 import com.capillary.social.validator.TextMessageTextValidator;
 import com.google.gson.JsonObject;
 
+@Component
 public class FacebookTextMessage extends FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookTextMessage.class);
 
     private TextMessage textMessage;
-
-    public FacebookTextMessage(TextMessage textMessage) {
-        this.textMessage = textMessage;
-    }
 
     @Override
     public boolean validateMessage() {
@@ -41,6 +40,14 @@ public class FacebookTextMessage extends FacebookMessage {
         messagePayload.add(MESSAGE, messageEntry);
         return messagePayload;
 
+    }
+
+    public TextMessage getTextMessage() {
+        return textMessage;
+    }
+
+    public void setTextMessage(TextMessage textMessage) {
+        this.textMessage = textMessage;
     }
 
 }

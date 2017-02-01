@@ -44,7 +44,7 @@ public class FacebookAccountDetails {
                     AuthenticationKey.generateKey(com.capillary.common.crypto.AuthenticationKey.Module.CAMPAIGN_SHARD));
             RPCService.setHttpHeaders(httpClient, headers);
 
-            accountDetails = httpClient.getAccountDetailsByChannel((int)orgId, pageId, "FACEBOOK");
+            accountDetails = httpClient.getAccountDetailsByChannel((int) orgId, pageId, "FACEBOOK");
 
         } catch (Exception e) {
             logger.error("Unable to connect to the shopbook thrift service", e);

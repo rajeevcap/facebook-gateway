@@ -35,7 +35,7 @@ public class ElementListCountValidator {
                 isValid &= elementListSize >= LIST_MESSAGE_ELEMENT_LIST_MIN_SIZE
                            && elementListSize <= LIST_MESSAGE_ELEMENT_LIST_MAX_SIZE;
                 break;
-            default :
+            default:
                 isValid = false;
                 logger.error("invalid message type");
                 break;

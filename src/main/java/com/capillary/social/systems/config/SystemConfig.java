@@ -8,25 +8,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class SystemConfig {
 
-	
-	private static final Logger logger = LoggerFactory
-			.getLogger(SystemConfig.class);
-	// ======= Sytem Running Mode Config ======//
-	@Value("${facebook.running.mode}")
-	public String RUNNING_MODE = "prod";
-	
-	// =============== Facebook Level Configs ================//
-	@Value("${facebook.thrift.timeout?:1}")
-	public int FACEBOOK_TIME_OUT = 10;
+    private static final Logger logger = LoggerFactory.getLogger(SystemConfig.class);
+    // ======= Sytem Running Mode Config ======//
+    @Value("${facebook.running.mode}")
+    public String RUNNING_MODE = "prod";
 
-	@Value("${facebook.thrift.service.max.thread?:10}")
-	public int SERVICE_MAX_THREAD = 20;
+    // =============== Facebook Level Configs ================//
+    @Value("${facebook.thrift.timeout?:1}")
+    public int FACEBOOK_TIME_OUT = 10;
 
-	@Value("${facebook.recv.time.out?:10}")
-	public int FACEBOOK_RECV_TIME_OUT = 30;
+    @Value("${facebook.thrift.service.max.thread?:10}")
+    public int SERVICE_MAX_THREAD = 20;
 
-	public SystemConfig() {
-		super();
-		logger.info("asda");
-	}
+    @Value("${facebook.recv.time.out?:10}")
+    public int FACEBOOK_RECV_TIME_OUT = 30;
+
+    public SystemConfig() {
+        super();
+        logger.info("asda");
+    }
 }

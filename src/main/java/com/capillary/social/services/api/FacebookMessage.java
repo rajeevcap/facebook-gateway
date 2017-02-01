@@ -3,6 +3,7 @@ package com.capillary.social.services.api;
 import static com.capillary.social.GatewayResponseType.failed;
 import static com.capillary.social.GatewayResponseType.invalid;
 import static com.capillary.social.GatewayResponseType.sent;
+import static com.capillary.social.services.impl.FacebookConstants.MESSAGING_RESPONSE_TIME_LIMIT;
 import static com.capillary.social.services.impl.FacebookConstants.SEND_MESSAGE_URL;
 import in.capillary.ifaces.Shopbook.AccountDetails;
 
@@ -10,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -20,13 +22,18 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.capillary.social.GatewayResponse;
-import com.capillary.social.GatewayResponseType;
+import com.capillary.social.dao.impl.ChatDaoImpl;
+import com.capillary.social.data.manager.DataSourceFactory;
 import com.capillary.social.library.api.FacebookAccountDetails;
+import com.capillary.social.model.Chat;
+import com.capillary.social.model.Chat.ChatStatus;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
+@Service
 public abstract class FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookMessage.class);
@@ -35,17 +42,24 @@ public abstract class FacebookMessage {
 
     public abstract boolean validateMessage();
 
+    @Autowired
+    ChatDaoImpl chatDaoImpl;
+
+    @Autowired
+    DataSourceFactory dataSourceFactory;
+
     @SuppressWarnings("finally")
     public GatewayResponse send(String recipientId, String pageId, long orgId) {
         GatewayResponse gtwResponse = new GatewayResponse();
         try {
-            boolean isValid = validateMessage();
+            boolean isValid = checkUserPolicy(recipientId, pageId) && validateMessage();
             if (!isValid) {
                 gtwResponse.gatewayResponseType = invalid;
                 return gtwResponse;
             }
             JsonObject payload = messagePayload(recipientId);
-            if(payload != null) gtwResponse.message = payload.toString();
+            if (payload != null)
+                gtwResponse.message = payload.toString();
             logger.info("final message payload : " + payload);
             HttpResponse response = sendMessage(pageId, orgId, payload);
             BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
@@ -67,12 +81,13 @@ public abstract class FacebookMessage {
         } catch (Exception e) {
             logger.error("exception in sending message", e);
         } finally {
+            logger.info("send response : " + gtwResponse);
             return gtwResponse;
         }
     }
 
-    protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload) throws UnsupportedEncodingException,
-            IOException, ClientProtocolException {
+    protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload)
+            throws UnsupportedEncodingException, IOException, ClientProtocolException {
         String accessToken = getAccessToken(orgId, pageId);
 
         String url = SEND_MESSAGE_URL + accessToken;
@@ -92,9 +107,20 @@ public abstract class FacebookMessage {
         FacebookAccountDetails facebookAccountDetails = new FacebookAccountDetails();
         AccountDetails result = facebookAccountDetails.getAccountDetails(orgId, pageId);
         String accessToken = result.pageAccessToken;
-        //String accessToken = "EAARlLJ0mBswBAJ3AywiSIoVRAeOEdZBZBxBLOMGagzbY8s7SncAjmC9j0ZAgF7MDvLXW8qTadZCDJOJl3hAHZB1wmWQqPktJVDMZC12WNDuAXhi5qvd05YiPzxQ0QQEg7jLOsGWMoWkLinTyPxT7ZCZB0qxASdSxisekQsUiK47E7wZDZD";
+        //         String accessToken = "EAARlLJ0mBswBAJ3AywiSIoVRAeOEdZBZBxBLOMGagzbY8s7SncAjmC9j0ZAgF7MDvLXW8qTadZCDJOJl3hAHZB1wmWQqPktJVDMZC12WNDuAXhi5qvd05YiPzxQ0QQEg7jLOsGWMoWkLinTyPxT7ZCZB0qxASdSxisekQsUiK47E7wZDZD";
         return accessToken;
+    }
 
+    protected boolean checkUserPolicy(String recipientId, String pageId) {
+        logger.info("inside checking user policy method");
+        Chat chat = chatDaoImpl.findChat(recipientId, pageId, ChatStatus.RECEIVED);
+        long timeDifference = new Date().getTime() - chat.getReceivedTime().getTime();
+        logger.info("last chat : {} by user was {} milliseconds ago", chat, timeDifference);
+        if (chat != null && timeDifference > MESSAGING_RESPONSE_TIME_LIMIT) {
+            logger.info("last message sent by user was more than 24 hours ago");
+            return false;
+        }
+        return true;
     }
 
 }
