@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.capillary.social.Button;
 import com.capillary.social.ButtonField;
@@ -36,15 +37,12 @@ import com.capillary.social.validator.ElementListValidator;
 import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 
+@Component
 public class FacebookListMessage extends FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookListMessage.class);
 
     private ListMessage listMessage;
-
-    public FacebookListMessage(ListMessage listMessage) {
-        this.listMessage = listMessage;
-    }
 
     @Override
     public boolean validateMessage() {
@@ -138,6 +136,10 @@ public class FacebookListMessage extends FacebookMessage {
             buttonJson.addProperty(entry.getKey().toString(), entry.getValue());
         }
         return buttonJson;
+    }
+
+    public void setListMessage(ListMessage listMessage) {
+        this.listMessage = listMessage;
     }
 
 }

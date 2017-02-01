@@ -42,6 +42,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.capillary.social.Adjustment;
 import com.capillary.social.ReceiptElement;
@@ -52,16 +53,13 @@ import com.google.common.base.Strings;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+@Component
 public class FacebookReceiptMessage extends FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookReceiptMessage.class);
 
     private ReceiptMessage receiptMessage;
 
-    public FacebookReceiptMessage(ReceiptMessage receiptMessage) {
-        this.receiptMessage = receiptMessage;
-    }
-    
     private boolean isNotNull(Object obj) {
         return obj != null;
     }
@@ -180,6 +178,10 @@ public class FacebookReceiptMessage extends FacebookMessage {
         if (adjustment.amount >= 0)
             adjustmentJson.addProperty(AMOUNT, adjustment.amount);
         return adjustmentJson;
+    }
+
+    public void setReceiptMessage(ReceiptMessage receiptMessage) {
+        this.receiptMessage = receiptMessage;
     }
 
 }

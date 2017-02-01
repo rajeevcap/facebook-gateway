@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 public class FacebookEntityGenerator {
-    
+
     public static String generateRandomString(int length) {
         String str = new String();
-        for(int i = 0; i < length; i++) str += 'a';
-        return str;        
+        for (int i = 0; i < length; i++)
+            str += 'a';
+        return str;
     }
 
     public static TextMessage generateTextMessage() {
@@ -96,7 +97,7 @@ public class FacebookEntityGenerator {
         quickReplyMessage.text = "Please share your location";
         return quickReplyMessage;
     }
-    
+
     public static ReceiptMessage generateReceiptMessage() {
         ReceiptMessage receiptMessage = new ReceiptMessage();
         Summary summary = new Summary();
@@ -106,10 +107,10 @@ public class FacebookEntityGenerator {
         receiptMessage.paymentMethod = "Kotak Credit Card";
         receiptMessage.timestamp = "20161226101010";
         summary.totalCost = 10;
-        receiptMessage.summary = summary; 
+        receiptMessage.summary = summary;
         return receiptMessage;
     }
-    
+
     public static Address generateAddress() {
         Address address = new Address();
         address.streetOne = "street1";
@@ -120,26 +121,26 @@ public class FacebookEntityGenerator {
         address.country = "country";
         return address;
     }
-    
+
     public static List<ReceiptElement> generateReceiptElementList() {
         List<ReceiptElement> receiptElementList = new ArrayList<ReceiptElement>();
         receiptElementList.add(generateReceiptElement());
         return receiptElementList;
     }
-    
+
     public static ReceiptElement generateReceiptElement() {
         ReceiptElement receiptElement = new ReceiptElement();
         receiptElement.title = "receipt element title";
         receiptElement.price = 100;
         return receiptElement;
     }
-    
+
     public static Summary generateSummary() {
         Summary summary = new Summary();
         summary.totalCost = 100;
         return summary;
     }
-    
+
     public static ListMessage generateListMessage() {
         ListMessage listMessage = new ListMessage();
         List<Element> elementList = new ArrayList<Element>();

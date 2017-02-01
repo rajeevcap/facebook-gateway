@@ -36,25 +36,35 @@ public class FacebookMessageStub {
 
     protected class FacebookTextMessageStub extends FacebookTextMessage {
         public FacebookTextMessageStub(TextMessage textMessage) {
-            super(textMessage);
+            this.setTextMessage(textMessage);
         }
 
         @Override
         protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload)
                 throws UnsupportedEncodingException, IOException, ClientProtocolException {
             return getDummyResponse(pageId, orgId, payload);
+        }
+
+        @Override
+        protected boolean checkUserPolicy(String recipientId, String pageId) {
+            return true;
         }
     }
 
     protected class FacebookButtonMessageStub extends FacebookButtonMessage {
         public FacebookButtonMessageStub(ButtonMessage buttonMessage) {
-            super(buttonMessage);
+            this.setButtonMessage(buttonMessage);
         }
 
         @Override
         protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload)
                 throws UnsupportedEncodingException, IOException, ClientProtocolException {
             return getDummyResponse(pageId, orgId, payload);
+        }
+
+        @Override
+        protected boolean checkUserPolicy(String recipientId, String pageId) {
+            return true;
         }
 
     }
@@ -62,13 +72,18 @@ public class FacebookMessageStub {
     protected class FacebookGenericMessageStub extends FacebookGenericMessage {
 
         public FacebookGenericMessageStub(GenericMessage genericMessage) {
-            super(genericMessage);
+            this.setGenericMessage(genericMessage);
         }
 
         @Override
         protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload)
                 throws UnsupportedEncodingException, IOException, ClientProtocolException {
             return getDummyResponse(pageId, orgId, payload);
+        }
+
+        @Override
+        protected boolean checkUserPolicy(String recipientId, String pageId) {
+            return true;
         }
 
     }
@@ -76,39 +91,54 @@ public class FacebookMessageStub {
     protected class FacebookQuickReplyMessageStub extends FacebookQuickReplyMessage {
 
         public FacebookQuickReplyMessageStub(QuickReplyMessage quickReplyMessage) {
-            super(quickReplyMessage);
+            this.setQuickReplyMessage(quickReplyMessage);
         }
 
         @Override
         protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload)
                 throws UnsupportedEncodingException, IOException, ClientProtocolException {
             return getDummyResponse(pageId, orgId, payload);
+        }
+
+        @Override
+        protected boolean checkUserPolicy(String recipientId, String pageId) {
+            return true;
         }
     }
 
     protected class FacebookReceiptMessageStub extends FacebookReceiptMessage {
 
         public FacebookReceiptMessageStub(ReceiptMessage receiptMessage) {
-            super(receiptMessage);
+            this.setReceiptMessage(receiptMessage);
         }
 
         @Override
         protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload)
                 throws UnsupportedEncodingException, IOException, ClientProtocolException {
             return getDummyResponse(pageId, orgId, payload);
+        }
+
+        @Override
+        protected boolean checkUserPolicy(String recipientId, String pageId) {
+            return true;
         }
     }
 
     protected class FacebookListMessageStub extends FacebookListMessage {
 
         public FacebookListMessageStub(ListMessage listMessage) {
-            super(listMessage);
+            this.setListMessage(listMessage);
         }
 
         @Override
         protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload)
                 throws UnsupportedEncodingException, IOException, ClientProtocolException {
             return getDummyResponse(pageId, orgId, payload);
+        }
+
+        @Override
+        protected boolean checkUserPolicy(String recipientId, String pageId) {
+            return true;
         }
     }
 

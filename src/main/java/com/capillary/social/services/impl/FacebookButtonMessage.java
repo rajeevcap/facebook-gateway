@@ -19,25 +19,23 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.capillary.social.Button;
 import com.capillary.social.ButtonField;
 import com.capillary.social.ButtonMessage;
 import com.capillary.social.MessageType;
 import com.capillary.social.services.api.FacebookMessage;
-import com.capillary.social.validator.ButtonMessageTextValidator;
 import com.capillary.social.validator.ButtonListValidator;
+import com.capillary.social.validator.ButtonMessageTextValidator;
 import com.google.gson.JsonObject;
 
+@Component
 public class FacebookButtonMessage extends FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookButtonMessage.class);
 
     private ButtonMessage buttonMessage;
-
-    public FacebookButtonMessage(ButtonMessage buttonMessage) {
-        this.buttonMessage = buttonMessage;
-    }
 
     @Override
     public boolean validateMessage() {
@@ -90,5 +88,9 @@ public class FacebookButtonMessage extends FacebookMessage {
             buttonJson.addProperty(entry.getKey().toString(), entry.getValue());
         }
         return buttonJson;
+    }
+
+    public void setButtonMessage(ButtonMessage buttonMessage) {
+        this.buttonMessage = buttonMessage;
     }
 }

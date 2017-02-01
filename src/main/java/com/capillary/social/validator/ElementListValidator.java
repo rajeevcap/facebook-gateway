@@ -17,21 +17,21 @@ public class ElementListValidator {
     private static Logger logger = LoggerFactory.getLogger(ElementListValidator.class);
 
     private List<Element> elementList;
-    
+
     private MessageType messageType;
 
     public ElementListValidator(List<Element> elementList, MessageType messageType) {
         this.elementList = elementList;
         this.messageType = messageType;
     }
-    
+
     public boolean isNotNull(Object obj) {
         return obj != null;
     }
 
     public boolean validate() {
         boolean isValid = true;
-        if(!new ElementListCountValidator(elementList.size(), messageType).validate()) {
+        if (!new ElementListCountValidator(elementList.size(), messageType).validate()) {
             logger.error("element list count " + elementList.size() + " is invalid for " + messageType);
             isValid = false;
         }

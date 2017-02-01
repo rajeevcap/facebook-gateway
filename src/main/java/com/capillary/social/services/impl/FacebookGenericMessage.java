@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.capillary.social.Button;
 import com.capillary.social.ButtonField;
@@ -34,15 +35,12 @@ import com.capillary.social.validator.ElementListValidator;
 import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 
+@Component
 public class FacebookGenericMessage extends FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookGenericMessage.class);
 
     private GenericMessage genericMessage;
-
-    public FacebookGenericMessage(GenericMessage genericMessage) {
-        this.genericMessage = genericMessage;
-    }
 
     private boolean isNotNull(Object obj) {
         return obj != null;
@@ -130,4 +128,9 @@ public class FacebookGenericMessage extends FacebookMessage {
         }
         return buttonJson;
     }
+
+    public void setGenericMessage(GenericMessage genericMessage) {
+        this.genericMessage = genericMessage;
+    }
+
 }

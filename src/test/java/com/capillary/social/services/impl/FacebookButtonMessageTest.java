@@ -12,14 +12,11 @@ import org.slf4j.LoggerFactory;
 
 import com.capillary.social.ButtonMessage;
 import com.capillary.social.FacebookClient;
-import com.capillary.social.FacebookEntityGenerator;
 import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookMessageStub;
-import com.capillary.social.TextMessage;
-import com.capillary.social.external.impl.FacebookServiceListener;
 
 public class FacebookButtonMessageTest extends FacebookMessageStub {
-    
+
     private static Logger logger = LoggerFactory.getLogger(FacebookButtonMessageTest.class);
 
     @Ignore
@@ -49,13 +46,11 @@ public class FacebookButtonMessageTest extends FacebookMessageStub {
     @Test
     public void shouldBeValidWhenMessageIsSuccessfullySent() throws FacebookException, TException {
         ButtonMessage buttonMessage = generateButtonMessage();
-        TextMessage textMessage = FacebookEntityGenerator.generateTextMessage();
-        FacebookClient.getFacebookServiceClient().sendButtonMessage("1307450979317568", buttonMessage, "127834024337613", 0,"gvbj");
+        FacebookClient.getFacebookServiceClient().sendButtonMessage("1307450979317568", buttonMessage,
+                "127834024337613", 0, "gvbj");
         Assert.assertEquals(
                 true,
-                FacebookClient
-                        .getFacebookServiceClient()
-                        .sendButtonMessage("1307450979317568", buttonMessage, "127834024337613", 0,"gvbj")
-                        .gatewayResponseType == sent);
+                FacebookClient.getFacebookServiceClient().sendButtonMessage("1307450979317568", buttonMessage,
+                        "127834024337613", 0, "gvbj").gatewayResponseType == sent);
     }
 }
