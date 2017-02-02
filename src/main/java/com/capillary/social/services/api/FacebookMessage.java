@@ -3,6 +3,7 @@ package com.capillary.social.services.api;
 import static com.capillary.social.GatewayResponseType.failed;
 import static com.capillary.social.GatewayResponseType.invalid;
 import static com.capillary.social.GatewayResponseType.sent;
+import static com.capillary.social.MessageType.receiptMessage;
 import static com.capillary.social.services.impl.FacebookConstants.MESSAGING_RESPONSE_TIME_LIMIT;
 import static com.capillary.social.services.impl.FacebookConstants.SEND_MESSAGE_URL;
 import in.capillary.ifaces.Shopbook.AccountDetails;
@@ -11,7 +12,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -26,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.capillary.social.GatewayResponse;
+import com.capillary.social.MessageType;
 import com.capillary.social.dao.impl.ChatDaoImpl;
 import com.capillary.social.data.manager.DataSourceFactory;
 import com.capillary.social.library.api.FacebookAccountDetails;
@@ -42,6 +47,8 @@ public abstract class FacebookMessage {
 
     public abstract boolean validateMessage();
 
+    private List<MessageType> skipMessageTypesForUserPolicy = new ArrayList<MessageType>(Arrays.asList(receiptMessage));
+
     @Autowired
     ChatDaoImpl chatDaoImpl;
 
@@ -49,17 +56,18 @@ public abstract class FacebookMessage {
     DataSourceFactory dataSourceFactory;
 
     @SuppressWarnings("finally")
-    public GatewayResponse send(String recipientId, String pageId, long orgId) {
+    public GatewayResponse send(String recipientId, String pageId, long orgId, MessageType messageType) {
         GatewayResponse gtwResponse = new GatewayResponse();
+        gtwResponse.response = "{}";
         try {
-            boolean isMessageSendingPermitted = checkUserPolicy(recipientId, pageId);
-            if(!isMessageSendingPermitted) {
+            boolean isMessageSendingPermitted = checkUserPolicy(recipientId, pageId, messageType);
+            if (!isMessageSendingPermitted) {
                 gtwResponse.gatewayResponseType = invalid;
-                gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to user policy violation\"}}";
+                gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to user policy violation, last message by user was more than 24 hours ago\"}}";
                 return gtwResponse;
             }
             boolean isMessageContentValid = validateMessage();
-            if(!isMessageContentValid) {
+            if (!isMessageContentValid) {
                 gtwResponse.gatewayResponseType = invalid;
                 gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to content policy violation\"}}";
                 return gtwResponse;
@@ -118,8 +126,13 @@ public abstract class FacebookMessage {
         return accessToken;
     }
 
-    protected boolean checkUserPolicy(String recipientId, String pageId) {
+    protected boolean checkUserPolicy(String recipientId, String pageId, MessageType messageType) {
         logger.info("inside checking user policy method");
+        for (MessageType msgType : skipMessageTypesForUserPolicy) {
+            if (messageType == msgType) {
+                return true;
+            }
+        }
         Chat chat = chatDaoImpl.findChat(recipientId, pageId, ChatStatus.RECEIVED);
         long timeDifference = new Date().getTime() - chat.getReceivedTime().getTime();
         logger.info("last chat : {} by user was {} milliseconds ago", chat, timeDifference);

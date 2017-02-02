@@ -12,6 +12,7 @@ import com.capillary.social.ButtonMessage;
 import com.capillary.social.FacebookClient;
 import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookMessageStub;
+import com.capillary.social.MessageType;
 
 public class FacebookButtonMessageTest extends FacebookMessageStub {
 
@@ -20,7 +21,8 @@ public class FacebookButtonMessageTest extends FacebookMessageStub {
     public void shouldBeInvalidWhenNoButtonIsPresent() {
         ButtonMessage buttonMessage = generateButtonMessage();
         buttonMessage.buttonList.clear();
-        Assert.assertEquals(false, getValidation(new FacebookButtonMessageStub(buttonMessage)));
+        Assert.assertEquals(false,
+                getValidation(new FacebookButtonMessageStub(buttonMessage), MessageType.buttonMessage));
     }
 
     @Ignore
@@ -28,14 +30,16 @@ public class FacebookButtonMessageTest extends FacebookMessageStub {
     public void shouldBeInvalidWhenMessageContentIsInvalid() {
         ButtonMessage buttonMessage = generateButtonMessage();
         buttonMessage.text = null;
-        Assert.assertEquals(false, getValidation(new FacebookButtonMessageStub(buttonMessage)));
+        Assert.assertEquals(false,
+                getValidation(new FacebookButtonMessageStub(buttonMessage), MessageType.buttonMessage));
     }
 
     @Ignore
     @Test
     public void shouldBeValidWhenMessageContentIsValidAndResponseIsOK() {
         ButtonMessage buttonMessage = generateButtonMessage();
-        Assert.assertEquals(true, getValidation(new FacebookButtonMessageStub(buttonMessage)));
+        Assert.assertEquals(true,
+                getValidation(new FacebookButtonMessageStub(buttonMessage), MessageType.buttonMessage));
     }
 
     @Ignore("test by actually sending message")

@@ -6,6 +6,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import com.capillary.social.FacebookMessageStub;
+import com.capillary.social.MessageType;
 import com.capillary.social.QuickReplyMessage;
 
 public class FacebookQuickReplyMessageTest extends FacebookMessageStub {
@@ -14,28 +15,32 @@ public class FacebookQuickReplyMessageTest extends FacebookMessageStub {
     public void shouldBeInvalidWhenMessageTextIsNull() {
         QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         quickReplyMessage.text = null;
-        Assert.assertEquals(false, getValidation(new FacebookQuickReplyMessageStub(quickReplyMessage)));
+        Assert.assertEquals(false,
+                getValidation(new FacebookQuickReplyMessageStub(quickReplyMessage), MessageType.quickReplyMessage));
     }
 
     @Test
     public void shouldBeInvalidWhenMessageTextIsEmpty() {
         QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         quickReplyMessage.text = "";
-        Assert.assertEquals(false, getValidation(new FacebookQuickReplyMessageStub(quickReplyMessage)));
+        Assert.assertEquals(false,
+                getValidation(new FacebookQuickReplyMessageStub(quickReplyMessage), MessageType.quickReplyMessage));
     }
 
     @Test
     public void shouldBeInvalidWhenMessageQuickReplyListIsEmpty() {
         QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         quickReplyMessage.quickReplyList.clear();
-        Assert.assertEquals(false, getValidation(new FacebookQuickReplyMessageStub(quickReplyMessage)));
+        Assert.assertEquals(false,
+                getValidation(new FacebookQuickReplyMessageStub(quickReplyMessage), MessageType.quickReplyMessage));
     }
 
     @Test
     public void shouldBeInvalidWhenQuickReplyContentIsInvalid() {
         QuickReplyMessage quickReplyMessage = generateQuickReplyTextMessage();
         quickReplyMessage.quickReplyList.get(0).title = null;
-        Assert.assertEquals(false, getValidation(new FacebookQuickReplyMessageStub(quickReplyMessage)));
+        Assert.assertEquals(false,
+                getValidation(new FacebookQuickReplyMessageStub(quickReplyMessage), MessageType.quickReplyMessage));
     }
 
 }

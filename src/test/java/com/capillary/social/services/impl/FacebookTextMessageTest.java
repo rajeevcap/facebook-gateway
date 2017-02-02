@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.capillary.social.FacebookClient;
 import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookMessageStub;
+import com.capillary.social.MessageType;
 import com.capillary.social.TextMessage;
 
 public class FacebookTextMessageTest extends FacebookMessageStub {
@@ -23,7 +24,7 @@ public class FacebookTextMessageTest extends FacebookMessageStub {
     public void shouldBeInvalidWhenTextIsNotPresent() throws FacebookException, TException {
         TextMessage textMessage = generateTextMessage();
         textMessage.text = null;
-        Assert.assertEquals(false, getValidation(new FacebookTextMessageStub(textMessage)));
+        Assert.assertEquals(false, getValidation(new FacebookTextMessageStub(textMessage), MessageType.textMessage));
     }
 
     @Ignore

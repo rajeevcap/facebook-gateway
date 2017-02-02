@@ -6,6 +6,7 @@ import com.capillary.social.FacebookService.Iface;
 import com.capillary.social.GatewayResponse;
 import com.capillary.social.GenericMessage;
 import com.capillary.social.ListMessage;
+import com.capillary.social.MessageType;
 import com.capillary.social.QuickReplyMessage;
 import com.capillary.social.ReceiptMessage;
 import com.capillary.social.TextMessage;
@@ -54,8 +55,8 @@ public class FacebookServiceListener implements Iface {
         MDC.put("userID", "USER_ID_" + recipientId);
         GatewayResponse gtwResponse = null;
         try {
-            FacebookMessage facebookMessage = facebookMessageHandler.getFacebookTextMessage(textMessage);
-            gtwResponse = facebookMessage.send(recipientId, senderId, orgId);
+            FacebookMessage facebookTextMessage = facebookMessageHandler.getFacebookTextMessage(textMessage);
+            gtwResponse = facebookTextMessage.send(recipientId, senderId, orgId, MessageType.textMessage);
 
         } catch (Exception e) {
             logger.error("exception occured in sending text message", e);
@@ -86,7 +87,7 @@ public class FacebookServiceListener implements Iface {
         GatewayResponse gtwResponse = null;
         try {
             FacebookMessage facebookButtonMessage = facebookMessageHandler.getFacebookButtonMessage(buttonMessage);
-            gtwResponse = facebookButtonMessage.send(recipientId, senderId, orgId);
+            gtwResponse = facebookButtonMessage.send(recipientId, senderId, orgId, MessageType.buttonMessage);
         } catch (Exception e) {
             logger.error("exception occured in sending button message", e);
         } finally {
@@ -116,7 +117,7 @@ public class FacebookServiceListener implements Iface {
         GatewayResponse gtwResponse = null;
         try {
             FacebookMessage facebookGenericMessage = facebookMessageHandler.getFacebookGenericMessage(genericMessage);
-            gtwResponse = facebookGenericMessage.send(recipientId, senderId, orgId);
+            gtwResponse = facebookGenericMessage.send(recipientId, senderId, orgId, MessageType.genericMessage);
         } catch (Exception e) {
             logger.error("exception occured in sending generic message", e);
         } finally {
@@ -147,7 +148,7 @@ public class FacebookServiceListener implements Iface {
         try {
             FacebookMessage facebookQuickReplyMessage = facebookMessageHandler
                     .getFacebookQuickReplyMessage(quickReplyMessage);
-            gtwResponse = facebookQuickReplyMessage.send(recipientId, senderId, orgId);
+            gtwResponse = facebookQuickReplyMessage.send(recipientId, senderId, orgId, MessageType.quickReplyMessage);
         } catch (Exception e) {
             logger.error("exception occured in sending quick reply message", e);
         } finally {
@@ -177,7 +178,7 @@ public class FacebookServiceListener implements Iface {
         GatewayResponse gtwResponse = null;
         try {
             FacebookMessage facebookReceiptMessage = facebookMessageHandler.getFacebookReceiptMessage(receiptMessage);
-            gtwResponse = facebookReceiptMessage.send(recipientId, senderId, orgId);
+            gtwResponse = facebookReceiptMessage.send(recipientId, senderId, orgId, MessageType.receiptMessage);
         } catch (Exception e) {
             logger.error("exception occured in sending receipt message", e);
         } finally {
@@ -207,7 +208,7 @@ public class FacebookServiceListener implements Iface {
         GatewayResponse gtwResponse = null;
         try {
             FacebookMessage facebookListMessage = facebookMessageHandler.getFacebookListMessage(listMessage);
-            gtwResponse = facebookListMessage.send(recipientId, senderId, orgId);
+            gtwResponse = facebookListMessage.send(recipientId, senderId, orgId, MessageType.listMessage);
         } catch (Exception e) {
             logger.error("exception occured in sending list ", e);
         } finally {
