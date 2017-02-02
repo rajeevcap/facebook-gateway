@@ -23,7 +23,7 @@ public class ReceiptMessageValidator {
         boolean isValid = true;
         isValid &= validateNotNullOrEmpty(receiptMessage.recipientName);
         isValid &= new ReceiptOrderNumberValidator(receiptMessage.orderNumber).validate();
-        isValid &= validateNotNullOrEmpty(receiptMessage.currency);
+        isValid &= new CountryCodeValidator(receiptMessage.currency).validate();
         isValid &= validateNotNullOrEmpty(receiptMessage.paymentMethod);
         if (isNotNull(receiptMessage.receiptElementList))
             isValid &= new ReceiptElementValidator(receiptMessage.receiptElementList).validate();
