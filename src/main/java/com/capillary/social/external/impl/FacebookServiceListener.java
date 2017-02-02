@@ -11,18 +11,11 @@ import com.capillary.social.ReceiptMessage;
 import com.capillary.social.TextMessage;
 import com.capillary.social.handler.FacebookMessageHandler;
 import com.capillary.social.services.api.FacebookMessage;
-import com.capillary.social.services.impl.FacebookGenericMessage;
-import com.capillary.social.services.impl.FacebookListMessage;
-import com.capillary.social.services.impl.FacebookQuickReplyMessage;
-import com.capillary.social.services.impl.FacebookReceiptMessage;
-import com.capillary.social.services.impl.FacebookButtonMessage;
-import com.capillary.social.services.impl.FacebookTextMessage;
 
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class FacebookServiceListener implements Iface {
 

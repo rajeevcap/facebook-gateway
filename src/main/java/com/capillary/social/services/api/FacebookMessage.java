@@ -52,9 +52,16 @@ public abstract class FacebookMessage {
     public GatewayResponse send(String recipientId, String pageId, long orgId) {
         GatewayResponse gtwResponse = new GatewayResponse();
         try {
-            boolean isValid = checkUserPolicy(recipientId, pageId) && validateMessage();
-            if (!isValid) {
+            boolean isMessageSendingPermitted = checkUserPolicy(recipientId, pageId);
+            if(!isMessageSendingPermitted) {
                 gtwResponse.gatewayResponseType = invalid;
+                gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to user policy violation\"}}";
+                return gtwResponse;
+            }
+            boolean isMessageContentValid = validateMessage();
+            if(!isMessageContentValid) {
+                gtwResponse.gatewayResponseType = invalid;
+                gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to content policy violation\"}}";
                 return gtwResponse;
             }
             JsonObject payload = messagePayload(recipientId);
