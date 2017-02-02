@@ -12,7 +12,7 @@ public interface ChatThreadDao {
     public ChatThread insert(ChatThread chatThread);
 
     public void update(ChatThread chatThread);
-    
+
     public void updateLastUpdatedTime(int id);
 
     public ChatThread findById(int id);

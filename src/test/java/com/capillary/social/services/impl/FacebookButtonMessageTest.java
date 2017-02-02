@@ -7,8 +7,6 @@ import junit.framework.Assert;
 import org.apache.thrift.TException;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.capillary.social.ButtonMessage;
 import com.capillary.social.FacebookClient;
@@ -16,8 +14,6 @@ import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookMessageStub;
 
 public class FacebookButtonMessageTest extends FacebookMessageStub {
-
-    private static Logger logger = LoggerFactory.getLogger(FacebookButtonMessageTest.class);
 
     @Ignore
     @Test

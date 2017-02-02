@@ -7,11 +7,8 @@ import java.util.Date;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FacebookGatewayUtils {
-    private static Logger logger = LoggerFactory.getLogger(FacebookGatewayUtils.class);
     public static final String REQUEST_ORG_ID_MDC = "requestOrgId";
     public static final String REQUEST_ID_MDC = "requestId";
     public static final String REQUEST_TYPE_MDC = "requestType";

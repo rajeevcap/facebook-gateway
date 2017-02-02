@@ -7,7 +7,6 @@ import static com.capillary.social.services.impl.FacebookConstants.TEXT;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.capillary.social.TextMessage;
