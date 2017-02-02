@@ -12,6 +12,7 @@ import com.capillary.social.FacebookClient;
 import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookMessageStub;
 import com.capillary.social.ListMessage;
+import com.capillary.social.MessageType;
 
 public class FacebookListMessageValidatorTest extends FacebookMessageStub {
 
@@ -19,7 +20,7 @@ public class FacebookListMessageValidatorTest extends FacebookMessageStub {
     public void shouldBeInvalidWhenElementListSizeIsLessThanMinLimit() { // < 2
         ListMessage listMessage = generateListMessage();
         listMessage.elementList.remove(listMessage.elementList.size() - 1);
-        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage)));
+        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage), MessageType.listMessage));
     }
 
     @Test
@@ -27,28 +28,28 @@ public class FacebookListMessageValidatorTest extends FacebookMessageStub {
         ListMessage listMessage = generateListMessage();
         for (int i = 0; i < 3; i++)
             listMessage.elementList.add(listMessage.elementList.get(0));
-        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage)));
+        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage), MessageType.listMessage));
     }
 
     @Test
     public void shouldBeInvalidWhenAnyElementHasMoreThanOneButton() {
         ListMessage listMessage = generateListMessage();
         listMessage.elementList.get(0).buttonList.add(generateButton());
-        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage)));
+        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage), MessageType.listMessage));
     }
 
     @Test
     public void shouldBeInvalidWhenPayloadHasMoreThanOneButton() {
         ListMessage listMessage = generateListMessage();
         listMessage.buttonList.add(generateButton());
-        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage)));
+        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage), MessageType.listMessage));
     }
 
     @Test
     public void shouldBeInvalidWhenTopElementStyleIsLargeAndImageUrlForFirstElementIsNull() {
         ListMessage listMessage = generateListMessage();
         listMessage.elementList.get(0).imageUrl = null;
-        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage)));
+        Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage), MessageType.listMessage));
     }
 
     @Ignore

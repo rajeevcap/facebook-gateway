@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import com.capillary.social.FacebookEntityGenerator;
 import com.capillary.social.FacebookMessageStub;
+import com.capillary.social.MessageType;
 import com.capillary.social.ReceiptMessage;
 
 public class AddressValidatorTest extends FacebookMessageStub {
@@ -16,7 +17,8 @@ public class AddressValidatorTest extends FacebookMessageStub {
         ReceiptMessage receiptMessage = generateReceiptMessage();
         receiptMessage.address = FacebookEntityGenerator.generateAddress();
         receiptMessage.address.streetOne = null;
-        Assert.assertEquals(false, getValidation(new FacebookReceiptMessageStub(receiptMessage)));
+        Assert.assertEquals(false,
+                getValidation(new FacebookReceiptMessageStub(receiptMessage), MessageType.receiptMessage));
     }
 
     @Test
@@ -24,7 +26,8 @@ public class AddressValidatorTest extends FacebookMessageStub {
         ReceiptMessage receiptMessage = generateReceiptMessage();
         receiptMessage.address = FacebookEntityGenerator.generateAddress();
         receiptMessage.address.city = null;
-        Assert.assertEquals(false, getValidation(new FacebookReceiptMessageStub(receiptMessage)));
+        Assert.assertEquals(false,
+                getValidation(new FacebookReceiptMessageStub(receiptMessage), MessageType.receiptMessage));
     }
 
     @Test
@@ -32,7 +35,8 @@ public class AddressValidatorTest extends FacebookMessageStub {
         ReceiptMessage receiptMessage = generateReceiptMessage();
         receiptMessage.address = FacebookEntityGenerator.generateAddress();
         receiptMessage.address.postalCode = null;
-        Assert.assertEquals(false, getValidation(new FacebookReceiptMessageStub(receiptMessage)));
+        Assert.assertEquals(false,
+                getValidation(new FacebookReceiptMessageStub(receiptMessage), MessageType.receiptMessage));
     }
 
     @Test
@@ -40,7 +44,8 @@ public class AddressValidatorTest extends FacebookMessageStub {
         ReceiptMessage receiptMessage = generateReceiptMessage();
         receiptMessage.address = FacebookEntityGenerator.generateAddress();
         receiptMessage.address.state = null;
-        Assert.assertEquals(false, getValidation(new FacebookReceiptMessageStub(receiptMessage)));
+        Assert.assertEquals(false,
+                getValidation(new FacebookReceiptMessageStub(receiptMessage), MessageType.receiptMessage));
     }
 
     @Test
@@ -48,14 +53,16 @@ public class AddressValidatorTest extends FacebookMessageStub {
         ReceiptMessage receiptMessage = generateReceiptMessage();
         receiptMessage.address = FacebookEntityGenerator.generateAddress();
         receiptMessage.address.country = null;
-        Assert.assertEquals(false, getValidation(new FacebookReceiptMessageStub(receiptMessage)));
+        Assert.assertEquals(false,
+                getValidation(new FacebookReceiptMessageStub(receiptMessage), MessageType.receiptMessage));
     }
 
     @Test
     public void shouldBeValid() {
         ReceiptMessage receiptMessage = generateReceiptMessage();
         receiptMessage.address = FacebookEntityGenerator.generateAddress();
-        Assert.assertEquals(true, getValidation(new FacebookReceiptMessageStub(receiptMessage)));
+        Assert.assertEquals(true,
+                getValidation(new FacebookReceiptMessageStub(receiptMessage), MessageType.receiptMessage));
     }
 
 }

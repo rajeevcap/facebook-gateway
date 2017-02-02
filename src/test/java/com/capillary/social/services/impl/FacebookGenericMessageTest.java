@@ -11,6 +11,7 @@ import com.capillary.social.FacebookClient;
 import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookMessageStub;
 import com.capillary.social.GenericMessage;
+import com.capillary.social.MessageType;
 
 public class FacebookGenericMessageTest extends FacebookMessageStub {
 
@@ -18,20 +19,23 @@ public class FacebookGenericMessageTest extends FacebookMessageStub {
     public void shouldBeInvalidWhenNoElementIsPresent() throws FacebookException, TException {
         GenericMessage genericMessage = generateGenericMessage();
         genericMessage.elementList = null;
-        Assert.assertEquals(false, getValidation(new FacebookGenericMessageStub(genericMessage)));
+        Assert.assertEquals(false,
+                getValidation(new FacebookGenericMessageStub(genericMessage), MessageType.genericMessage));
     }
 
     @Test
     public void shouldBeInvalidWhenInvalidElementIsPresent() throws FacebookException, TException {
         GenericMessage genericMessage = generateGenericMessage();
         genericMessage.elementList.get(0).title = null;
-        Assert.assertEquals(false, getValidation(new FacebookGenericMessageStub(genericMessage)));
+        Assert.assertEquals(false,
+                getValidation(new FacebookGenericMessageStub(genericMessage), MessageType.genericMessage));
     }
 
     @Test
     public void shouldBeValidWhenElementsAreValidAndResponseIsOk() throws FacebookException, TException {
         GenericMessage genericMessage = generateGenericMessage();
-        Assert.assertEquals(true, getValidation(new FacebookGenericMessageStub(genericMessage)));
+        Assert.assertEquals(true,
+                getValidation(new FacebookGenericMessageStub(genericMessage), MessageType.genericMessage));
     }
 
     @Ignore("test by actually sending message")
