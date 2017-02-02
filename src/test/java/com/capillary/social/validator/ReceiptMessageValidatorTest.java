@@ -62,5 +62,12 @@ public class ReceiptMessageValidatorTest extends FacebookMessageStub {
         Assert.assertEquals(false,
                 getValidation(new FacebookReceiptMessageStub(receiptMessage), MessageType.receiptMessage));
     }
+    
+    @Test
+    public void shouldBeInvalidWhenCurrencyCodeIsInvalid() throws FacebookException, TException {
+        ReceiptMessage receiptMessage = generateReceiptMessage();
+        receiptMessage.currency = "Rupee";
+        Assert.assertEquals(false, getValidation(new FacebookReceiptMessageStub(receiptMessage), MessageType.receiptMessage));
+    }
 
 }
