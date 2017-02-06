@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug" name="facebook-gateway-service" packages="">
+	<Properties>
+		<Property name="logFolder">/var/log/capillary/facebook-gateway-service/</Property>
+	</Properties>
+	<Appenders>
+		<RollingFile name="LOGFILE" fileName="${logFolder}facebook-gateway-service.log"
+			filePattern="${logFolder}facebook-gateway-service.log.%d{yyyyMMdd}"
+			append="true">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%X{requestType}] [%X{requestId}] [%X{requestOrgId}] [%X{userID}] [%c{1}:%L] [%p] %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" />
+			</Policies>
+		</RollingFile>
+		<Console name="CONSOLE" target="SYSTEM_OUT" >
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%X{requestType}] [%X{requestId}] [%X{requestOrgId}] [%X{userID}] [%c{1}:%L] [%p] %m%n</Pattern>
+			</PatternLayout>
+		</Console>
+	</Appenders>
+	<Loggers>
+        <Logger name="com.capillary" level="DEBUG" additivity="false" includeLocation="true">
+                <AppenderRef ref="LOGFILE" />
+        </Logger>
+	<Root level="INFO">
+		<AppenderRef ref="LOGFILE" />
+
+	</Root>
+
+<!-- 	<Root level="DEBUG"> -->
+<!-- 	<AppenderRef ref="CONSOLE" /> -->
+<!-- 	</Root> -->
+	</Loggers>
+</Configuration>
