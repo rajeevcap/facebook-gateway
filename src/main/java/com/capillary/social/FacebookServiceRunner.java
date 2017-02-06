@@ -16,7 +16,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.CollectionUtils;
 
 import com.capillary.servicediscovery.ServiceDiscovery;
-import com.capillary.servicediscovery.model.Module;
 import com.capillary.social.base.api.FacebookManager;
 import com.capillary.social.base.impl.FacebookManagerInitializer;
 
@@ -29,26 +28,12 @@ public class FacebookServiceRunner {
 
         logger.info("Main method of facebook gateway entered.");
 
-        ServiceDiscovery.setModule(new Module(FACEBOOK_GATEWAY_SERVICE_NAME, FACEBOOK_GATEWAY_SERVICE_VERSION));
+        ServiceDiscovery.setModule(FACEBOOK_GATEWAY_MODULE);
 
         try {
-
-            try {
-
-                start("facebook-gateway-service.xml");
-            } catch (Exception e) {
-
-                e.printStackTrace();
-                logger.error("Error in starting facebook gateway service" + e.getMessage());
-            } catch (Throwable th) {
-
-                logger.error("Error in starting facebook gateway service Throwable" + th.getMessage());
-                th.printStackTrace();
-            }
-            /* } */
+            start("facebook-gateway-service.xml");
         } catch (Exception e) {
-
-            logger.info(" Could not acquire sd lock. " + e.getMessage());
+            logger.error("Error in starting facebook gateway service" + e.getMessage());
         }
     }
 

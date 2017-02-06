@@ -25,13 +25,11 @@ public class FacebookServiceListener implements Iface {
     private FacebookMessageHandler facebookMessageHandler;
 
     public FacebookServiceListener(FacebookMessageHandler facebookMessageHandler) {
-        super();
         this.facebookMessageHandler = facebookMessageHandler;
     }
 
     @Override
     public boolean isAlive() throws TException {
-
         logger.info("is alive called");
         return true;
     }

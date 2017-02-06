@@ -1,9 +1,12 @@
 package com.capillary.social;
 
+import com.capillary.servicediscovery.model.Module;
+
 public class FacebookServiceRunnerConstants {
 
     public static final String FACEBOOK_GATEWAY_SERVICE_VERSION = "1.0.0";
     public static final String FACEBOOK_GATEWAY_SERVICE_NAME = "facebook-gateway-service";
+    public static final Module FACEBOOK_GATEWAY_MODULE = new Module(FACEBOOK_GATEWAY_SERVICE_NAME, FACEBOOK_GATEWAY_SERVICE_VERSION);
     public static final String STARTUP_MSG = " Starting Facebook Gateway Service";
     public static final String SHUTDOWN_MSG_INIT = " Stopping Facebook Gateway Service";
     public static final String SHUTDOWN_MSG = "\n"
