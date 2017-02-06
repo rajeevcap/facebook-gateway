@@ -3,7 +3,7 @@
 	<groupId>com.capillary.social</groupId>
 	<artifactId>facebook-gateway-service</artifactId>
 	<!-- <packaging>jar</packaging> -->
-	<version>1.3-SNAPSHOT</version>
+	<version>1.3</version>
 	<name>FacebookGatewayService</name>
 	<url>http://maven.apache.org</url>
 
