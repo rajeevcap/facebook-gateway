@@ -85,7 +85,7 @@
         <dependency>
             <groupId>com.capillary.commons</groupId>
             <artifactId>thrift-ifaces-fb-gateway</artifactId>
-            <version>1.0</version>
+            <version>1.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -344,8 +344,6 @@
                             </execution>
                         </executions>
                     </plugin>
-
-
                 </plugins>
             </build>
         </profile>
