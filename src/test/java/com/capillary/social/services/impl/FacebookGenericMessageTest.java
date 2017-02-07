@@ -16,7 +16,7 @@ public class FacebookGenericMessageTest extends FacebookMessageStub {
         GenericMessage genericMessage = generateGenericMessage();
         genericMessage.elementList = null;
         Assert.assertEquals(false,
-                getValidation(new FacebookGenericMessageStub(FacebookMessageStub.this, genericMessage), MessageType.genericMessage));
+                getValidation(new FacebookGenericMessageStub(genericMessage), MessageType.genericMessage));
     }
 
     @Test
@@ -24,14 +24,14 @@ public class FacebookGenericMessageTest extends FacebookMessageStub {
         GenericMessage genericMessage = generateGenericMessage();
         genericMessage.elementList.get(0).title = null;
         Assert.assertEquals(false,
-                getValidation(new FacebookGenericMessageStub(FacebookMessageStub.this, genericMessage), MessageType.genericMessage));
+                getValidation(new FacebookGenericMessageStub(genericMessage), MessageType.genericMessage));
     }
 
     @Test
     public void shouldBeValidWhenElementsAreValidAndResponseIsOk() throws FacebookException, TException {
         GenericMessage genericMessage = generateGenericMessage();
         Assert.assertEquals(true,
-                getValidation(new FacebookGenericMessageStub(FacebookMessageStub.this, genericMessage), MessageType.genericMessage));
+                getValidation(new FacebookGenericMessageStub(genericMessage), MessageType.genericMessage));
     }
 
     @Ignore("test by actually sending message")

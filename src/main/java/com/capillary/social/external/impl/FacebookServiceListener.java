@@ -55,7 +55,6 @@ public class FacebookServiceListener implements Iface {
         try {
             FacebookMessage facebookTextMessage = facebookMessageHandler.getFacebookTextMessage(textMessage);
             gtwResponse = facebookTextMessage.send(recipientId, senderId, orgId, MessageType.textMessage);
-
         } catch (Exception e) {
             logger.error("exception occured in sending text message", e);
         } finally {

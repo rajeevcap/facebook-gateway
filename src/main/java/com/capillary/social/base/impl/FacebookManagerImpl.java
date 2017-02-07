@@ -58,7 +58,7 @@ public class FacebookManagerImpl implements FacebookManager {
             // WAIT QUEUE / THREAD POOL
             try {
 
-                ServiceDiscovery.getInstance().register(KnownService.FACEBOOK_THRIFT_SERVICE.createInstance());
+                ServiceDiscovery.getInstance().register(KnownService.FACEBOOK_GATEWAY_THRIFT_SERVICE.createInstance());
 
             } catch (IOException e) {
 
@@ -142,7 +142,7 @@ public class FacebookManagerImpl implements FacebookManager {
             logger.info("START : Registering subscription manager thrift handler");
 
             com.capillary.servicediscovery.Service service = ServiceDiscovery.getInstance().get(
-                    KnownService.FACEBOOK_THRIFT_SERVICE);
+                    KnownService.FACEBOOK_GATEWAY_THRIFT_SERVICE);
 
             RPCService rpcService = RPCManager.getINSTANCE().startRPCService(service.getPort(), MIN_THREADS,
                     systemConfig.SERVICE_MAX_THREAD);
