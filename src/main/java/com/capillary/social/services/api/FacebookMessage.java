@@ -7,27 +7,7 @@ import static com.capillary.social.GatewayResponseType.sent;
 import static com.capillary.social.MessageType.receiptMessage;
 import static com.capillary.social.services.impl.FacebookConstants.MESSAGING_RESPONSE_TIME_LIMIT;
 import static com.capillary.social.services.impl.FacebookConstants.SEND_MESSAGE_URL;
-
-import com.capillary.social.GatewayResponse;
-import com.capillary.social.GatewayResponseType;
-import com.capillary.social.MessageType;
-import com.capillary.social.dao.impl.ChatDaoImpl;
-import com.capillary.social.library.api.FacebookAccountDetails;
-import com.capillary.social.model.Chat;
-import com.capillary.social.model.Chat.ChatStatus;
-import com.google.gson.JsonObject;
 import in.capillary.ifaces.Shopbook.AccountDetails;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.jboss.netty.handler.codec.http.HttpResponseStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,19 +18,36 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-@Service
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.jboss.netty.handler.codec.http.HttpResponseStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+
+import com.capillary.social.GatewayResponse;
+import com.capillary.social.GatewayResponseType;
+import com.capillary.social.MessageType;
+import com.capillary.social.dao.api.ChatDao;
+import com.capillary.social.handler.ApplicationContextAwareHandler;
+import com.capillary.social.library.api.FacebookAccountDetails;
+import com.capillary.social.model.Chat;
+import com.capillary.social.model.Chat.ChatStatus;
+import com.google.gson.JsonObject;
+
 public abstract class FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookMessage.class);
-
+    
     public abstract JsonObject messagePayload(String recipientId);
 
     public abstract boolean validateMessage();
 
     private List<MessageType> skipMessageTypesForUserPolicy = new ArrayList<MessageType>(Arrays.asList(receiptMessage));
-
-    @Autowired
-    ChatDaoImpl chatDaoImpl;
 
     public GatewayResponse send(String recipientId, String pageId, long orgId, MessageType messageType) {
         GatewayResponse gtwResponse = new GatewayResponse();
@@ -132,8 +129,13 @@ public abstract class FacebookMessage {
 
     protected boolean checkUserPolicy(String recipientId, String pageId, MessageType messageType) {
         logger.info("inside checking user policy method");
-        if(skipMessageTypesForUserPolicy.contains(messageType)) return true;
-        Chat chat = chatDaoImpl.findChat(recipientId, pageId, ChatStatus.RECEIVED);
+        if (skipMessageTypesForUserPolicy.contains(messageType)) {
+            return true;
+        }
+
+        ApplicationContext applicationContext = ApplicationContextAwareHandler.getApplicationContext();
+        ChatDao chatDao = (ChatDao) applicationContext.getBean("chatDaoImpl");
+        Chat chat = chatDao.findChat(recipientId, pageId, ChatStatus.RECEIVED);
         long timeDifference = new Date().getTime() - chat.getReceivedTime().getTime();
         logger.info("last chat : {} by user was {} milliseconds ago", chat, timeDifference);
         if (chat != null && timeDifference > MESSAGING_RESPONSE_TIME_LIMIT) {

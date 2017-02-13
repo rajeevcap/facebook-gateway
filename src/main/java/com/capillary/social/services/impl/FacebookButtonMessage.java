@@ -30,12 +30,18 @@ import com.capillary.social.validator.ButtonListValidator;
 import com.capillary.social.validator.ButtonMessageTextValidator;
 import com.google.gson.JsonObject;
 
-@Component
 public class FacebookButtonMessage extends FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookButtonMessage.class);
 
     private ButtonMessage buttonMessage;
+
+    public FacebookButtonMessage() {
+    }
+
+    public FacebookButtonMessage(ButtonMessage buttonMessage) {
+        this.buttonMessage = buttonMessage;
+    }
 
     @Override
     public boolean validateMessage() {

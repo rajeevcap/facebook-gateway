@@ -23,7 +23,7 @@ import com.capillary.social.systems.config.SystemConfig;
 import com.capillary.social.FacebookService;
 import com.capillary.social.FacebookServiceRunner;
 import com.capillary.social.external.impl.FacebookServiceListener;
-import com.capillary.social.handler.FacebookMessageHandler;
+import com.capillary.social.handler.ApplicationContextAwareHandler;
 
 @Service
 public class FacebookManagerImpl implements FacebookManager {
@@ -36,9 +36,6 @@ public class FacebookManagerImpl implements FacebookManager {
 
     @Autowired
     private SystemConfig systemConfig;
-
-    @Autowired
-    FacebookMessageHandler facebookMessageHandler;
 
     @Override
     public SystemStatus start() {
@@ -147,7 +144,7 @@ public class FacebookManagerImpl implements FacebookManager {
             RPCService rpcService = RPCManager.getINSTANCE().startRPCService(service.getPort(), MIN_THREADS,
                     systemConfig.SERVICE_MAX_THREAD);
 
-            FacebookService.Iface facebookThriftService = new FacebookServiceListener(facebookMessageHandler);
+            FacebookService.Iface facebookThriftService = new FacebookServiceListener();
 
             rpcService.exportService(FacebookService.Iface.class, facebookThriftService);
 

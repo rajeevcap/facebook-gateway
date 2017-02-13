@@ -53,12 +53,18 @@ import com.google.common.base.Strings;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-@Component
 public class FacebookReceiptMessage extends FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookReceiptMessage.class);
 
     private ReceiptMessage receiptMessage;
+    
+    public FacebookReceiptMessage(){
+    }
+    
+    public FacebookReceiptMessage(ReceiptMessage receiptMessage) {
+        this.receiptMessage = receiptMessage;
+    }
 
     private boolean isNotNull(Object obj) {
         return obj != null;
