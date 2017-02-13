@@ -139,4 +139,9 @@ public class FacebookGenericMessage extends FacebookMessage {
         this.genericMessage = genericMessage;
     }
 
+    @Override
+    public MessageType getMessageType() {
+        return MessageType.genericMessage;
+    }
+
 }

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.capillary.social.MessageType;
 import com.capillary.social.TextMessage;
 import com.capillary.social.services.api.FacebookMessage;
 import com.capillary.social.validator.TextMessageTextValidator;
@@ -53,6 +54,11 @@ public class FacebookTextMessage extends FacebookMessage {
 
     public void setTextMessage(TextMessage textMessage) {
         this.textMessage = textMessage;
+    }
+
+    @Override
+    public MessageType getMessageType() {
+        return MessageType.textMessage;
     }
 
 }

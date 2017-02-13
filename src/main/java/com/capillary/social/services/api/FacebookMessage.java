@@ -46,14 +46,16 @@ public abstract class FacebookMessage {
     public abstract JsonObject messagePayload(String recipientId);
 
     public abstract boolean validateMessage();
+    
+    public abstract MessageType getMessageType();
 
     private List<MessageType> skipMessageTypesForUserPolicy = new ArrayList<MessageType>(Arrays.asList(receiptMessage));
 
-    public GatewayResponse send(String recipientId, String pageId, long orgId, MessageType messageType) {
+    public GatewayResponse send(String recipientId, String pageId, long orgId) {
         GatewayResponse gtwResponse = new GatewayResponse();
         gtwResponse.response = "{}";
         try {
-            if (!canSendMessage(recipientId, pageId, messageType, gtwResponse)) return gtwResponse;
+            if (!canSendMessage(recipientId, pageId, gtwResponse)) return gtwResponse;
 
             JsonObject payload = messagePayload(recipientId);
             gtwResponse.message = payload.toString();
@@ -87,8 +89,8 @@ public abstract class FacebookMessage {
         return gtwResponse;
     }
 
-    private boolean canSendMessage(String recipientId, String pageId, MessageType messageType, GatewayResponse gtwResponse) {
-        boolean isMessageSendingPermitted = checkUserPolicy(recipientId, pageId, messageType);
+    private boolean canSendMessage(String recipientId, String pageId, GatewayResponse gtwResponse) {
+        boolean isMessageSendingPermitted = checkUserPolicy(recipientId, pageId);
         if (!isMessageSendingPermitted) {
             gtwResponse.gatewayResponseType = policyViolation;
             gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to user policy violation, last message by user was more than 24 hours ago\"}}";
@@ -127,9 +129,9 @@ public abstract class FacebookMessage {
         return accessToken;
     }
 
-    protected boolean checkUserPolicy(String recipientId, String pageId, MessageType messageType) {
+    protected boolean checkUserPolicy(String recipientId, String pageId) {
         logger.info("inside checking user policy method");
-        if (skipMessageTypesForUserPolicy.contains(messageType)) {
+        if (skipMessageTypesForUserPolicy.contains(getMessageType())) {
             return true;
         }
 

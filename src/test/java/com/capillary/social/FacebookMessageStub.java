@@ -31,7 +31,7 @@ import com.google.gson.JsonObject;
 public class FacebookMessageStub {
 
     protected boolean getValidation(FacebookMessage facebookMessage, MessageType messageType) {
-        return facebookMessage.send("", "", 0, messageType).gatewayResponseType == sent;
+        return facebookMessage.send("", "", 0).gatewayResponseType == sent;
     }
 
     protected class FacebookTextMessageStub extends FacebookTextMessage {
@@ -46,7 +46,7 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected boolean checkUserPolicy(String recipientId, String pageId, MessageType messageType) {
+        protected boolean checkUserPolicy(String recipientId, String pageId) {
             return true;
         }
     }
@@ -63,7 +63,7 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected boolean checkUserPolicy(String recipientId, String pageId, MessageType messageType) {
+        protected boolean checkUserPolicy(String recipientId, String pageId) {
             return true;
         }
 
@@ -82,7 +82,7 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected boolean checkUserPolicy(String recipientId, String pageId, MessageType messageType) {
+        protected boolean checkUserPolicy(String recipientId, String pageId) {
             return true;
         }
 
@@ -101,7 +101,7 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected boolean checkUserPolicy(String recipientId, String pageId, MessageType messageType) {
+        protected boolean checkUserPolicy(String recipientId, String pageId) {
             return true;
         }
     }
@@ -119,7 +119,7 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected boolean checkUserPolicy(String recipientId, String pageId, MessageType messageType) {
+        protected boolean checkUserPolicy(String recipientId, String pageId) {
             return true;
         }
     }
@@ -137,7 +137,7 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected boolean checkUserPolicy(String recipientId, String pageId, MessageType messageType) {
+        protected boolean checkUserPolicy(String recipientId, String pageId) {
             return true;
         }
     }

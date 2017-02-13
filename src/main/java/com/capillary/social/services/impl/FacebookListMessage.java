@@ -148,4 +148,9 @@ public class FacebookListMessage extends FacebookMessage {
         this.listMessage = listMessage;
     }
 
+    @Override
+    public MessageType getMessageType() {
+        return MessageType.listMessage;
+    }
+
 }

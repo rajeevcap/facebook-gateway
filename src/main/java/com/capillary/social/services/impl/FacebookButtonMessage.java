@@ -99,4 +99,9 @@ public class FacebookButtonMessage extends FacebookMessage {
     public void setButtonMessage(ButtonMessage buttonMessage) {
         this.buttonMessage = buttonMessage;
     }
+
+    @Override
+    public MessageType getMessageType() {
+        return MessageType.buttonMessage;
+    }
 }

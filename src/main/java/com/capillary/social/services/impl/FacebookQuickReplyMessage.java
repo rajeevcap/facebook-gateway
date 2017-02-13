@@ -19,6 +19,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import com.capillary.social.MessageType;
 import com.capillary.social.QuickReply;
 import com.capillary.social.QuickReplyMessage;
 import com.capillary.social.services.api.FacebookMessage;
@@ -88,6 +89,11 @@ public class FacebookQuickReplyMessage extends FacebookMessage {
 
     public void setQuickReplyMessage(QuickReplyMessage quickReplyMessage) {
         this.quickReplyMessage = quickReplyMessage;
+    }
+
+    @Override
+    public MessageType getMessageType() {
+        return MessageType.quickReplyMessage;
     }
 
 }
