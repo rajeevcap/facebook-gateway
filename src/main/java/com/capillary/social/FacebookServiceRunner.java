@@ -1,6 +1,8 @@
 package com.capillary.social;
 
-import static com.capillary.social.FacebookServiceRunnerConstants.*;
+import static com.capillary.social.FacebookServiceRunnerConstants.FACEBOOK_GATEWAY_MODULE;
+import static com.capillary.social.FacebookServiceRunnerConstants.SHUTDOWN_MSG;
+import static com.capillary.social.FacebookServiceRunnerConstants.STARTUP_MSG;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -95,5 +97,14 @@ public class FacebookServiceRunner {
         springAppContext.addBeanFactoryPostProcessor(facebookPropertyPlaceholderConfigurer);
         springAppContext.setConfigLocation(configFile);
         return springAppContext;
+    }
+    
+    public static void stop() {
+        
+        logger.info(SHUTDOWN_MSG);
+        FacebookManager facebookManager = FacebookManagerInitializer.getFacebookManager();
+        facebookManager.stop();
+        logger.info("FACEBOOK GATEWAY STOPPED");
+
     }
 }
