@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.capillary.social.Adjustment;
+import com.capillary.social.MessageType;
 import com.capillary.social.ReceiptElement;
 import com.capillary.social.ReceiptMessage;
 import com.capillary.social.services.api.FacebookMessage;
@@ -59,6 +60,13 @@ public class FacebookReceiptMessage extends FacebookMessage {
     private static Logger logger = LoggerFactory.getLogger(FacebookReceiptMessage.class);
 
     private ReceiptMessage receiptMessage;
+    
+    public FacebookReceiptMessage(){
+    }
+    
+    public FacebookReceiptMessage(ReceiptMessage receiptMessage) {
+        this.receiptMessage = receiptMessage;
+    }
 
     private boolean isNotNull(Object obj) {
         return obj != null;
@@ -182,6 +190,11 @@ public class FacebookReceiptMessage extends FacebookMessage {
 
     public void setReceiptMessage(ReceiptMessage receiptMessage) {
         this.receiptMessage = receiptMessage;
+    }
+
+    @Override
+    public MessageType getMessageType() {
+        return MessageType.receiptMessage;
     }
 
 }

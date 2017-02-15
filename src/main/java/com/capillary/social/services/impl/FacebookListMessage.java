@@ -43,6 +43,13 @@ public class FacebookListMessage extends FacebookMessage {
     private static Logger logger = LoggerFactory.getLogger(FacebookListMessage.class);
 
     private ListMessage listMessage;
+    
+    public FacebookListMessage(){
+    }
+    
+    public FacebookListMessage(ListMessage listMessage) {
+        this.listMessage = listMessage;
+    }
 
     @Override
     public boolean validateMessage() {
@@ -140,6 +147,11 @@ public class FacebookListMessage extends FacebookMessage {
 
     public void setListMessage(ListMessage listMessage) {
         this.listMessage = listMessage;
+    }
+
+    @Override
+    public MessageType getMessageType() {
+        return MessageType.listMessage;
     }
 
 }

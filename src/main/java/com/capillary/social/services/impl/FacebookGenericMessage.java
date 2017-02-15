@@ -41,6 +41,13 @@ public class FacebookGenericMessage extends FacebookMessage {
     private static Logger logger = LoggerFactory.getLogger(FacebookGenericMessage.class);
 
     private GenericMessage genericMessage;
+    
+    public FacebookGenericMessage(){
+    }
+    
+    public FacebookGenericMessage(GenericMessage genericMessage) {
+        this.genericMessage = genericMessage;
+    }
 
     private boolean isNotNull(Object obj) {
         return obj != null;
@@ -131,6 +138,10 @@ public class FacebookGenericMessage extends FacebookMessage {
 
     public void setGenericMessage(GenericMessage genericMessage) {
         this.genericMessage = genericMessage;
+    }
+    @Override
+    public MessageType getMessageType() {
+        return MessageType.genericMessage;
     }
 
 }

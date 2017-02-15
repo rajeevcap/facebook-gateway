@@ -1,7 +1,8 @@
 package com.capillary.social.services.api;
 
 import static com.capillary.social.GatewayResponseType.failed;
-import static com.capillary.social.GatewayResponseType.invalid;
+import static com.capillary.social.GatewayResponseType.invalidContent;
+import static com.capillary.social.GatewayResponseType.policyViolation;
 import static com.capillary.social.GatewayResponseType.sent;
 import static com.capillary.social.MessageType.receiptMessage;
 import static com.capillary.social.services.impl.FacebookConstants.MESSAGING_RESPONSE_TIME_LIMIT;
@@ -26,57 +27,44 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.jboss.netty.handler.codec.http.HttpResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.context.ApplicationContext;
 
 import com.capillary.social.GatewayResponse;
+import com.capillary.social.GatewayResponseType;
 import com.capillary.social.MessageType;
-import com.capillary.social.dao.impl.ChatDaoImpl;
-import com.capillary.social.data.manager.DataSourceFactory;
+import com.capillary.social.dao.api.ChatDao;
+import com.capillary.social.handler.ApplicationContextAwareHandler;
 import com.capillary.social.library.api.FacebookAccountDetails;
 import com.capillary.social.model.Chat;
 import com.capillary.social.model.Chat.ChatStatus;
 import com.google.gson.JsonObject;
+import org.springframework.stereotype.Service;
 
 @Service
 public abstract class FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookMessage.class);
-
+    
     public abstract JsonObject messagePayload(String recipientId);
 
     public abstract boolean validateMessage();
+    
+    public abstract MessageType getMessageType();
 
     private List<MessageType> skipMessageTypesForUserPolicy = new ArrayList<MessageType>(Arrays.asList(receiptMessage));
 
-    @Autowired
-    ChatDaoImpl chatDaoImpl;
-
-    @Autowired
-    DataSourceFactory dataSourceFactory;
-
-    @SuppressWarnings("finally")
-    public GatewayResponse send(String recipientId, String pageId, long orgId, MessageType messageType) {
+    public GatewayResponse send(String recipientId, String pageId, long orgId) {
         GatewayResponse gtwResponse = new GatewayResponse();
         gtwResponse.response = "{}";
         try {
-            boolean isMessageSendingPermitted = checkUserPolicy(recipientId, pageId, messageType);
-            if (!isMessageSendingPermitted) {
-                gtwResponse.gatewayResponseType = invalid;
-                gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to user policy violation, last message by user was more than 24 hours ago\"}}";
-                return gtwResponse;
-            }
-            boolean isMessageContentValid = validateMessage();
-            if (!isMessageContentValid) {
-                gtwResponse.gatewayResponseType = invalid;
-                gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to content policy violation\"}}";
-                return gtwResponse;
-            }
+            if (!canSendMessage(recipientId, pageId, gtwResponse)) return gtwResponse;
+
             JsonObject payload = messagePayload(recipientId);
-            if (payload != null)
-                gtwResponse.message = payload.toString();
+            gtwResponse.message = payload.toString();
             logger.info("final message payload : " + payload);
+
             HttpResponse response = sendMessage(pageId, orgId, payload);
+
             BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
             String line = "";
             StringBuffer result = new StringBuffer();
@@ -94,11 +82,29 @@ public abstract class FacebookMessage {
             }
             gtwResponse.response = result.toString();
         } catch (Exception e) {
+            gtwResponse.gatewayResponseType = GatewayResponseType.failed;
+            gtwResponse.response = "exception in sending message";
+
             logger.error("exception in sending message", e);
-        } finally {
-            logger.info("send response : " + gtwResponse);
-            return gtwResponse;
         }
+        logger.info("send response : " + gtwResponse);
+        return gtwResponse;
+    }
+
+    private boolean canSendMessage(String recipientId, String pageId, GatewayResponse gtwResponse) {
+        boolean isMessageSendingPermitted = checkUserPolicy(recipientId, pageId);
+        if (!isMessageSendingPermitted) {
+            gtwResponse.gatewayResponseType = policyViolation;
+            gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to user policy violation, last message by user was more than 24 hours ago\"}}";
+            return false;
+        }
+        boolean isMessageContentValid = validateMessage();
+        if (!isMessageContentValid) {
+            gtwResponse.gatewayResponseType = invalidContent;
+            gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to content policy violation\"}}";
+            return false;
+        }
+        return true;
     }
 
     protected HttpResponse sendMessage(String pageId, long orgId, JsonObject payload)
@@ -122,18 +128,17 @@ public abstract class FacebookMessage {
         FacebookAccountDetails facebookAccountDetails = new FacebookAccountDetails();
         AccountDetails result = facebookAccountDetails.getAccountDetails(orgId, pageId);
         String accessToken = result.pageAccessToken;
-        //         String accessToken = "EAARlLJ0mBswBAJ3AywiSIoVRAeOEdZBZBxBLOMGagzbY8s7SncAjmC9j0ZAgF7MDvLXW8qTadZCDJOJl3hAHZB1wmWQqPktJVDMZC12WNDuAXhi5qvd05YiPzxQ0QQEg7jLOsGWMoWkLinTyPxT7ZCZB0qxASdSxisekQsUiK47E7wZDZD";
         return accessToken;
     }
-
-    protected boolean checkUserPolicy(String recipientId, String pageId, MessageType messageType) {
+    protected boolean checkUserPolicy(String recipientId, String pageId) {
         logger.info("inside checking user policy method");
-        for (MessageType msgType : skipMessageTypesForUserPolicy) {
-            if (messageType == msgType) {
-                return true;
-            }
+        if (skipMessageTypesForUserPolicy.contains(getMessageType())) {
+            return true;
         }
-        Chat chat = chatDaoImpl.findChat(recipientId, pageId, ChatStatus.RECEIVED);
+
+        ApplicationContext applicationContext = ApplicationContextAwareHandler.getApplicationContext();
+        ChatDao chatDao = (ChatDao) applicationContext.getBean("chatDaoImpl");
+        Chat chat = chatDao.findChat(recipientId, pageId, ChatStatus.RECEIVED);
         long timeDifference = new Date().getTime() - chat.getReceivedTime().getTime();
         logger.info("last chat : {} by user was {} milliseconds ago", chat, timeDifference);
         if (chat != null && timeDifference > MESSAGING_RESPONSE_TIME_LIMIT) {

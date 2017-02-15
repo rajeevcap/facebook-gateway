@@ -37,6 +37,13 @@ public class FacebookButtonMessage extends FacebookMessage {
 
     private ButtonMessage buttonMessage;
 
+    public FacebookButtonMessage() {
+    }
+
+    public FacebookButtonMessage(ButtonMessage buttonMessage) {
+        this.buttonMessage = buttonMessage;
+    }
+
     @Override
     public boolean validateMessage() {
         logger.info("validating button message : " + buttonMessage);
@@ -92,5 +99,10 @@ public class FacebookButtonMessage extends FacebookMessage {
 
     public void setButtonMessage(ButtonMessage buttonMessage) {
         this.buttonMessage = buttonMessage;
+    }
+
+    @Override
+    public MessageType getMessageType() {
+        return MessageType.buttonMessage;
     }
 }

@@ -1,17 +1,13 @@
 package com.capillary.social.services.impl;
 
 import static com.capillary.social.FacebookEntityGenerator.generateGenericMessage;
+
+import com.capillary.social.*;
 import junit.framework.Assert;
 
 import org.apache.thrift.TException;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.capillary.social.FacebookClient;
-import com.capillary.social.FacebookException;
-import com.capillary.social.FacebookMessageStub;
-import com.capillary.social.GenericMessage;
-import com.capillary.social.MessageType;
 
 public class FacebookGenericMessageTest extends FacebookMessageStub {
 
