@@ -32,11 +32,12 @@ import org.springframework.context.ApplicationContext;
 import com.capillary.social.GatewayResponse;
 import com.capillary.social.GatewayResponseType;
 import com.capillary.social.MessageType;
-import com.capillary.social.dao.api.ChatDao;
+import com.capillary.social.commons.dao.api.ChatDao;
 import com.capillary.social.handler.ApplicationContextAwareHandler;
 import com.capillary.social.library.api.FacebookAccountDetails;
-import com.capillary.social.model.Chat;
-import com.capillary.social.model.Chat.ChatStatus;
+import com.capillary.social.commons.model.Chat;
+import com.capillary.social.commons.model.Chat.ChatStatus;
+import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 
 public abstract class FacebookMessage {
@@ -55,7 +56,7 @@ public abstract class FacebookMessage {
         GatewayResponse gtwResponse = new GatewayResponse();
         gtwResponse.response = "{}";
         try {
-            if (!canSendMessage(recipientId, pageId, gtwResponse)) return gtwResponse;
+            if (!canSendMessage(recipientId, pageId, gtwResponse, orgId)) return gtwResponse;
 
             JsonObject payload = messagePayload(recipientId);
             gtwResponse.message = payload.toString();
@@ -89,7 +90,13 @@ public abstract class FacebookMessage {
         return gtwResponse;
     }
 
-    private boolean canSendMessage(String recipientId, String pageId, GatewayResponse gtwResponse) {
+    private boolean canSendMessage(String recipientId, String pageId, GatewayResponse gtwResponse, long orgId) {
+        boolean areSendParamsValid = checkSendParams(recipientId, pageId, orgId);
+        if(!areSendParamsValid) {
+            gtwResponse.gatewayResponseType = invalidContent;
+            gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to invalid parameters in send request\"}}";
+            return false;
+        }
         boolean isMessageSendingPermitted = checkUserPolicy(recipientId, pageId);
         if (!isMessageSendingPermitted) {
             gtwResponse.gatewayResponseType = policyViolation;
@@ -100,6 +107,22 @@ public abstract class FacebookMessage {
         if (!isMessageContentValid) {
             gtwResponse.gatewayResponseType = invalidContent;
             gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to content policy violation\"}}";
+            return false;
+        }
+        return true;
+    }
+
+    private boolean checkSendParams(String recipientId, String pageId, long orgId) {
+        if(Strings.isNullOrEmpty(recipientId)) {
+            logger.info("recipient id : {} is invalid", recipientId);
+            return false;
+        }
+        if(Strings.isNullOrEmpty(pageId)) {
+            logger.info("page id : {} is invalid", pageId);
+            return false;
+        }
+        if(orgId < 0) {
+            logger.info("org id : {} is invalid", orgId);
             return false;
         }
         return true;

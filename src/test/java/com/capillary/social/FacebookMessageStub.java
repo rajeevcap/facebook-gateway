@@ -31,7 +31,11 @@ import com.google.gson.JsonObject;
 public class FacebookMessageStub {
 
     protected boolean getValidation(FacebookMessage facebookMessage, MessageType messageType) {
-        return facebookMessage.send("", "", 0).gatewayResponseType == sent;
+        return facebookMessage.send("recipientId", "pageId", 0).gatewayResponseType == sent;
+    }
+    
+    protected boolean getValidation(FacebookMessage facebookMessage, MessageType messageType, String userId, String pageId, long orgId) {
+        return facebookMessage.send(userId, pageId, orgId).gatewayResponseType == sent;
     }
 
     protected class FacebookTextMessageStub extends FacebookTextMessage {
