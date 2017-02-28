@@ -6,7 +6,13 @@
 	<version>1.6-SNAPSHOT</version>
 	<name>FacebookGatewayService</name>
 	<url>http://maven.apache.org</url>
-
+	
+	<parent>
+		<groupId>com.capillary</groupId>
+		<artifactId>mvn3-jdk8-parent</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	
 	<properties>
 		<project.dependencyDir>${project.build.directory}/dependency</project.dependencyDir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -172,23 +178,6 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>com.atlassian.maven.plugins</groupId>
-				<artifactId>maven-jgitflow-plugin</artifactId>
-				<version>1.0-alpha21.1</version>
-				<configuration>
-					<allowSnapshots>true</allowSnapshots>
-					<noDeploy>true</noDeploy>
-					<pushReleases>false</pushReleases>
-					<enableFeatureVersions>true</enableFeatureVersions>
-					<flowInitContext>
-						<masterBranchName>production</masterBranchName>
-						<developBranchName>master</developBranchName>
-						<featureBranchPrefix>pheature</featureBranchPrefix>
-						<versionTagPrefix>v</versionTagPrefix>
-					</flowInitContext>
-				</configuration>
-			</plugin>
-			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.3</version>
 				<configuration>
@@ -226,132 +215,5 @@
 		</extensions>
 	</build>
 	<profiles>
-		<profile>
-			<id>cibuild</id>
-			<activation>
-				<property>
-					<name>env.ENV_BUILD</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>jdeb</artifactId>
-						<groupId>org.vafer</groupId>
-						<version>1.0</version>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>jdeb</goal>
-								</goals>
-								<configuration>
-									<archive>
-										<manifestEntries>
-											<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-											<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-											<version>${project.version}</version>
-										</manifestEntries>
-									</archive>
-									<timestamped>true</timestamped>
-									<controlDir>${basedir}/debian</controlDir>
-									<dataSet>
-										<data>
-											<src>${basedir}/dirsprepare.d/${project.artifactId}.conf</src>
-											<type>file</type>
-											<mapper>
-												<type>perm</type>
-												<prefix>/etc/capillary/dirsprepare.d</prefix>
-											</mapper>
-											<missingSrc>ignore</missingSrc>
-										</data>
-										<data>
-											<src>${project.build.directory}/${project.build.finalName}.jar</src>
-											<type>file</type>
-											<mapper>
-												<type>perm</type>
-												<prefix>/usr/local/share/java/capillary/${project.artifactId}</prefix>
-											</mapper>
-											<missingSrc>ignore</missingSrc>
-										</data>
-										<data>
-											<src>${project.build.directory}/lib</src>
-											<type>directory</type>
-											<mapper>
-												<type>perm</type>
-												<prefix>/usr/local/share/java/capillary/${project.artifactId}/lib
-												</prefix>
-											</mapper>
-											<missingSrc>ignore</missingSrc>
-										</data>
-										<data>
-											<src>${project.build.directory}/${project.build.finalName}.war</src>
-											<type>file</type>
-											<mapper>
-												<type>perm</type>
-												<prefix>/usr/local/share/java/capillary/${project.artifactId}</prefix>
-											</mapper>
-											<missingSrc>ignore</missingSrc>
-										</data>
-										<data>
-											<src>${project.dependencyDir}</src>
-											<type>directory</type>
-											<mapper>
-												<type>perm</type>
-												<prefix>
-													/usr/local/share/java/capillary/${project.artifactId}/dependency
-												</prefix>
-											</mapper>
-											<missingSrc>ignore</missingSrc>
-										</data>
-										<data>
-											<src>${basedir}/src/main/resources</src>
-											<type>directory</type>
-											<excludes>.svn/**/*,.svn,**/.svn/**/*,**/.svn/</excludes>
-											<mapper>
-												<type>perm</type>
-												<prefix>/etc/capillary/${project.artifactId}</prefix>
-											</mapper>
-											<!-- <missingSrc>ignore</missingSrc> -->
-										</data>
-										<data>
-											<src>${basedir}/scripts</src>
-											<type>directory</type>
-											<excludes>.svn/**/*,.svn</excludes>
-											<mapper>
-												<type>perm</type>
-												<prefix>/usr/local/share/java/capillary/${project.artifactId}/scripts
-												</prefix>
-												<filemode>755</filemode>
-											</mapper>
-											<missingSrc>ignore</missingSrc>
-										</data>
-										<data>
-											<src>${basedir}/init/${project.artifactId}.conf</src>
-											<type>file</type>
-											<mapper>
-												<type>perm</type>
-												<prefix>/etc/init</prefix>
-											</mapper>
-										</data>
-										<data>
-											<src>${basedir}/init.d/${project.artifactId}</src>
-											<type>file</type>
-											<mapper>
-												<type>perm</type>
-												<prefix>/etc/init.d/</prefix>
-												<filemode>755</filemode>
-											</mapper>
-											<missingSrc>ignore</missingSrc>
-										</data>
-									</dataSet>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 	</profiles>
 </project>
