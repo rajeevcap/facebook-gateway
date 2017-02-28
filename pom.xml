@@ -205,6 +205,10 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<artifactId>jdeb</artifactId>
+				<groupId>org.vafer</groupId>
+			</plugin>
 		</plugins>
 		<extensions>
 			<extension>
