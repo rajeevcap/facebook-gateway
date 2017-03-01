@@ -11,9 +11,11 @@ import com.capillary.social.FacebookService.Iface;
 import com.capillary.social.GatewayResponse;
 import com.capillary.social.GenericMessage;
 import com.capillary.social.ListMessage;
+import com.capillary.social.MessageType;
 import com.capillary.social.QuickReplyMessage;
 import com.capillary.social.ReceiptMessage;
 import com.capillary.social.TextMessage;
+
 import com.capillary.social.handler.ApplicationContextAwareHandler;
 import com.capillary.social.services.impl.FacebookButtonMessage;
 import com.capillary.social.services.impl.FacebookGenericMessage;
@@ -51,6 +53,7 @@ public class FacebookServiceListener implements Iface {
         MDC.put("userID", "USER_ID_" + recipientId);
         GatewayResponse gtwResponse = null;
         try {
+
             FacebookTextMessage facebookTextMessage = new FacebookTextMessage(textMessage);
             gtwResponse = facebookTextMessage.send(recipientId, senderId, orgId);
         } catch (Exception e) {
@@ -81,6 +84,7 @@ public class FacebookServiceListener implements Iface {
         MDC.put("userID", "USER_ID_" + recipientId);
         GatewayResponse gtwResponse = null;
         try {
+
             FacebookButtonMessage facebookButtonMessage = new FacebookButtonMessage(buttonMessage);
             gtwResponse = facebookButtonMessage.send(recipientId, senderId, orgId);
         } catch (Exception e) {

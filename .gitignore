@@ -6,3 +6,4 @@ target/*
 *.iml
 .idea/
 abc.txt
+/bin/

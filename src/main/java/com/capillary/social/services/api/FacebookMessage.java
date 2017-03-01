@@ -39,7 +39,9 @@ import com.capillary.social.commons.model.Chat;
 import com.capillary.social.commons.model.Chat.ChatStatus;
 import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
+import org.springframework.stereotype.Service;
 
+@Service
 public abstract class FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookMessage.class);
@@ -151,7 +153,6 @@ public abstract class FacebookMessage {
         String accessToken = result.pageAccessToken;
         return accessToken;
     }
-
     protected boolean checkUserPolicy(String recipientId, String pageId) {
         logger.info("inside checking user policy method");
         if (skipMessageTypesForUserPolicy.contains(getMessageType())) {

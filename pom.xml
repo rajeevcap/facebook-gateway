@@ -30,7 +30,6 @@
 			<url>http://maven.springframework.org/milestone</url>
 		</repository>
 	</repositories>
-
 	<dependencies>
 		<dependency>
 			<!-- Import dependency management from Spring Boot -->
@@ -107,7 +106,6 @@
 			<type>jar</type>
 			<scope>runtime</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.capillary.commons</groupId>
 			<artifactId>capillary-commons</artifactId>

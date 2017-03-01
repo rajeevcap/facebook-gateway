@@ -37,6 +37,7 @@ import com.capillary.social.validator.ElementListValidator;
 import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 
+@Component
 public class FacebookListMessage extends FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookListMessage.class);
