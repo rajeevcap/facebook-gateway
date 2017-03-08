@@ -32,21 +32,24 @@ public class ButtonListValidator {
             isValid = false;
         }
         for (Button button : buttonList) {
-            isValid = isValid && new ButtonMessageTitleValidator(button.title).validate();
             if (button.type != null) {
                 switch (button.type) {
                     case web_url:
+                        isValid &= new ButtonMessageTitleValidator(button.title).validate();
+                    case account_link:
                         isValid &= new ButtonMessageUrlValidator(button.data.get(ButtonField.url)).validate();
                         break;
                     case postback:
                     case phone_number:
+                        isValid &= new ButtonMessageTitleValidator(button.title).validate();
                         isValid &= new ButtonMessagePayloadValidator(button.data.get(ButtonField.payload)).validate();
                         break;
                     default:
+                        logger.error("button type is invalid");
                         isValid = false;
                 }
             } else {
-                logger.debug("button list type is null");
+                logger.error("button type is null");
                 isValid = false;
             }
         }

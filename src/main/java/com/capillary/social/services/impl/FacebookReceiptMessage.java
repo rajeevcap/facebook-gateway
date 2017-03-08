@@ -31,7 +31,7 @@ import static com.capillary.social.services.impl.FacebookConstants.SUBTOTAL;
 import static com.capillary.social.services.impl.FacebookConstants.SUMMARY;
 import static com.capillary.social.services.impl.FacebookConstants.TEMPLATE;
 import static com.capillary.social.services.impl.FacebookConstants.TEMPLATE_TYPE;
-import static com.capillary.social.services.impl.FacebookConstants.TIME_STAMP;
+import static com.capillary.social.services.impl.FacebookConstants.TIMESTAMP;
 import static com.capillary.social.services.impl.FacebookConstants.TITLE;
 import static com.capillary.social.services.impl.FacebookConstants.TOTAL_COST;
 import static com.capillary.social.services.impl.FacebookConstants.TOTAL_TAX;
@@ -113,7 +113,7 @@ public class FacebookReceiptMessage extends FacebookMessage {
         if (!Strings.isNullOrEmpty(receiptMessage.orderUrl))
             payloadBody.addProperty(ORDER_URL, receiptMessage.orderUrl);
         if (!Strings.isNullOrEmpty(receiptMessage.timestamp))
-            payloadBody.addProperty(TIME_STAMP, receiptMessage.timestamp);
+            payloadBody.addProperty(TIMESTAMP, receiptMessage.timestamp);
         if (isNotNull(receiptMessage.receiptElementList))
             payloadBody.addProperty(ELEMENTS, getReceiptElementListBody().toString());
         if (isNotNull(receiptMessage.address))
