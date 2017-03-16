@@ -36,6 +36,8 @@ public class ButtonListValidator {
                 switch (button.type) {
                     case web_url:
                         isValid &= new ButtonMessageTitleValidator(button.title).validate();
+                        isValid &= new ButtonMessageUrlValidator(button.data.get(ButtonField.url)).validate();
+                        break;
                     case account_link:
                         isValid &= new ButtonMessageUrlValidator(button.data.get(ButtonField.url)).validate();
                         break;

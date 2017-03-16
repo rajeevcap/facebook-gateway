@@ -36,6 +36,7 @@ import com.capillary.social.commons.dao.api.ChatDao;
 import com.capillary.social.handler.ApplicationContextAwareHandler;
 import com.capillary.social.library.api.FacebookAccountDetails;
 import com.capillary.social.commons.model.Chat;
+import com.capillary.social.commons.utils.Pair;
 import com.capillary.social.commons.model.Chat.ChatStatus;
 import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
@@ -84,8 +85,7 @@ public abstract class FacebookMessage {
             gtwResponse.response = result.toString();
         } catch (Exception e) {
             gtwResponse.gatewayResponseType = GatewayResponseType.failed;
-            gtwResponse.response = "exception in sending message";
-
+            gtwResponse.response = "{\"error\":{\"message\":\"exception in sending message\"}}";
             logger.error("exception in sending message", e);
         }
         logger.info("send response : " + gtwResponse);
@@ -99,10 +99,10 @@ public abstract class FacebookMessage {
             gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to invalid parameters in send request\"}}";
             return false;
         }
-        boolean isMessageSendingPermitted = checkUserPolicy(recipientId, pageId);
-        if (!isMessageSendingPermitted) {
+        Pair<Boolean, String> result = checkUserPolicy(recipientId, pageId);
+        if (!result.first) {
             gtwResponse.gatewayResponseType = policyViolation;
-            gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to user policy violation, last message by user was more than 24 hours ago\"}}";
+            gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to user policy violation, " + result.second + "\"}}";
             return false;
         }
         boolean isMessageContentValid = validateMessage();
@@ -153,22 +153,29 @@ public abstract class FacebookMessage {
         String accessToken = result.pageAccessToken;
         return accessToken;
     }
-    protected boolean checkUserPolicy(String recipientId, String pageId) {
+    protected Pair<Boolean, String> checkUserPolicy(String recipientId, String pageId) {
         logger.info("inside checking user policy method");
+        String reason = null;
         if (skipMessageTypesForUserPolicy.contains(getMessageType())) {
-            return true;
+            return new Pair<Boolean, String>(true, "");
         }
 
         ApplicationContext applicationContext = ApplicationContextAwareHandler.getApplicationContext();
         ChatDao chatDao = (ChatDao) applicationContext.getBean("chatDaoImpl");
         Chat chat = chatDao.findChat(recipientId, pageId, ChatStatus.RECEIVED);
+        if(chat == null) {
+            reason = "no chat record found for the user";
+            logger.info(reason);
+            return new Pair<Boolean, String>(false, reason);
+        }
         long timeDifference = new Date().getTime() - chat.getReceivedTime().getTime();
         logger.info("last chat : {} by user was {} milliseconds ago", chat, timeDifference);
         if (chat != null && timeDifference > MESSAGING_RESPONSE_TIME_LIMIT) {
-            logger.info("last message sent by user was more than 24 hours ago");
-            return false;
+            reason = "last message sent by user was more than 24 hours ago";
+            logger.info(reason);
+            return new Pair<Boolean, String>(false, reason);
         }
-        return true;
+        return new Pair<Boolean, String>(true, "");
     }
 
 }
