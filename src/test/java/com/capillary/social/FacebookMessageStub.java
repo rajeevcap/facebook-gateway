@@ -19,6 +19,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.impl.DefaultHttpResponseFactory;
 import org.apache.http.message.BasicStatusLine;
 
+import com.capillary.social.commons.utils.Pair;
 import com.capillary.social.services.api.FacebookMessage;
 import com.capillary.social.services.impl.FacebookButtonMessage;
 import com.capillary.social.services.impl.FacebookGenericMessage;
@@ -50,8 +51,8 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected boolean checkUserPolicy(String recipientId, String pageId) {
-            return true;
+        protected Pair<Boolean, String> checkUserPolicy(String recipientId, String pageId) {
+            return new Pair<Boolean, String>(true, "");
         }
     }
 
@@ -67,8 +68,8 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected boolean checkUserPolicy(String recipientId, String pageId) {
-            return true;
+        protected Pair<Boolean, String> checkUserPolicy(String recipientId, String pageId) {
+            return new Pair<Boolean, String>(true, "");
         }
 
     }
@@ -86,8 +87,8 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected boolean checkUserPolicy(String recipientId, String pageId) {
-            return true;
+        protected Pair<Boolean, String> checkUserPolicy(String recipientId, String pageId) {
+            return new Pair<Boolean, String>(true, "");
         }
 
     }
@@ -105,8 +106,8 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected boolean checkUserPolicy(String recipientId, String pageId) {
-            return true;
+        protected Pair<Boolean, String> checkUserPolicy(String recipientId, String pageId) {
+            return new Pair<Boolean, String>(true, "");
         }
     }
 
@@ -123,8 +124,8 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected boolean checkUserPolicy(String recipientId, String pageId) {
-            return true;
+        protected Pair<Boolean, String> checkUserPolicy(String recipientId, String pageId) {
+            return new Pair<Boolean, String>(true, "");
         }
     }
 
@@ -141,8 +142,8 @@ public class FacebookMessageStub {
         }
 
         @Override
-        protected boolean checkUserPolicy(String recipientId, String pageId) {
-            return true;
+        protected Pair<Boolean, String> checkUserPolicy(String recipientId, String pageId) {
+            return new Pair<Boolean, String>(true, "");
         }
     }
 
