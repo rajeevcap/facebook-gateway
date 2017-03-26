@@ -12,7 +12,7 @@ public class FacebookConstants {
 
     public static final String POSTAL_CODE = "postal_code";
 
-    public static final String TIME_STAMP = "time_stamp";
+    public static final String TIMESTAMP = "timestamp";
 
     public static final String RECIPIENT = "recipient";
 
