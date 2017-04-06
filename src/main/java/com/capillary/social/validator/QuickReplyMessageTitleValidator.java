@@ -19,8 +19,8 @@ public class QuickReplyMessageTitleValidator extends MessageFieldValidator {
 
     private boolean nullAndEmptyCheck() {
         boolean validTitle = validateNotNullOrEmpty();
-        if (validTitle) {
-            logger.debug("button message title is null or empty");
+        if (!validTitle) {
+            logger.debug("quick reply message title is null or empty");
         }
         return validTitle;
     }

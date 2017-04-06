@@ -86,9 +86,11 @@ public class FacebookListMessage extends FacebookMessage {
         payloadBody.addProperty(ELEMENTS, elements.toString());
         if (isNotNull(listMessage.topElementStyle))
             payloadBody.addProperty(TOP_ELEMENT_STYLE, listMessage.topElementStyle.toString());
-        if (isNotNull(listMessage.buttonList))
-            payloadBody.add(BUTTONS, generateButton(listMessage.buttonList.get(0)));
-
+        if (isNotNull(listMessage.buttonList)) {
+            List<Button> newButtonList = new ArrayList<Button>();
+            newButtonList.add(listMessage.buttonList.get(0));
+            payloadBody.addProperty(BUTTONS, getButtonJsonObjects(newButtonList).toString());
+        }
         attachmentBody.addProperty(TYPE, TEMPLATE);
         attachmentBody.add(PAYLOAD, payloadBody);
 
