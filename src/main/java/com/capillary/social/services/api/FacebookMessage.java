@@ -46,11 +46,11 @@ import org.springframework.stereotype.Service;
 public abstract class FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookMessage.class);
-    
+
     public abstract JsonObject messagePayload(String recipientId);
 
     public abstract boolean validateMessage();
-    
+
     public abstract MessageType getMessageType();
 
     private List<MessageType> skipMessageTypesForUserPolicy = new ArrayList<MessageType>(Arrays.asList(receiptMessage));
@@ -59,7 +59,8 @@ public abstract class FacebookMessage {
         GatewayResponse gtwResponse = new GatewayResponse();
         gtwResponse.response = "{}";
         try {
-            if (!canSendMessage(recipientId, pageId, gtwResponse, orgId)) return gtwResponse;
+            if (!canSendMessage(recipientId, pageId, gtwResponse, orgId))
+                return gtwResponse;
 
             JsonObject payload = messagePayload(recipientId);
             gtwResponse.message = payload.toString();
@@ -94,7 +95,7 @@ public abstract class FacebookMessage {
 
     private boolean canSendMessage(String recipientId, String pageId, GatewayResponse gtwResponse, long orgId) {
         boolean areSendParamsValid = checkSendParams(recipientId, pageId, orgId);
-        if(!areSendParamsValid) {
+        if (!areSendParamsValid) {
             gtwResponse.gatewayResponseType = invalidContent;
             gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to invalid parameters in send request\"}}";
             return false;
@@ -102,7 +103,9 @@ public abstract class FacebookMessage {
         Pair<Boolean, String> result = checkUserPolicy(recipientId, pageId);
         if (!result.first) {
             gtwResponse.gatewayResponseType = policyViolation;
-            gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to user policy violation, " + result.second + "\"}}";
+            gtwResponse.response = "{\"error\":{\"message\":\"message blocked due to user policy violation, "
+                                   + result.second
+                                   + "\"}}";
             return false;
         }
         boolean isMessageContentValid = validateMessage();
@@ -115,15 +118,15 @@ public abstract class FacebookMessage {
     }
 
     private boolean checkSendParams(String recipientId, String pageId, long orgId) {
-        if(Strings.isNullOrEmpty(recipientId)) {
+        if (Strings.isNullOrEmpty(recipientId)) {
             logger.info("recipient id : {} is invalid", recipientId);
             return false;
         }
-        if(Strings.isNullOrEmpty(pageId)) {
+        if (Strings.isNullOrEmpty(pageId)) {
             logger.info("page id : {} is invalid", pageId);
             return false;
         }
-        if(orgId < 0) {
+        if (orgId < 0) {
             logger.info("org id : {} is invalid", orgId);
             return false;
         }
@@ -153,6 +156,7 @@ public abstract class FacebookMessage {
         String accessToken = result.pageAccessToken;
         return accessToken;
     }
+
     protected Pair<Boolean, String> checkUserPolicy(String recipientId, String pageId) {
         logger.info("inside checking user policy method");
         String reason = null;
@@ -163,7 +167,7 @@ public abstract class FacebookMessage {
         ApplicationContext applicationContext = ApplicationContextAwareHandler.getApplicationContext();
         ChatDao chatDao = (ChatDao) applicationContext.getBean("chatDaoImpl");
         Chat chat = chatDao.findChat(recipientId, pageId, ChatStatus.RECEIVED);
-        if(chat == null) {
+        if (chat == null) {
             reason = "no chat record found for the user";
             logger.info(reason);
             return new Pair<Boolean, String>(false, reason);
