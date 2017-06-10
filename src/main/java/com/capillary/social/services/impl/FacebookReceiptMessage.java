@@ -181,7 +181,7 @@ public class FacebookReceiptMessage extends FacebookMessage {
 
     private JsonObject getAdjustment(Adjustment adjustment) {
         JsonObject adjustmentJson = new JsonObject();
-        if (Strings.isNullOrEmpty(adjustment.name))
+        if (!Strings.isNullOrEmpty(adjustment.name))
             adjustmentJson.addProperty(NAME, adjustment.name);
         if (adjustment.amount >= 0)
             adjustmentJson.addProperty(AMOUNT, adjustment.amount);
