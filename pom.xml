@@ -167,7 +167,7 @@
 		<dependency>
 			<groupId>com.capillary.social.facebook</groupId>
 			<artifactId>facebook-commons</artifactId>
-			<version>1.4</version>
+			<version>1.5</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
