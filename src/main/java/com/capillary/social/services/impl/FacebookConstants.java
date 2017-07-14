@@ -100,7 +100,7 @@ public class FacebookConstants {
 
     public static final String SEND_MESSAGE_URL = "https://graph.facebook.com/v2.6/me/messages?access_token=";
 
-    public static final int MESSAGE_TEXT_LIMIT = 320;
+    public static final int MESSAGE_TEXT_LIMIT = 640;
 
     public static final int ELEMENT_LIST_SIZE_LIMIT = 10;
 
