@@ -53,7 +53,7 @@ public class FacebookListMessageValidatorTest extends FacebookMessageStub {
         Assert.assertEquals(false, getValidation(new FacebookListMessageStub(listMessage), MessageType.listMessage));
     }
 
-    //@Ignore
+    @Ignore
     @Test
     public void shouldBeValidWhenListMessageIsSentSuccessfully() throws FacebookException, TException {
         ListMessage listMessage = generateListMessage();

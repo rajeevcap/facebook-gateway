@@ -42,7 +42,6 @@ import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 import org.springframework.stereotype.Service;
 
-@Service
 public abstract class FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookMessage.class);

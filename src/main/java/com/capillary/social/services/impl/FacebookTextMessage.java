@@ -15,7 +15,6 @@ import com.capillary.social.services.api.FacebookMessage;
 import com.capillary.social.validator.TextMessageTextValidator;
 import com.google.gson.JsonObject;
 
-@Component
 public class FacebookTextMessage extends FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookTextMessage.class);

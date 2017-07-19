@@ -28,7 +28,6 @@ import com.capillary.social.validator.QuickReplyMessageTextValidator;
 import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 
-@Component
 public class FacebookQuickReplyMessage extends FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookQuickReplyMessage.class);

@@ -54,7 +54,6 @@ import com.google.common.base.Strings;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-@Component
 public class FacebookReceiptMessage extends FacebookMessage {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookReceiptMessage.class);
