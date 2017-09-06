@@ -217,5 +217,76 @@ public class FacebookServiceListener implements Iface {
         }
         return gtwResponse;
     }
+	@Override
+	public CreateCustomAudienceListResponse createCustomList(List<UserDetails> userDetailsList, SocialChannel channel, String listName, String listDescription, long orgId, String adAccountId, String requestId) throws FacebookException, TException {
+		MDC.put("requestOrgId", "ORG_ID_" + orgId);
+		MDC.put("requestId", requestId);
+		logger.info("createCustomList called for userslist of size: "
+				+ userDetailsList.size()
+				+ " listName : "
+				+ listName
+				+ " listDescription : "
+				+ listDescription
+				+ " orgId : "
+				+ orgId);
+		MDC.put("requestOrgId", "ORG_ID_" + orgId);
+		MDC.put("requestId", requestId);
+		CreateCustomAudienceListResponse createCustomUserListResponse = new CreateCustomAudienceListResponse();
+		try {
+			Guard.notNull(channel, "channel");
+			Guard.notNullOrEmpty(userDetailsList, "userList");
+			Guard.notNullOrEmpty(listName, "listName");
+			Guard.notNullOrEmpty(listDescription, "listDescription");
+			Guard.notNullOrEmpty(adAccountId, "adAccountId");
+			CustomAudienceListBuider customAudienceListBuider = CustomAudienceListBuilderFactory.getInstance().getBulder(channel);
+			String listId = customAudienceListBuider.build(userDetailsList, listName, listDescription, orgId, adAccountId);
+			createCustomUserListResponse.setList_id(listId);
+			createCustomUserListResponse.setResponse(GatewayResponseType.success);
+		} catch (Exception e) {
+			logger.error("exception occurred while creating a custom user list", e);
+			createCustomUserListResponse.setResponse(GatewayResponseType.failed);
+			createCustomUserListResponse.setMessage(e.getMessage());
+			return createCustomUserListResponse;
+		} finally {
+			MDC.remove("requestOrgId");
+			MDC.remove("requestId");
+		}
+		return createCustomUserListResponse;
+	}
+
+	@Override
+	public RemoveFromCustomAudienceListResponse removeFromCustomList(List<UserDetails> userDetailsList, SocialChannel socialChannel, String listId, long orgId, String adsAccountId, String requestId) throws FacebookException, TException {
+		MDC.put("requestOrgId", "ORG_ID_" + orgId);
+		MDC.put("requestId", requestId);
+		logger.info("removeFromCustomList called for userslist of size: "
+				+ userDetailsList.size()
+				+ " listId : "
+				+ listId
+				+ " adsAccountId : "
+				+ adsAccountId
+				+ " orgId : "
+				+ orgId);
+		MDC.put("requestOrgId", "ORG_ID_" + orgId);
+		MDC.put("requestId", requestId);
+		RemoveFromCustomAudienceListResponse removeFromCustomAudienceListResponse = new RemoveFromCustomAudienceListResponse();
+		try {
+			Guard.notNullOrEmpty(userDetailsList,"userlist");
+			Guard.notNullOrEmpty(listId,"customaudiencelistid");
+			Guard.notNullOrEmpty(adsAccountId,"adsaccountId");
+			CustomAudienceListBuider customAudienceListBuider = CustomAudienceListBuilderFactory.getInstance().getBulder(socialChannel);
+			customAudienceListBuider.remove(userDetailsList,listId,orgId,adsAccountId);
+			removeFromCustomAudienceListResponse.setResponse(GatewayResponseType.success);
+		} catch (Exception e) {
+			logger.error("exception occurred while removing users from custom list", e);
+			removeFromCustomAudienceListResponse.setResponse(GatewayResponseType.failed);
+			removeFromCustomAudienceListResponse.setMessage(e.getMessage());
+			return removeFromCustomAudienceListResponse;
+		} finally {
+			MDC.remove("requestOrgId");
+			MDC.remove("requestId");
+		}
+		return removeFromCustomAudienceListResponse;
+	}
+
 
 }

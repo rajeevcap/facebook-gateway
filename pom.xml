@@ -89,7 +89,7 @@
 		<dependency>
 			<groupId>com.capillary.commons</groupId>
 			<artifactId>thrift-ifaces-fb-gateway</artifactId>
-			<version>1.1</version>
+			<version>1.2-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -170,6 +170,13 @@
 			<version>1.5</version>
 			<scope>compile</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.facebook.ads.sdk/facebook-java-ads-sdk -->
+		<dependency>
+			<groupId>com.facebook.ads.sdk</groupId>
+			<artifactId>facebook-java-ads-sdk</artifactId>
+			<version>2.10.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -211,7 +218,7 @@
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh</artifactId>
-				<version>2.9</version>
+				<version>1.0</version>
 			</extension>
 		</extensions>
 	</build>
