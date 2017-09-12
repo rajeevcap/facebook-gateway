@@ -1,20 +1,16 @@
 package com.capillary.social.external.impl;
 
+import com.capillary.social.*;
+import com.capillary.social.commons.data.manager.ShardContext;
+import com.capillary.social.services.api.CustomAudienceListBuider;
+import com.capillary.social.services.impl.CustomAudienceListBuilderFactory;
+import com.capillary.social.utils.Guard;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import com.capillary.social.ButtonMessage;
-import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookService.Iface;
-import com.capillary.social.GatewayResponse;
-import com.capillary.social.GenericMessage;
-import com.capillary.social.ListMessage;
-import com.capillary.social.MessageType;
-import com.capillary.social.QuickReplyMessage;
-import com.capillary.social.ReceiptMessage;
-import com.capillary.social.TextMessage;
 
 import com.capillary.social.handler.ApplicationContextAwareHandler;
 import com.capillary.social.services.impl.FacebookButtonMessage;
@@ -23,6 +19,8 @@ import com.capillary.social.services.impl.FacebookListMessage;
 import com.capillary.social.services.impl.FacebookQuickReplyMessage;
 import com.capillary.social.services.impl.FacebookReceiptMessage;
 import com.capillary.social.services.impl.FacebookTextMessage;
+
+import java.util.List;
 
 public class FacebookServiceListener implements Iface {
 
@@ -217,6 +215,7 @@ public class FacebookServiceListener implements Iface {
         }
         return gtwResponse;
     }
+
 	@Override
 	public CreateCustomAudienceListResponse createCustomList(List<UserDetails> userDetailsList, SocialChannel channel, String listName, String listDescription, long orgId, String adAccountId, String requestId) throws FacebookException, TException {
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
@@ -231,6 +230,7 @@ public class FacebookServiceListener implements Iface {
 				+ orgId);
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
 		MDC.put("requestId", requestId);
+		ShardContext.set((int)orgId);
 		CreateCustomAudienceListResponse createCustomUserListResponse = new CreateCustomAudienceListResponse();
 		try {
 			Guard.notNull(channel, "channel");

@@ -1,7 +1,5 @@
 package com.capillary.social.utils;
 
-import com.sun.org.apache.xml.internal.security.algorithms.MessageDigestAlgorithm;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
