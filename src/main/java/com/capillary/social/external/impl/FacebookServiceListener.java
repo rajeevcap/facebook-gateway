@@ -242,6 +242,7 @@ public class FacebookServiceListener implements Iface {
 			String listId = customAudienceListBuider.build(userDetailsList, listName, listDescription, orgId, adAccountId);
 			createCustomUserListResponse.setList_id(listId);
 			createCustomUserListResponse.setResponse(GatewayResponseType.success);
+			createCustomUserListResponse.setMessage("custom audience list has been created successfully");
 		} catch (Exception e) {
 			logger.error("exception occurred while creating a custom user list", e);
 			createCustomUserListResponse.setResponse(GatewayResponseType.failed);

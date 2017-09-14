@@ -45,7 +45,7 @@ public class FacebookCustomAudienceBuilder implements CustomAudienceListBuider {
 		FBAudienceList fbAudienceList = new FBAudienceList();
 		fbAudienceList.addAll(userDetailsList);
 		logger.info("trying to add {} users to the list", userDetailsList.size());
-		logger.info("facebook userdetails before sending",fbAudienceList.toString());
+		logger.info("facebook userdetails before sending"+fbAudienceList.toString());
 		User users = customAudience.createUser().setPayload(fbAudienceList.toString()).execute();
 		logger.debug("response from facebook api :{}", users.getRawResponseAsJsonObject());
 		return customAudience.getId();
