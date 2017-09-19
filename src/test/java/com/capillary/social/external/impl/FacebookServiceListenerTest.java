@@ -28,14 +28,13 @@ import static org.junit.Assert.*;
  * Created On 6/9/17
  */
 public class FacebookServiceListenerTest {
-	@Mock
 	ApplicationContext applicationContext;
 	FacebookServiceListener facebookServiceListener;
 
 	@Before
 	public void setUp(){
 		ApplicationContextAwareHandler applicationContextAwareHandler = new ApplicationContextAwareHandler();
-		applicationContextAwareHandler.setApplicationContext();
+		//applicationContextAwareHandler.setApplicationContext();
 		facebookServiceListener = new FacebookServiceListener();
 	}
 
