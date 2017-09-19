@@ -29,7 +29,7 @@ public class FacebookCustomAudienceBuilder implements CustomAudienceListBuider {
 	private static Logger logger = LoggerFactory.getLogger(FacebookCustomAudienceBuilder.class);
 
 	@Override
-	public String build(List<UserDetails> userDetailsList, String listName, String listDescription, long orgId, String adsAccountId) throws APIException {
+	public String build(List<UserDetails> userDetailsList, String listName, String listDescription, long orgId) throws APIException {
 		logger.info("received calls to build custom audience list");
 		FacebookAdsConfigrations facebookAdsConfigrations = OrgConfigurations.getFacebookConfigrations(orgId);
 		Guard.notNullOrEmpty(facebookAdsConfigrations.getAccessToken(), "facebook access token");

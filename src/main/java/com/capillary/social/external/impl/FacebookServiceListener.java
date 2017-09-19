@@ -217,15 +217,15 @@ public class FacebookServiceListener implements Iface {
     }
 
 	@Override
-	public CreateCustomAudienceListResponse createCustomList(List<UserDetails> userDetailsList, SocialChannel channel, String listName, String listDescription, long orgId, String adAccountId, String requestId) throws FacebookException, TException {
+	public CreateCustomAudienceListResponse createCustomList(List<UserDetails> userDetailsList, CustomAudienceListDetails customAudienceListDetails, SocialAccountDetails socialAccountDetails,long orgId, String requestId) throws FacebookException, TException {
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
 		MDC.put("requestId", requestId);
 		logger.info("createCustomList called for userslist of size: "
 				+ userDetailsList.size()
-				+ " listName : "
-				+ listName
+				+ " "
+				+ customAudienceListDetails.toString()
 				+ " listDescription : "
-				+ listDescription
+				+ "for org"
 				+ " orgId : "
 				+ orgId);
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
@@ -233,14 +233,11 @@ public class FacebookServiceListener implements Iface {
 		ShardContext.set((int)orgId);
 		CreateCustomAudienceListResponse createCustomUserListResponse = new CreateCustomAudienceListResponse();
 		try {
-			Guard.notNull(channel, "channel");
+			Guard.notNull(socialAccountDetails, "socialAccountDetails");
 			Guard.notNullOrEmpty(userDetailsList, "userList");
-			Guard.notNullOrEmpty(listName, "listName");
-			Guard.notNullOrEmpty(listDescription, "listDescription");
-			Guard.notNullOrEmpty(adAccountId, "adAccountId");
-			CustomAudienceListBuider customAudienceListBuider = CustomAudienceListBuilderFactory.getInstance().getBulder(channel);
-			String listId = customAudienceListBuider.build(userDetailsList, listName, listDescription, orgId, adAccountId);
-			createCustomUserListResponse.setList_id(listId);
+			CustomAudienceListBuider customAudienceListBuider = CustomAudienceListBuilderFactory.getInstance().getBulder(socialAccountDetails.getChannel());
+			String listId = customAudienceListBuider.build(userDetailsList, customAudienceListDetails.name, customAudienceListDetails.description, orgId);
+			createCustomUserListResponse.setListid(listId);
 			createCustomUserListResponse.setResponse(GatewayResponseType.success);
 			createCustomUserListResponse.setMessage("custom audience list has been created successfully");
 		} catch (Exception e) {
@@ -254,40 +251,5 @@ public class FacebookServiceListener implements Iface {
 		}
 		return createCustomUserListResponse;
 	}
-
-	@Override
-	public RemoveFromCustomAudienceListResponse removeFromCustomList(List<UserDetails> userDetailsList, SocialChannel socialChannel, String listId, long orgId, String adsAccountId, String requestId) throws FacebookException, TException {
-		MDC.put("requestOrgId", "ORG_ID_" + orgId);
-		MDC.put("requestId", requestId);
-		logger.info("removeFromCustomList called for userslist of size: "
-				+ userDetailsList.size()
-				+ " listId : "
-				+ listId
-				+ " adsAccountId : "
-				+ adsAccountId
-				+ " orgId : "
-				+ orgId);
-		MDC.put("requestOrgId", "ORG_ID_" + orgId);
-		MDC.put("requestId", requestId);
-		RemoveFromCustomAudienceListResponse removeFromCustomAudienceListResponse = new RemoveFromCustomAudienceListResponse();
-		try {
-			Guard.notNullOrEmpty(userDetailsList,"userlist");
-			Guard.notNullOrEmpty(listId,"customaudiencelistid");
-			Guard.notNullOrEmpty(adsAccountId,"adsaccountId");
-			CustomAudienceListBuider customAudienceListBuider = CustomAudienceListBuilderFactory.getInstance().getBulder(socialChannel);
-			customAudienceListBuider.remove(userDetailsList,listId,orgId,adsAccountId);
-			removeFromCustomAudienceListResponse.setResponse(GatewayResponseType.success);
-		} catch (Exception e) {
-			logger.error("exception occurred while removing users from custom list", e);
-			removeFromCustomAudienceListResponse.setResponse(GatewayResponseType.failed);
-			removeFromCustomAudienceListResponse.setMessage(e.getMessage());
-			return removeFromCustomAudienceListResponse;
-		} finally {
-			MDC.remove("requestOrgId");
-			MDC.remove("requestId");
-		}
-		return removeFromCustomAudienceListResponse;
-	}
-
 
 }
