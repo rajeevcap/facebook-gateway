@@ -7,18 +7,28 @@ import com.capillary.social.GatewayResponseType;
 import com.capillary.social.SocialAccountDetails;
 import com.capillary.social.SocialChannel;
 import com.capillary.social.UserDetails;
+import com.capillary.social.commons.dao.impl.ConfigKeyValuesDaoImpl;
 import com.capillary.social.handler.ApplicationContextAwareHandler;
+import com.capillary.social.library.api.OrgConfigrationKeys;
+import com.capillary.social.services.impl.factories.CustomAudienceListBuilderFactory;
+import com.facebook.ads.sdk.APIContext;
+import com.facebook.ads.sdk.APIException;
+import com.facebook.ads.sdk.APINodeList;
+import com.facebook.ads.sdk.AdAccount;
 import com.facebook.ads.sdk.CustomAudience;
 import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.ApplicationContext;
-import org.springframework.mock.staticmock.MockStaticEntityMethods;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 /**
  * This code is intellectual property of Capillary Technologies.
@@ -27,14 +37,22 @@ import static org.junit.Assert.*;
  * Created By able
  * Created On 6/9/17
  */
+@RunWith(MockitoJUnitRunner.class)
 public class FacebookServiceListenerTest {
+	@Mock
 	ApplicationContext applicationContext;
+	@Mock
+	ConfigKeyValuesDaoImpl configKeyValuesDao;
 	FacebookServiceListener facebookServiceListener;
 
 	@Before
 	public void setUp(){
 		ApplicationContextAwareHandler applicationContextAwareHandler = new ApplicationContextAwareHandler();
-		//applicationContextAwareHandler.setApplicationContext();
+		applicationContextAwareHandler.setApplicationContext(applicationContext);
+		when(applicationContext.getBean("configKeyValuesDaoImpl")).thenReturn(configKeyValuesDao);
+		when(configKeyValuesDao.findValueByName(OrgConfigrationKeys.FB_ADS_ACCOUNT_ID.name(),0)).thenReturn("testAppId");
+		when(configKeyValuesDao.findValueByName(OrgConfigrationKeys.FB_ADS_ACCESS_TOKEN.name(),0)).thenReturn("testAccessToken");
+		CustomAudienceListBuilderFactory.getInstance(true);
 		facebookServiceListener = new FacebookServiceListener();
 	}
 
@@ -55,7 +73,19 @@ public class FacebookServiceListenerTest {
 		customAudienceListDetails.setDescription("testDescription");
 		customAudienceListDetails.setName("testList");
 		CreateCustomAudienceListResponse response = facebookServiceListener.createCustomList(userDetailsList, customAudienceListDetails, socialAccountDetails, 0, "thread1");
-		assertEquals(GatewayResponseType.failed, response.response);
+		assertEquals(GatewayResponseType.success, response.response);
+	}
+
+	@Test
+	public void getAdset() throws APIException {
+		String accessToken = "EAACARaJySOoBAKpGkk5EsSZB2RgRNXnlzaATZBBIOfzaf9pzKL4IpLHguiZBf8cAF56Df0i2SutrZAeMgbIup8pdu42lM3yfDxSWsq7QwmPCNgFhAgpMqjRuJxEvpJSeUsVgtRCBvA5VWX2IysLM7ZBB3bW7vfcE6WIaeSZAigKCdmJoavXRkxfivMVt4ZB2GksHHoLbxrbYbZAZAdA9iHI0un2labbxddmMZD";
+		APIContext context = new APIContext(accessToken).enableDebug(true);
+		List<String> customAudienceFields = new ArrayList<>();
+		for (CustomAudience.EnumFields fieldsds: CustomAudience.EnumFields.values()) {
+			customAudienceFields.add(fieldsds.toString());
+		}
+		APINodeList<CustomAudience> adSets = new AdAccount("118772362192973", context).getCustomAudiences().requestFields(customAudienceFields).execute();
+		System.out.println(adSets.toString());
 	}
 
 

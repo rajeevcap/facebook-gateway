@@ -2,8 +2,10 @@ package com.capillary.social.external.impl;
 
 import com.capillary.social.*;
 import com.capillary.social.commons.data.manager.ShardContext;
-import com.capillary.social.services.api.CustomAudienceListBuider;
-import com.capillary.social.services.impl.CustomAudienceListBuilderFactory;
+import com.capillary.social.services.api.builders.CustomAudienceListBuider;
+import com.capillary.social.services.api.builders.CustomAudienceReportsBuilder;
+import com.capillary.social.services.impl.factories.CustomAudienceListBuilderFactory;
+import com.capillary.social.services.impl.factories.CustomAudienceReportsBuilderFactory;
 import com.capillary.social.utils.Guard;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -217,7 +219,7 @@ public class FacebookServiceListener implements Iface {
     }
 
 	@Override
-	public CreateCustomAudienceListResponse createCustomList(List<UserDetails> userDetailsList, CustomAudienceListDetails customAudienceListDetails, SocialAccountDetails socialAccountDetails,long orgId, String requestId) throws FacebookException, TException {
+	public CreateCustomAudienceListResponse createCustomList(List<UserDetails> userDetailsList, CustomAudienceListDetails customAudienceListDetails, SocialAccountDetails socialAccountDetails, long orgId, String requestId) throws FacebookException, TException {
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
 		MDC.put("requestId", requestId);
 		logger.info("createCustomList called for userslist of size: "
@@ -228,9 +230,7 @@ public class FacebookServiceListener implements Iface {
 				+ "for org"
 				+ " orgId : "
 				+ orgId);
-		MDC.put("requestOrgId", "ORG_ID_" + orgId);
-		MDC.put("requestId", requestId);
-		ShardContext.set((int)orgId);
+		ShardContext.set((int) orgId);
 		CreateCustomAudienceListResponse createCustomUserListResponse = new CreateCustomAudienceListResponse();
 		try {
 			Guard.notNull(socialAccountDetails, "socialAccountDetails");
@@ -250,6 +250,31 @@ public class FacebookServiceListener implements Iface {
 			MDC.remove("requestId");
 		}
 		return createCustomUserListResponse;
+	}
+
+	@Override
+	public GetCustomAudienceListsResponse getCustomAudienceLists(long orgId, SocialChannel socialChannel, String requestId) throws FacebookException, TException {
+		MDC.put("requestOrgId", "ORG_ID_" + orgId);
+		MDC.put("requestId", requestId);
+		logger.info("received call for getCustomAudienceLists for orgId {} socialChannel {}", orgId, socialChannel);
+		ShardContext.set((int) orgId);
+		GetCustomAudienceListsResponse response = new GetCustomAudienceListsResponse();
+		try {
+			CustomAudienceReportsBuilder customAudienceReportsBuilder = CustomAudienceReportsBuilderFactory.getInstance().getBulder(socialChannel);
+			List<CustomAudienceList> customAudienceLists = customAudienceReportsBuilder.buildAll(orgId);
+			response.customAudienceLists = customAudienceLists;
+			response.response = GatewayResponseType.success;
+			if (customAudienceLists.isEmpty()) {
+				response.message = "social channel returned empty list";
+			} else {
+				response.message = "customAudienceLists has been fetched successfully";
+			}
+		} catch (Exception e) {
+			logger.error("error while getting custom audience list from facebook", e);
+			response.response = GatewayResponseType.failed;
+			response.message = e.getMessage();
+		}
+		return response;
 	}
 
 }
