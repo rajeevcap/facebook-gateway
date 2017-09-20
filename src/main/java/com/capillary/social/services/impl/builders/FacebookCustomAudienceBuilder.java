@@ -29,6 +29,7 @@ public class FacebookCustomAudienceBuilder implements CustomAudienceListBuider {
 	@Override
 	public String build(List<UserDetails> userDetailsList, String listName, String listDescription, long orgId) throws APIException {
 		logger.info("received calls to build custom audience list");
+		Guard.sizeGreaterThan(userDetailsList,20,"userDetailsList");
 		FacebookAdsConfigrations facebookAdsConfigrations = OrgConfigurations.getFacebookConfigrations(orgId);
 		Guard.notNullOrEmpty(facebookAdsConfigrations.getAccessToken(), "facebook access token");
 		Guard.notNullOrEmpty(facebookAdsConfigrations.getAdsAccountId(), "facebook ads account id");

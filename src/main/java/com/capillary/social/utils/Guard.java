@@ -1,5 +1,6 @@
 package com.capillary.social.utils;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -27,6 +28,11 @@ public class Guard {
 		notNull(object,name);
 		if(object.isEmpty()){
 			throw new RuntimeException(name+" should not be empty");
+		}
+	}
+	public static void sizeGreaterThan(Collection collection, int minsize , String name){
+		if(collection.size()<minsize){
+			throw new RuntimeException("size of "+name+" should be at least "+minsize);
 		}
 	}
 }
