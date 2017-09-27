@@ -30,6 +30,11 @@ public class Guard {
 			throw new RuntimeException(name+" should not be empty");
 		}
 	}
+	public static void notFalse(boolean bool,String nale){
+		if(bool==false){
+			throw new RuntimeException(bool+" should not be false");
+		}
+	}
 	public static void sizeGreaterThan(Collection collection, int minsize , String name){
 		if(collection.size()<minsize){
 			throw new RuntimeException("size of "+name+" should be at least "+minsize);

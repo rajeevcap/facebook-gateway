@@ -219,7 +219,7 @@ public class FacebookServiceListener implements Iface {
     }
 
 	@Override
-	public CreateCustomAudienceListResponse createCustomList(List<UserDetails> userDetailsList, CustomAudienceListDetails customAudienceListDetails, SocialAccountDetails socialAccountDetails, long orgId, String requestId) throws FacebookException, TException {
+	public CreateCustomAudienceListResponse createCustomList(List<UserDetails> userDetailsList, CustomAudienceListDetails customAudienceListDetails, SocialAccountDetails socialAccountDetails, long orgId,String recipientListId, String requestId) throws FacebookException, TException {
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
 		MDC.put("requestId", requestId);
 		logger.info("createCustomList called for userslist of size: "
@@ -236,7 +236,7 @@ public class FacebookServiceListener implements Iface {
 			Guard.notNull(socialAccountDetails, "socialAccountDetails");
 			Guard.notNullOrEmpty(userDetailsList, "userList");
 			CustomAudienceListBuider customAudienceListBuider = CustomAudienceListBuilderFactory.getInstance().getBulder(socialAccountDetails.getChannel());
-			String listId = customAudienceListBuider.build(userDetailsList, customAudienceListDetails.name, customAudienceListDetails.description, orgId);
+			String listId = customAudienceListBuider.build(userDetailsList, customAudienceListDetails.name, customAudienceListDetails.description,recipientListId, orgId);
 			createCustomUserListResponse.setListid(listId);
 			createCustomUserListResponse.setResponse(GatewayResponseType.success);
 			createCustomUserListResponse.setMessage("custom audience list has been created successfully");
@@ -253,7 +253,7 @@ public class FacebookServiceListener implements Iface {
 	}
 
 	@Override
-	public GetCustomAudienceListsResponse getCustomAudienceLists(long orgId, SocialChannel socialChannel, String requestId) throws FacebookException, TException {
+	public GetCustomAudienceListsResponse getCustomAudienceLists(long orgId, SocialChannel socialChannel,boolean clearCache, String requestId) throws FacebookException, TException {
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
 		MDC.put("requestId", requestId);
 		logger.info("received call for getCustomAudienceLists for orgId {} socialChannel {}", orgId, socialChannel);

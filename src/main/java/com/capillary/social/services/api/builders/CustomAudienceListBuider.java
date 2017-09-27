@@ -14,5 +14,5 @@ import java.util.List;
  * Created On 4/9/17
  */
 public interface CustomAudienceListBuider {
-	public String build(List<UserDetails> userDetailsList, String listName, String listDescription, long orgId) throws APIException;
+	public String build(List<UserDetails> userDetailsList, String listName, String listDescription,String campaignListId, long orgId) throws APIException;
 }

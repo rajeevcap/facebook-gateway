@@ -16,7 +16,7 @@ import java.util.List;
 public class MockCustomAudienceBuilder implements CustomAudienceListBuider{
 
 	@Override
-	public String build(List<UserDetails> userDetailsList, String listName, String listDescription, long orgId) throws APIException {
+	public String build(List<UserDetails> userDetailsList, String listName, String listDescription,String campaignListId, long orgId) throws APIException {
 		return "success";
 	}
 }
