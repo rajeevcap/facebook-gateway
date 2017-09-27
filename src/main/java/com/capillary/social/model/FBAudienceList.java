@@ -18,12 +18,7 @@ import java.util.List;
  * Created On 6/9/17
  */
 public class FBAudienceList extends LinkedList<UserDetails> {
-	private static final ArrayList<String> schema = new ArrayList<>();
-	public FBAudienceList(){
-		schema.add("EMAIL");
-		schema.add("PHONE");
-	}
-
+	private static final List<String> schema = Arrays.asList(new String[]{"EMAIL","PHONE"});
 	@Override
 	public String toString(){
 		HashMap<String,Object> payLoad = new HashMap<>();
