@@ -22,7 +22,9 @@ import com.capillary.social.services.impl.FacebookQuickReplyMessage;
 import com.capillary.social.services.impl.FacebookReceiptMessage;
 import com.capillary.social.services.impl.FacebookTextMessage;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class FacebookServiceListener implements Iface {
 
@@ -275,6 +277,24 @@ public class FacebookServiceListener implements Iface {
 			response.message = e.getMessage();
 		}
 		return response;
+	}
+
+	@Override
+	public List<SocialAdSet> getAdSets(SocialChannel socialChannel, long l, String s) throws FacebookException, TException {
+		List<SocialAdSet> socialAdSets = new ArrayList<>();
+		Random rand = new Random();
+		int size = rand.nextInt(10);
+		for (int i = 0; i < size; i++) {
+			SocialAdSet socialAdSet = new SocialAdSet();
+			socialAdSet.setId("12345" + rand.nextInt(100));
+			socialAdSet.setName("FB_ADS_" + rand.nextInt(100));
+			socialAdSet.setCampaignId(String.valueOf(rand.nextInt(25)));
+			socialAdSet.setStartTime(rand.nextLong());
+			AdSetStatus status = AdSetStatus.findByValue(rand.nextInt(4));
+			socialAdSet.setStatus(AdSetStatus.ACTIVE);
+			socialAdSets.add(socialAdSet);
+		}
+		return socialAdSets;
 	}
 
 }

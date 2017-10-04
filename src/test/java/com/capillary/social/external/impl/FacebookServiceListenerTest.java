@@ -117,11 +117,13 @@ public class FacebookServiceListenerTest {
 		targeting.setFieldCustomAudiences(Arrays.asList(new IDName[]{idName}));
 		AdSet testAccount = new AdAccount("118772362192973", context).createAdSet()
 				.setName("testAccount")
-				.setBillingEvent(AdSet.EnumBillingEvent.VALUE_CLICKS)
-				.setLifetimeBudget("10000")
+				.setBillingEvent(AdSet.EnumBillingEvent.VALUE_IMPRESSIONS)
+				.setLifetimeBudget("1000000")
 				.setOptimizationGoal(AdSet.EnumOptimizationGoal.VALUE_POST_ENGAGEMENT)
 				.setBidAmount("1500")
 				.setTargeting(targeting)
+				.setCampaignId("120330000011209503")
+				.setEndTime("1511568000")
 				.execute();
 		System.out.println(testAccount.toString());
 	}
@@ -137,7 +139,11 @@ public class FacebookServiceListenerTest {
 		IDName idName = new IDName();
 		idName.setFieldId("120330000010103703");
 		targeting.setFieldCustomAudiences(Arrays.asList(new IDName[]{idName}));
-		Campaign testAccount = new AdAccount("118772362192973", context).createCampaign().execute();
+		Campaign testAccount = new AdAccount("118772362192973", context)
+				.createCampaign()
+				.setName("testName")
+				.setObjective(Campaign.EnumObjective.VALUE_LINK_CLICKS)
+				.execute();
 		System.out.println(testAccount.toString());
 	}
 
