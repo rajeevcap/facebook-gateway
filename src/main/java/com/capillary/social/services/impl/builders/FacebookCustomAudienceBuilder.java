@@ -53,7 +53,7 @@ public class FacebookCustomAudienceBuilder implements CustomAudienceListBuider {
 					.setSubtype(CustomAudience.EnumSubtype.VALUE_CUSTOM)
 					.setDescription(listDescription)
 					.requestAllFields()
-					.execute();
+					.execute().fetch();
 			logger.info("created empty custom audience list with id \"{}\"", customAudience.getId());
 			boolean saved = saveCustomAudienceList(customAudience,recipientListId,orgId);
 			Guard.notFalse(saved," saving status");
