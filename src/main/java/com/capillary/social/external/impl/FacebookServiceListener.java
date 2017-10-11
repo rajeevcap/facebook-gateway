@@ -228,7 +228,10 @@ public class FacebookServiceListener implements Iface {
 				+ userDetailsList.size()
 				+ " "
 				+ customAudienceListDetails.toString()
-				+ " listDescription : "
+				+ socialAccountDetails.toString()
+				+ "orgId" + orgId
+				+ "recipient list id :"+recipientListId
+				+ "request Id "+requestId
 				+ "for org"
 				+ " orgId : "
 				+ orgId);
