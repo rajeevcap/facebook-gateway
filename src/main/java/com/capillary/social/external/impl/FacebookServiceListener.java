@@ -240,6 +240,7 @@ public class FacebookServiceListener implements Iface {
 		try {
 			Guard.notNull(socialAccountDetails, "socialAccountDetails");
 			Guard.notNullOrEmpty(userDetailsList, "userList");
+			Guard.notNullOrEmpty(recipientListId,"recipientListId");
 			CustomAudienceListBuider customAudienceListBuider = CustomAudienceListBuilderFactory.getInstance().getBulder(socialAccountDetails.getChannel());
 			String listId = customAudienceListBuider.build(userDetailsList, customAudienceListDetails.name, customAudienceListDetails.description,recipientListId, orgId);
 			createCustomUserListResponse.setListid(listId);
