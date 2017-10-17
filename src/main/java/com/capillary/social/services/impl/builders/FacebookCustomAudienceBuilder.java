@@ -10,6 +10,7 @@ import com.capillary.social.library.api.OrgConfigurations;
 import com.capillary.social.model.FBAudienceList;
 import com.capillary.social.model.FacebookAdsConfigrations;
 import com.capillary.social.services.api.builders.CustomAudienceListBuider;
+import com.capillary.social.systems.config.LockHolder;
 import com.capillary.social.utils.Guard;
 import com.facebook.ads.sdk.APIContext;
 import com.facebook.ads.sdk.APIException;
@@ -36,18 +37,26 @@ public class FacebookCustomAudienceBuilder implements CustomAudienceListBuider {
 	@Override
 	public String build(List<UserDetails> userDetailsList, String listName, String listDescription,String recipientListId, long orgId) throws APIException {
 		logger.info("received calls to build custom audience list");
-		SocialAudienceList socialAudienceList = getSocialAudienceList(recipientListId);
 		FacebookAdsConfigrations facebookAdsConfigrations = OrgConfigurations.getFacebookConfigrations(orgId);
 		Guard.notNullOrEmpty(facebookAdsConfigrations.getAccessToken(), "facebook access token");
 		Guard.notNullOrEmpty(facebookAdsConfigrations.getAdsAccountId(), "facebook ads account id");
 		APIContext context = new APIContext(facebookAdsConfigrations.getAccessToken()).enableDebug(true);
+		SocialAudienceList socialAudienceList = getSocialAudienceList(recipientListId,facebookAdsConfigrations.getAdsAccountId());
 		CustomAudience customAudience;
 		if(socialAudienceList!=null){
-			logger.info("facebook list has been created already adding customers to existing list");
-			customAudience = new CustomAudience(Long.parseLong(socialAudienceList.getRemoteListId()),context).fetch();
+			String lockKey = facebookAdsConfigrations.getAdsAccountId()+"_"+recipientListId;
+			LockHolder.lock(lockKey);
+			try {
+				logger.info("facebook list has been created already adding customers to existing list");
+				customAudience = new CustomAudience(Long.parseLong(socialAudienceList.getRemoteListId()), context).fetch();
+			}
+			finally {
+				LockHolder.release(lockKey);
+			}
 		}
 		else {
 			logger.info("trying to create empty custom audience list with name :{} and description \"{}\"", listName, listDescription);
+
 			customAudience=new AdAccount(facebookAdsConfigrations.getAdsAccountId(), context).createCustomAudience()
 					.setName(listName)
 					.setSubtype(CustomAudience.EnumSubtype.VALUE_CUSTOM)
@@ -69,11 +78,11 @@ public class FacebookCustomAudienceBuilder implements CustomAudienceListBuider {
 		return customAudience.getId();
 	}
 
-	private SocialAudienceList getSocialAudienceList(String recipientListId){
+	private SocialAudienceList getSocialAudienceList(String recipientListId,String adsAccountId){
 		logger.info("getting the social audience list with recipient list id {}",recipientListId);
 		ApplicationContext applicationContext = ApplicationContextAwareHandler.getApplicationContext();
 		SocialAudienceListDao socialAudienceListDao = (SocialAudienceListDao) applicationContext.getBean("socialAudienceListDaoImpl");
-		SocialAudienceList socialAudienceList = socialAudienceListDao.findByRecepientListId(recipientListId);
+		SocialAudienceList socialAudienceList = socialAudienceListDao.findByRecepientListId(recipientListId,adsAccountId);
 		if(socialAudienceList==null){
 			logger.info("could not find a social audience list with recipient id {}", recipientListId);
 		}

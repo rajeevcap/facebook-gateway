@@ -6,6 +6,7 @@ import com.capillary.social.services.api.builders.CustomAudienceListBuider;
 import com.capillary.social.services.api.builders.CustomAudienceReportsBuilder;
 import com.capillary.social.services.impl.factories.CustomAudienceListBuilderFactory;
 import com.capillary.social.services.impl.factories.CustomAudienceReportsBuilderFactory;
+import com.capillary.social.systems.config.LockHolder;
 import com.capillary.social.utils.Guard;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -248,9 +249,7 @@ public class FacebookServiceListener implements Iface {
 			createCustomUserListResponse.setMessage("custom audience list has been created successfully");
 		} catch (Exception e) {
 			logger.error("exception occurred while creating a custom user list", e);
-			createCustomUserListResponse.setResponse(GatewayResponseType.failed);
-			createCustomUserListResponse.setMessage(e.getMessage());
-			return createCustomUserListResponse;
+			throw new FacebookException(e.getMessage());
 		} finally {
 			MDC.remove("requestOrgId");
 			MDC.remove("requestId");
