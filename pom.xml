@@ -167,7 +167,7 @@
 		<dependency>
 			<groupId>com.capillary.social.facebook</groupId>
 			<artifactId>facebook-commons</artifactId>
-			<version>1.9-SNAPSHOT</version>
+			<version>1.9</version>
 			<scope>compile</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.facebook.ads.sdk/facebook-java-ads-sdk -->
