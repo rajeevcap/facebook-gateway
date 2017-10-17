@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.capillary.social</groupId>
 	<artifactId>facebook-gateway-service</artifactId>
-	<version>1.11</version>
+	<version>1.12</version>
 	<name>FacebookGatewayService</name>
 	<url>http://maven.apache.org</url>
 
@@ -89,7 +89,7 @@
 		<dependency>
 			<groupId>com.capillary.commons</groupId>
 			<artifactId>thrift-ifaces-fb-gateway</artifactId>
-			<version>1.1</version>
+			<version>1.2-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -167,8 +167,21 @@
 		<dependency>
 			<groupId>com.capillary.social.facebook</groupId>
 			<artifactId>facebook-commons</artifactId>
-			<version>1.5</version>
+			<version>1.9</version>
 			<scope>compile</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.facebook.ads.sdk/facebook-java-ads-sdk -->
+		<dependency>
+			<groupId>com.facebook.ads.sdk</groupId>
+			<artifactId>facebook-java-ads-sdk</artifactId>
+			<version>2.10.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.10.19</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

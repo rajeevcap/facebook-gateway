@@ -1,20 +1,19 @@
 package com.capillary.social.external.impl;
 
+import com.capillary.social.*;
+import com.capillary.social.commons.data.manager.ShardContext;
+import com.capillary.social.services.api.builders.CustomAudienceListBuider;
+import com.capillary.social.services.api.builders.CustomAudienceReportsBuilder;
+import com.capillary.social.services.impl.factories.CustomAudienceListBuilderFactory;
+import com.capillary.social.services.impl.factories.CustomAudienceReportsBuilderFactory;
+import com.capillary.social.systems.config.LockHolder;
+import com.capillary.social.utils.Guard;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import com.capillary.social.ButtonMessage;
-import com.capillary.social.FacebookException;
 import com.capillary.social.FacebookService.Iface;
-import com.capillary.social.GatewayResponse;
-import com.capillary.social.GenericMessage;
-import com.capillary.social.ListMessage;
-import com.capillary.social.MessageType;
-import com.capillary.social.QuickReplyMessage;
-import com.capillary.social.ReceiptMessage;
-import com.capillary.social.TextMessage;
 
 import com.capillary.social.handler.ApplicationContextAwareHandler;
 import com.capillary.social.services.impl.FacebookButtonMessage;
@@ -23,6 +22,10 @@ import com.capillary.social.services.impl.FacebookListMessage;
 import com.capillary.social.services.impl.FacebookQuickReplyMessage;
 import com.capillary.social.services.impl.FacebookReceiptMessage;
 import com.capillary.social.services.impl.FacebookTextMessage;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class FacebookServiceListener implements Iface {
 
@@ -217,5 +220,84 @@ public class FacebookServiceListener implements Iface {
         }
         return gtwResponse;
     }
+
+	@Override
+	public CreateCustomAudienceListResponse createCustomList(List<UserDetails> userDetailsList, CustomAudienceListDetails customAudienceListDetails, SocialAccountDetails socialAccountDetails, long orgId,String recipientListId, String requestId) throws FacebookException, TException {
+		MDC.put("requestOrgId", "ORG_ID_" + orgId);
+		MDC.put("requestId", requestId);
+		logger.info("createCustomList called for userslist of size: "
+				+ userDetailsList.size()
+				+ " "
+				+ customAudienceListDetails.toString()
+				+ socialAccountDetails.toString()
+				+ "orgId" + orgId
+				+ "recipient list id :"+recipientListId
+				+ "request Id "+requestId
+				+ "for org"
+				+ " orgId : "
+				+ orgId);
+		ShardContext.set((int) orgId);
+		CreateCustomAudienceListResponse createCustomUserListResponse = new CreateCustomAudienceListResponse();
+		try {
+			Guard.notNull(socialAccountDetails, "socialAccountDetails");
+			Guard.notNullOrEmpty(userDetailsList, "userList");
+			Guard.notNullOrEmpty(recipientListId,"recipientListId");
+			CustomAudienceListBuider customAudienceListBuider = CustomAudienceListBuilderFactory.getInstance().getBulder(socialAccountDetails.getChannel());
+			String listId = customAudienceListBuider.build(userDetailsList, customAudienceListDetails.name, customAudienceListDetails.description,recipientListId, orgId);
+			createCustomUserListResponse.setListid(listId);
+			createCustomUserListResponse.setResponse(GatewayResponseType.success);
+			createCustomUserListResponse.setMessage("custom audience list has been created successfully");
+		} catch (Exception e) {
+			logger.error("exception occurred while creating a custom user list", e);
+			throw new FacebookException(e.getMessage());
+		} finally {
+			MDC.remove("requestOrgId");
+			MDC.remove("requestId");
+		}
+		return createCustomUserListResponse;
+	}
+
+	@Override
+	public GetCustomAudienceListsResponse getCustomAudienceLists(long orgId, SocialChannel socialChannel,boolean clearCache, String requestId) throws FacebookException, TException {
+		MDC.put("requestOrgId", "ORG_ID_" + orgId);
+		MDC.put("requestId", requestId);
+		logger.info("received call for getCustomAudienceLists for orgId {} socialChannel {}", orgId, socialChannel);
+		ShardContext.set((int) orgId);
+		GetCustomAudienceListsResponse response = new GetCustomAudienceListsResponse();
+		try {
+			CustomAudienceReportsBuilder customAudienceReportsBuilder = CustomAudienceReportsBuilderFactory.getInstance().getBulder(socialChannel);
+			List<CustomAudienceList> customAudienceLists = customAudienceReportsBuilder.buildAll(orgId);
+			response.customAudienceLists = customAudienceLists;
+			response.response = GatewayResponseType.success;
+			if (customAudienceLists.isEmpty()) {
+				response.message = "social channel returned empty list";
+			} else {
+				response.message = "customAudienceLists has been fetched successfully";
+			}
+		} catch (Exception e) {
+			logger.error("error while getting custom audience list from facebook", e);
+			response.response = GatewayResponseType.failed;
+			response.message = e.getMessage();
+		}
+		return response;
+	}
+
+	@Override
+	public List<SocialAdSet> getAdSets(SocialChannel socialChannel, long l, String s) throws FacebookException, TException {
+		List<SocialAdSet> socialAdSets = new ArrayList<>();
+		Random rand = new Random();
+		int size = rand.nextInt(10);
+		for (int i = 0; i < size; i++) {
+			SocialAdSet socialAdSet = new SocialAdSet();
+			socialAdSet.setId("12345" + rand.nextInt(100));
+			socialAdSet.setName("FB_ADS_" + rand.nextInt(100));
+			socialAdSet.setCampaignId(String.valueOf(rand.nextInt(25)));
+			socialAdSet.setStartTime(rand.nextLong());
+			AdSetStatus status = AdSetStatus.findByValue(rand.nextInt(4));
+			socialAdSet.setStatus(AdSetStatus.ACTIVE);
+			socialAdSets.add(socialAdSet);
+		}
+		return socialAdSets;
+	}
 
 }

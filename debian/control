@@ -3,7 +3,7 @@ Version: [[version]]
 Section: misc
 Priority: optional
 Architecture: all
-Pre-Depends: common-utils-config, service-discovery, dirsprepare
+Pre-Depends: common-utils-config, service-discovery, dirsprepare,cc-api
 Maintainer: Abhinav <abhinav.garg@capillarytech.com>
 Description: Facebook Gateway Service
 Distribution: development
