@@ -85,13 +85,6 @@
 			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>com.capillary.commons</groupId>
-			<artifactId>thrift-ifaces-fb-gateway</artifactId>
-			<version>1.2-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
@@ -167,7 +160,7 @@
 		<dependency>
 			<groupId>com.capillary.social.facebook</groupId>
 			<artifactId>facebook-commons</artifactId>
-			<version>1.9</version>
+			<version>1.10-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.facebook.ads.sdk/facebook-java-ads-sdk -->

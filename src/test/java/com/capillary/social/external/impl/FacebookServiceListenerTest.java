@@ -57,7 +57,6 @@ public class FacebookServiceListenerTest {
 		when(applicationContext.getBean("configKeyValuesDaoImpl")).thenReturn(configKeyValuesDao);
 		when(configKeyValuesDao.findValueByName(OrgConfigrationKeys.FB_ADS_ACCOUNT_ID.name(),0)).thenReturn("testAppId");
 		when(configKeyValuesDao.findValueByName(OrgConfigrationKeys.FB_ADS_ACCESS_TOKEN.name(),0)).thenReturn("testAccessToken");
-		CustomAudienceListBuilderFactory.getInstance(true);
 		facebookServiceListener = new FacebookServiceListener();
 	}
 
