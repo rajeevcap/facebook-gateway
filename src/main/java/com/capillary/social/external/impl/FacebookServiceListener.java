@@ -276,7 +276,7 @@ public class FacebookServiceListener implements Iface {
 		GetCustomAudienceListsResponse response = new GetCustomAudienceListsResponse();
 		try {
 			CustomAudienceReportsBuilder customAudienceReportsBuilder = this.customAudienceReportsBuilder.getBulder(socialChannel);
-			List<CustomAudienceList> customAudienceLists = customAudienceReportsBuilder.buildAll(orgId);
+			List<CustomAudienceList> customAudienceLists = customAudienceReportsBuilder.buildAll(orgId,clearCache);
 			response.customAudienceLists = customAudienceLists;
 			response.response = GatewayResponseType.success;
 			if (customAudienceLists.isEmpty()) {
@@ -286,8 +286,7 @@ public class FacebookServiceListener implements Iface {
 			}
 		} catch (Exception e) {
 			logger.error("error while getting custom audience list from facebook", e);
-			response.response = GatewayResponseType.failed;
-			response.message = e.getMessage();
+			throw new FacebookException(e.getMessage());
 		}
 		return response;
 	}
