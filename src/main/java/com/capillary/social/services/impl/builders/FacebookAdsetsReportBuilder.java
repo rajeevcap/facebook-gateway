@@ -50,9 +50,9 @@ public class FacebookAdsetsReportBuilder implements AdsetsReportsBuilder{
 				SocialAdSet socialAdSet = new SocialAdSet();
 				socialAdSet.setId(adSet.getId());
 				socialAdSet.setCampaignId(adSet.getFieldCampaignId());
-				socialAdSet.setStartTime(Long.valueOf(adSet.getFieldStartTime()));
+				socialAdSet.setStartTime(adSet.getFieldStartTime()==null?0:Long.valueOf(adSet.getFieldStartTime()));
+				socialAdSet.setEndTime(adSet.getFieldEndTime()==null?0:Long.valueOf(adSet.getFieldEndTime()));
 				socialAdSet.setName(adSet.getFieldName());
-				socialAdSet.setEndTime(Long.valueOf(adSet.getFieldEndTime()));
 				socialAdSet.setStatus(AdSetStatus.valueOf(adSet.getFieldStatus().toString()));
 				socialAdSets.add(socialAdSet);
 			}
