@@ -312,16 +312,16 @@ public class FacebookServiceListener implements Iface {
 	}
 
 	@Override
-	public String getAdsetInsights(SocialChannel socialChannel, long orgId, String adsetId, boolean clearCache, String requestId) throws FacebookException, TException {
+	public AdInsight getAdsetInsights(SocialChannel socialChannel, long orgId, String adsetId, boolean clearCache, String requestId) throws FacebookException, TException {
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
 		MDC.put("requestId", requestId);
 		logger.info("received call for getAdsetInsights for orgId {} socialChannel {}", orgId, socialChannel);
 		Guard.notNullOrEmpty(adsetId, "adsetId");
-		String adsInsights;
+		AdInsight adsInsights;
 		try {
 			AdsetInsightsReportBuilder builder = adsetInsightsReportBuilderFactory.getBulder(socialChannel);
-			adsInsights = builder.build(orgId, adsetId);
-			if (adsInsights == null || adsInsights.isEmpty()) {
+			adsInsights = builder.build(orgId, adsetId, clearCache);
+			if (adsInsights == null ) {
 				logger.warn("could not fetch insights from facebook");
 			}
 		} catch (Exception e) {

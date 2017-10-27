@@ -1,5 +1,6 @@
 package com.capillary.social.services.api.builders;
 
+import com.capillary.social.AdInsight;
 import com.facebook.ads.sdk.APIException;
 
 /**
@@ -10,5 +11,5 @@ import com.facebook.ads.sdk.APIException;
  * Created On 26/10/17
  */
 public interface AdsetInsightsReportBuilder {
-	public String build(long orgId, String adsetId) throws APIException;
+	public AdInsight build(long orgId, String adsetId, boolean clearCache) throws APIException;
 }

@@ -1,5 +1,10 @@
 package com.capillary.social.services.impl.builders;
 
+import com.capillary.social.AdInsight;
+import com.capillary.social.SocialChannel;
+import com.capillary.social.commons.dao.api.FacebookAdsetInsightsDao;
+import com.capillary.social.commons.dao.api.SocialAudienceListDao;
+import com.capillary.social.handler.ApplicationContextAwareHandler;
 import com.capillary.social.library.api.OrgConfigurations;
 import com.capillary.social.model.FacebookAdsConfigurations;
 import com.capillary.social.services.api.builders.AdsetInsightsReportBuilder;
@@ -11,7 +16,9 @@ import com.facebook.ads.sdk.APINodeList;
 import com.facebook.ads.sdk.AdAccount;
 import com.facebook.ads.sdk.AdsInsights;
 import edu.emory.mathcs.backport.java.util.Arrays;
+import org.springframework.context.ApplicationContext;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -102,19 +109,48 @@ public class FacebookAdsetInsightsReportBuilder implements AdsetInsightsReportBu
 			"website_purchase_roas"
 	});
 	@Override
-	public String build(long orgId, String adsetId) throws APIException {
+	public AdInsight build(long orgId, String adsetId, boolean clearCache ) throws APIException {
 		FacebookAdsConfigurations facebookAdsConfigurations = OrgConfigurations.getFacebookConfigrations(orgId);
 		Guard.notNullOrEmpty(facebookAdsConfigurations.getAdsAccountId(),"facebookadsAccountId");
-		Guard.notNullOrEmpty(facebookAdsConfigurations.getAccessToken(),"facebookAccessToken");
-		APIContext context = new APIContext(facebookAdsConfigurations.getAccessToken()).enableDebug(true);
-		APINodeList<AdsInsights> adsInsights = new AdAccount(facebookAdsConfigurations.getAdsAccountId(), context).
-				getInsights()
-				.setLevel(AdsInsights.EnumLevel.VALUE_ADSET).requestFields(fields).execute();
-		for (AdsInsights adsInsight:adsInsights) {
-			if(adsetId.equals(adsInsight.getFieldAdsetId())){
-				return adsInsight.toString();
+		ApplicationContext applicationContext = ApplicationContextAwareHandler.getApplicationContext();
+		FacebookAdsetInsightsDao facebookAdsetInsightsDao = (FacebookAdsetInsightsDao) applicationContext.getBean("facebookAdsetInsightsDaoImpl");
+		com.capillary.social.commons.model.AdsInsights adsInsights = facebookAdsetInsightsDao.findByAdsetId(orgId,facebookAdsConfigurations.getAdsAccountId(),adsetId);
+		if(adsInsights == null || clearCache){
+			Guard.notNullOrEmpty(facebookAdsConfigurations.getAccessToken(),"facebookAccessToken");
+			APIContext context = new APIContext(facebookAdsConfigurations.getAccessToken()).enableDebug(true);
+			APINodeList<AdsInsights> adsInsightsList = new AdAccount(facebookAdsConfigurations.getAdsAccountId(), context).
+					getInsights()
+					.setLevel(AdsInsights.EnumLevel.VALUE_ADSET).requestFields(fields).execute();
+			for (AdsInsights adsInsight:adsInsightsList) {
+				if(adsetId.equals(adsInsight.getFieldAdsetId())){
+					adsInsights = converttoDbModel(adsInsight,orgId);
+					facebookAdsetInsightsDao.create(adsInsights);
+					break;
+				}
 			}
 		}
-		return null;
+		return convertToThriftObject(adsInsights);
+	}
+
+	private static com.capillary.social.commons.model.AdsInsights converttoDbModel(AdsInsights adsInsights,long orgId){
+		com.capillary.social.commons.model.AdsInsights dbObject = new com.capillary.social.commons.model.AdsInsights();
+		dbObject.setOrgId(orgId);
+		dbObject.setType(com.capillary.social.commons.model.AdsInsights.Type.FACEBOOK);
+		dbObject.setAdsAccountId(adsInsights.getFieldAccountId());
+		dbObject.setAdsetId(adsInsights.getFieldAdsetId());
+		dbObject.setInsights(adsInsights.toString());
+		dbObject.setActive(true);
+		dbObject.setCachedOn(new Timestamp(System.currentTimeMillis()));
+		return dbObject;
+	}
+
+	private static AdInsight convertToThriftObject(com.capillary.social.commons.model.AdsInsights dbObject){
+		AdInsight adInsight = new AdInsight();
+		adInsight.setOrgId(dbObject.getOrgId());
+		adInsight.setSocialChannel(SocialChannel.valueOf(dbObject.getType().name().toLowerCase()));
+		adInsight.setAdsetId(dbObject.getAdsetId());
+		adInsight.setInsights(dbObject.getInsights());
+		adInsight.setCachedon(dbObject.getCachedOn().getTime());
+		return  adInsight;
 	}
 }
