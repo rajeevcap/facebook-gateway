@@ -2,9 +2,11 @@ package com.capillary.social.external.impl;
 
 import com.capillary.social.*;
 import com.capillary.social.commons.data.manager.ShardContext;
+import com.capillary.social.services.api.builders.AdsetInsightsReportBuilder;
 import com.capillary.social.services.api.builders.AdsetsReportsBuilder;
 import com.capillary.social.services.api.builders.CustomAudienceListBuider;
 import com.capillary.social.services.api.builders.CustomAudienceReportsBuilder;
+import com.capillary.social.services.impl.factories.AdsetInsightsReportBuilderFactory;
 import com.capillary.social.services.impl.factories.AdsetsReportBuilderFactory;
 import com.capillary.social.services.impl.factories.CustomAudienceListBuilderFactory;
 import com.capillary.social.services.impl.factories.CustomAudienceReportsBuilderFactory;
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 @Service
 public class FacebookServiceListener implements Iface {
@@ -40,6 +43,8 @@ public class FacebookServiceListener implements Iface {
     private CustomAudienceReportsBuilderFactory customAudienceReportsBuilder;
     @Autowired
     private AdsetsReportBuilderFactory adsetsReportBuilderFactory;
+    @Autowired
+    private AdsetInsightsReportBuilderFactory adsetInsightsReportBuilderFactory;
 
     @Override
     public boolean isAlive() throws TException {
@@ -305,5 +310,26 @@ public class FacebookServiceListener implements Iface {
 			throw new FacebookException(e.getMessage());
 		}
 	}
+
+	@Override
+	public String getAdsetInsights(SocialChannel socialChannel, long orgId, String adsetId, boolean clearCache, String requestId) throws FacebookException, TException {
+		MDC.put("requestOrgId", "ORG_ID_" + orgId);
+		MDC.put("requestId", requestId);
+		logger.info("received call for getAdsetInsights for orgId {} socialChannel {}", orgId, socialChannel);
+		Guard.notNullOrEmpty(adsetId, "adsetId");
+		String adsInsights;
+		try {
+			AdsetInsightsReportBuilder builder = adsetInsightsReportBuilderFactory.getBulder(socialChannel);
+			adsInsights = builder.build(orgId, adsetId);
+			if (adsInsights == null || adsInsights.isEmpty()) {
+				logger.warn("could not fetch insights from facebook");
+			}
+		} catch (Exception e) {
+			logger.error("error occurred while fetching facebook adset with id {}", adsetId, e);
+			throw new FacebookException(e.getMessage());
+		}
+		return adsInsights;
+	}
+
 
 }
