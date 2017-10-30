@@ -30,18 +30,6 @@ import java.util.Map;
  */
 public class FacebookCustomAudienceReportsBuilder extends FacebookCustomAudienceBuilderBase implements CustomAudienceReportsBuilder {
 	private static Logger logger = LoggerFactory.getLogger(FacebookCustomAudienceReportsBuilder.class);
-	private static List<String> customAudienceListFields = Arrays.asList(
-			new String[]{
-					CustomAudience.EnumFields.VALUE_ACCOUNT_ID.toString(),
-					CustomAudience.EnumFields.VALUE_ID.toString(),
-					CustomAudience.EnumFields.VALUE_APPROXIMATE_COUNT.toString(),
-					CustomAudience.EnumFields.VALUE_DELIVERY_STATUS.toString(),
-					CustomAudience.EnumFields.VALUE_DESCRIPTION.toString(),
-					CustomAudience.EnumFields.VALUE_NAME.toString(),
-					CustomAudience.EnumFields.VALUE_TIME_CONTENT_UPDATED.toString(),
-					CustomAudience.EnumFields.VALUE_TIME_CREATED.toString(),
-					CustomAudience.EnumFields.VALUE_OPERATION_STATUS.toString()
-			});
 
 	@Override
 	public List<CustomAudienceList> buildAll(long orgId,boolean fetch) {
