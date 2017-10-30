@@ -35,8 +35,8 @@ public class FacebookCustomAudienceBuilderBase implements CustomAudienceListBuil
 		socialAudienceList.setName(customAudience.getFieldName());
 		socialAudienceList.setDescription(customAudience.getFieldDescription());
 		socialAudienceList.setApproximateCount(customAudience.getFieldApproximateCount());
-		socialAudienceList.setRemoteUpdatedOn(customAudience.getFieldTimeContentUpdated() == null?new Date(0):new Date(customAudience.getFieldTimeContentUpdated()* 1000));
-		socialAudienceList.setCreatedOn(customAudience.getFieldTimeCreated()==null?new Date(0):new Date(customAudience.getFieldTimeCreated() * 100));
+		socialAudienceList.setRemoteUpdatedOn(customAudience.getFieldTimeContentUpdated() == null?new Date():new Date(customAudience.getFieldTimeContentUpdated()* 1000));
+		socialAudienceList.setCreatedOn(customAudience.getFieldTimeCreated()==null?new Date():new Date(customAudience.getFieldTimeCreated() * 100));
 		socialAudienceList.setCachedOn(new Date());
 		return socialAudienceList;
 	}
