@@ -1,6 +1,7 @@
 package com.capillary.social.services.impl.builders;
 
 import com.capillary.social.AdInsight;
+import com.capillary.social.FacebookException;
 import com.capillary.social.SocialChannel;
 import com.capillary.social.commons.dao.api.FacebookAdsetInsightsDao;
 import com.capillary.social.commons.dao.api.SocialAudienceListDao;
@@ -128,6 +129,9 @@ public class FacebookAdsetInsightsReportBuilder implements AdsetInsightsReportBu
 					break;
 				}
 			}
+		}
+		if(adsInsights==null){
+			return null;
 		}
 		return convertToThriftObject(adsInsights);
 	}

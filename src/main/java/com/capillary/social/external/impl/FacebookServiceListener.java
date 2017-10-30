@@ -323,6 +323,7 @@ public class FacebookServiceListener implements Iface {
 			adsInsights = builder.build(orgId, adsetId, clearCache);
 			if (adsInsights == null ) {
 				logger.warn("could not fetch insights from facebook");
+				throw new RuntimeException("Insights are not available");
 			}
 		} catch (Exception e) {
 			logger.error("error occurred while fetching facebook adset with id {}", adsetId, e);
