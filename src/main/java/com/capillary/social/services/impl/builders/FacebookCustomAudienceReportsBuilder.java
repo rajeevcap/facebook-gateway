@@ -32,6 +32,7 @@ public class FacebookCustomAudienceReportsBuilder extends FacebookCustomAudience
 	private static Logger logger = LoggerFactory.getLogger(FacebookCustomAudienceReportsBuilder.class);
 	private static List<String> customAudienceListFields = Arrays.asList(
 			new String[]{
+					CustomAudience.EnumFields.VALUE_ACCOUNT_ID.toString(),
 					CustomAudience.EnumFields.VALUE_ID.toString(),
 					CustomAudience.EnumFields.VALUE_APPROXIMATE_COUNT.toString(),
 					CustomAudience.EnumFields.VALUE_DELIVERY_STATUS.toString(),
@@ -55,7 +56,7 @@ public class FacebookCustomAudienceReportsBuilder extends FacebookCustomAudience
 		logger.info("fetching from local cache for account id {}", facebookAdsConfigurations.getAdsAccountId());
 		socialAudienceLists= socialAudienceListDao.findByAccountIdOrgId(facebookAdsConfigurations.getAdsAccountId(),orgId,"FACEBOOK");
 		logger.info("found {} social audience lists");
-		if(!socialAudienceLists.isEmpty() && fetch) {
+		if(!socialAudienceLists.isEmpty() || fetch) {
 			Map<String,String> remoteLocalMap = getRemoteLocalListMap(socialAudienceLists);
 			Guard.notNullOrEmpty(facebookAdsConfigurations.getAccessToken(), "facebook access token");
 			APIContext context = new APIContext(facebookAdsConfigurations.getAccessToken()).enableDebug(true);
