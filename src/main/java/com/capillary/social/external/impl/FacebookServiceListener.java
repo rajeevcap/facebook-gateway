@@ -276,7 +276,7 @@ public class FacebookServiceListener implements Iface {
 	public GetCustomAudienceListsResponse getCustomAudienceLists(long orgId, SocialChannel socialChannel,boolean clearCache, String requestId) throws FacebookException, TException {
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
 		MDC.put("requestId", requestId);
-		logger.info("received call for getCustomAudienceLists for orgId {} socialChannel {}", orgId, socialChannel);
+		logger.info("received call for getCustomAudienceLists for orgId {} socialChannel {} clearche {}",new Object[]{orgId, socialChannel, clearCache});
 		ShardContext.set((int) orgId);
 		GetCustomAudienceListsResponse response = new GetCustomAudienceListsResponse();
 		try {
