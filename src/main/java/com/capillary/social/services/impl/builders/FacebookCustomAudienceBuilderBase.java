@@ -60,7 +60,6 @@ public class FacebookCustomAudienceBuilderBase implements CustomAudienceListBuil
 	}
 
 	protected static CustomAudienceList convertToThriftObject(SocialAudienceList socialAudienceList) {
-		logger.info("converting to thrift object");
 		Guard.notNull(socialAudienceList, "social audience list");
 		CustomAudienceList thriftObj = new CustomAudienceList();
 		thriftObj.setOrgId(socialAudienceList.getOrgId());

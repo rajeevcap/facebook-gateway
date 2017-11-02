@@ -44,7 +44,7 @@ public class FacebookCustomAudienceReportsBuilder extends FacebookCustomAudience
 		logger.info("fetching from local cache for account id {}", facebookAdsConfigurations.getAdsAccountId());
 		socialAudienceLists= socialAudienceListDao.findByAccountIdOrgId(facebookAdsConfigurations.getAdsAccountId(),orgId,"FACEBOOK");
 		logger.info("found {} social audience lists");
-		if(!socialAudienceLists.isEmpty() || fetch) {
+		if(!socialAudienceLists.isEmpty() && fetch) {
 			Map<String,String> remoteLocalMap = getRemoteLocalListMap(socialAudienceLists);
 			Guard.notNullOrEmpty(facebookAdsConfigurations.getAccessToken(), "facebook access token");
 			APIContext context = new APIContext(facebookAdsConfigurations.getAccessToken()).enableDebug(true);
@@ -65,6 +65,7 @@ public class FacebookCustomAudienceReportsBuilder extends FacebookCustomAudience
 				for (CustomAudience customAudience : customAudiences) {
 					if(!remoteLocalMap.containsKey(customAudience.getId())){
 						logger.info("ignoring unknown list {}",customAudience.getId());
+						continue;
 					}
 					socialAudienceLists.add(convertToSocialAudienceList(customAudience,remoteLocalMap.get(customAudience.getId()),orgId));
 				}
