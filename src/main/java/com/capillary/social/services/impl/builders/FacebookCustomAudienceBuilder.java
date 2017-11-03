@@ -1,14 +1,12 @@
 package com.capillary.social.services.impl.builders;
 
-import com.capillary.social.CustomAudienceListDetails;
 import com.capillary.social.UserDetails;
-import com.capillary.social.commons.dao.api.ConfigKeyValuesDao;
 import com.capillary.social.commons.dao.api.SocialAudienceListDao;
 import com.capillary.social.commons.model.SocialAudienceList;
 import com.capillary.social.handler.ApplicationContextAwareHandler;
 import com.capillary.social.library.api.OrgConfigurations;
 import com.capillary.social.model.FBAudienceList;
-import com.capillary.social.model.FacebookAdsConfigrations;
+import com.capillary.social.model.FacebookAdsConfigurations;
 import com.capillary.social.services.api.builders.CustomAudienceListBuider;
 import com.capillary.social.systems.config.LockHolder;
 import com.capillary.social.utils.Guard;
@@ -31,20 +29,20 @@ import java.util.List;
  * Created By able
  * Created On 4/9/17
  */
-public class FacebookCustomAudienceBuilder implements CustomAudienceListBuider {
+public class FacebookCustomAudienceBuilder extends FacebookCustomAudienceBuilderBase implements CustomAudienceListBuider {
 	private static Logger logger = LoggerFactory.getLogger(FacebookCustomAudienceBuilder.class);
 
 	@Override
 	public String build(List<UserDetails> userDetailsList, String listName, String listDescription,String recipientListId, long orgId) throws APIException {
 		logger.info("received calls to build custom audience list");
-		FacebookAdsConfigrations facebookAdsConfigrations = OrgConfigurations.getFacebookConfigrations(orgId);
-		Guard.notNullOrEmpty(facebookAdsConfigrations.getAccessToken(), "facebook access token");
-		Guard.notNullOrEmpty(facebookAdsConfigrations.getAdsAccountId(), "facebook ads account id");
-		APIContext context = new APIContext(facebookAdsConfigrations.getAccessToken()).enableDebug(true);
-		SocialAudienceList socialAudienceList = getSocialAudienceList(recipientListId,facebookAdsConfigrations.getAdsAccountId());
+		FacebookAdsConfigurations facebookAdsConfigurations = OrgConfigurations.getFacebookConfigrations(orgId);
+		Guard.notNullOrEmpty(facebookAdsConfigurations.getAccessToken(), "facebook access token");
+		Guard.notNullOrEmpty(facebookAdsConfigurations.getAdsAccountId(), "facebook ads account id");
+		APIContext context = new APIContext(facebookAdsConfigurations.getAccessToken()).enableDebug(true);
+		SocialAudienceList socialAudienceList = getSocialAudienceList(recipientListId, facebookAdsConfigurations.getAdsAccountId());
 		CustomAudience customAudience;
 		if(socialAudienceList!=null){
-			String lockKey = facebookAdsConfigrations.getAdsAccountId()+"_"+recipientListId;
+			String lockKey = facebookAdsConfigurations.getAdsAccountId()+"_"+recipientListId;
 			LockHolder.lock(lockKey);
 			try {
 				logger.info("facebook list has been created already adding customers to existing list");
@@ -57,11 +55,11 @@ public class FacebookCustomAudienceBuilder implements CustomAudienceListBuider {
 		else {
 			logger.info("trying to create empty custom audience list with name :{} and description \"{}\"", listName, listDescription);
 
-			customAudience=new AdAccount(facebookAdsConfigrations.getAdsAccountId(), context).createCustomAudience()
+			customAudience=new AdAccount(facebookAdsConfigurations.getAdsAccountId(), context).createCustomAudience()
 					.setName(listName)
 					.setSubtype(CustomAudience.EnumSubtype.VALUE_CUSTOM)
 					.setDescription(listDescription)
-					.requestAllFields()
+					.requestFields(customAudienceListFields)
 					.execute().fetch();
 			logger.info("created empty custom audience list with id \"{}\"", customAudience.getId());
 			boolean saved = saveCustomAudienceList(customAudience,recipientListId,orgId);
@@ -74,7 +72,7 @@ public class FacebookCustomAudienceBuilder implements CustomAudienceListBuider {
 		User users = customAudience.createUser().setPayload(fbAudienceList.toString()).execute();
 		logger.debug("response from facebook api :{}", users.getRawResponseAsJsonObject());
 		customAudience.fetch();
-		updateCustomAudienceList(customAudience,recipientListId,orgId);
+		saveCustomAudienceList(customAudience,recipientListId,orgId);
 		return customAudience.getId();
 	}
 
@@ -100,28 +98,4 @@ public class FacebookCustomAudienceBuilder implements CustomAudienceListBuider {
 		return socialAudienceListDao.create(socialAudienceList);
 	}
 
-	private boolean updateCustomAudienceList(CustomAudience customAudience,String recipentListID,long orgId){
-		logger.info("updating customAudiencelist with id {}",customAudience.getId());
-		SocialAudienceList socialAudienceList =convertToSocialAudienceList(customAudience,recipentListID,orgId);
-		ApplicationContext applicationContext = ApplicationContextAwareHandler.getApplicationContext();
-		SocialAudienceListDao socialAudienceListDao = (SocialAudienceListDao) applicationContext.getBean("socialAudienceListDaoImpl");
-		logger.info("updated custom audience list");
-		return socialAudienceListDao.update(socialAudienceList);
-	}
-
-	private SocialAudienceList convertToSocialAudienceList(CustomAudience customAudience,String recipentListID, long orgId){
-		SocialAudienceList socialAudienceList = new SocialAudienceList();
-		socialAudienceList.setCampaignReceipientListId(recipentListID);
-		socialAudienceList.setRemoteListId(customAudience.getId());
-		socialAudienceList.setOrgId((int)orgId);
-		socialAudienceList.setType(SocialAudienceList.Type.FACEBOOK);
-		socialAudienceList.setAccuntId(customAudience.getFieldAccountId());
-		socialAudienceList.setName(customAudience.getFieldName());
-		socialAudienceList.setDescription(customAudience.getFieldDescription());
-		socialAudienceList.setApproximateCount(customAudience.getFieldApproximateCount());
-		socialAudienceList.setRemoteUpdatedOn(new Date(customAudience.getFieldTimeUpdated()*1000));
-		socialAudienceList.setCreatedOn(new Date(customAudience.getFieldTimeCreated()*100));
-		socialAudienceList.setCachedOn(new Date());
-		return  socialAudienceList;
-	}
 }

@@ -13,6 +13,6 @@ import java.util.List;
  * Created By able
  * Created On 4/9/17
  */
-public interface CustomAudienceListBuider {
+public interface CustomAudienceListBuider extends CustomAudienceListBuilderBase {
 	public String build(List<UserDetails> userDetailsList, String listName, String listDescription,String campaignListId, long orgId) throws APIException;
 }

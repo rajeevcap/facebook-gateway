@@ -33,6 +33,8 @@ public class FacebookManagerImpl implements FacebookManager {
     private static final Logger logger = LoggerFactory.getLogger(FacebookManagerImpl.class);
 
     private SystemStatus systemStatus;
+    @Autowired
+    FacebookService.Iface facebookThriftService;
 
     @Autowired
     private SystemConfig systemConfig;
@@ -143,8 +145,6 @@ public class FacebookManagerImpl implements FacebookManager {
 
             RPCService rpcService = RPCManager.getINSTANCE().startRPCService(service.getPort(), MIN_THREADS,
                     systemConfig.SERVICE_MAX_THREAD);
-
-            FacebookService.Iface facebookThriftService = new FacebookServiceListener();
 
             rpcService.exportService(FacebookService.Iface.class, facebookThriftService);
 

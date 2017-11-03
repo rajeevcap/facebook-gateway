@@ -2,8 +2,12 @@ package com.capillary.social.external.impl;
 
 import com.capillary.social.*;
 import com.capillary.social.commons.data.manager.ShardContext;
+import com.capillary.social.services.api.builders.AdsetInsightsReportBuilder;
+import com.capillary.social.services.api.builders.AdsetsReportsBuilder;
 import com.capillary.social.services.api.builders.CustomAudienceListBuider;
 import com.capillary.social.services.api.builders.CustomAudienceReportsBuilder;
+import com.capillary.social.services.impl.factories.AdsetInsightsReportBuilderFactory;
+import com.capillary.social.services.impl.factories.AdsetsReportBuilderFactory;
 import com.capillary.social.services.impl.factories.CustomAudienceListBuilderFactory;
 import com.capillary.social.services.impl.factories.CustomAudienceReportsBuilderFactory;
 import com.capillary.social.systems.config.LockHolder;
@@ -22,14 +26,25 @@ import com.capillary.social.services.impl.FacebookListMessage;
 import com.capillary.social.services.impl.FacebookQuickReplyMessage;
 import com.capillary.social.services.impl.FacebookReceiptMessage;
 import com.capillary.social.services.impl.FacebookTextMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
-
+@Service
 public class FacebookServiceListener implements Iface {
 
     private static Logger logger = LoggerFactory.getLogger(FacebookServiceListener.class);
+    @Autowired
+    public CustomAudienceListBuilderFactory customAudienceListBuider;
+    @Autowired
+    private CustomAudienceReportsBuilderFactory customAudienceReportsBuilder;
+    @Autowired
+    private AdsetsReportBuilderFactory adsetsReportBuilderFactory;
+    @Autowired
+    private AdsetInsightsReportBuilderFactory adsetInsightsReportBuilderFactory;
 
     @Override
     public boolean isAlive() throws TException {
@@ -242,7 +257,7 @@ public class FacebookServiceListener implements Iface {
 			Guard.notNull(socialAccountDetails, "socialAccountDetails");
 			Guard.notNullOrEmpty(userDetailsList, "userList");
 			Guard.notNullOrEmpty(recipientListId,"recipientListId");
-			CustomAudienceListBuider customAudienceListBuider = CustomAudienceListBuilderFactory.getInstance().getBulder(socialAccountDetails.getChannel());
+			CustomAudienceListBuider customAudienceListBuider = this.customAudienceListBuider.getBulder(socialAccountDetails.getChannel());
 			String listId = customAudienceListBuider.build(userDetailsList, customAudienceListDetails.name, customAudienceListDetails.description,recipientListId, orgId);
 			createCustomUserListResponse.setListid(listId);
 			createCustomUserListResponse.setResponse(GatewayResponseType.success);
@@ -261,12 +276,12 @@ public class FacebookServiceListener implements Iface {
 	public GetCustomAudienceListsResponse getCustomAudienceLists(long orgId, SocialChannel socialChannel,boolean clearCache, String requestId) throws FacebookException, TException {
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
 		MDC.put("requestId", requestId);
-		logger.info("received call for getCustomAudienceLists for orgId {} socialChannel {}", orgId, socialChannel);
+		logger.info("received call for getCustomAudienceLists for orgId {} socialChannel {} clearche {}",new Object[]{orgId, socialChannel, clearCache});
 		ShardContext.set((int) orgId);
 		GetCustomAudienceListsResponse response = new GetCustomAudienceListsResponse();
 		try {
-			CustomAudienceReportsBuilder customAudienceReportsBuilder = CustomAudienceReportsBuilderFactory.getInstance().getBulder(socialChannel);
-			List<CustomAudienceList> customAudienceLists = customAudienceReportsBuilder.buildAll(orgId);
+			CustomAudienceReportsBuilder customAudienceReportsBuilder = this.customAudienceReportsBuilder.getBulder(socialChannel);
+			List<CustomAudienceList> customAudienceLists = customAudienceReportsBuilder.buildAll(orgId,clearCache);
 			response.customAudienceLists = customAudienceLists;
 			response.response = GatewayResponseType.success;
 			if (customAudienceLists.isEmpty()) {
@@ -276,28 +291,46 @@ public class FacebookServiceListener implements Iface {
 			}
 		} catch (Exception e) {
 			logger.error("error while getting custom audience list from facebook", e);
-			response.response = GatewayResponseType.failed;
-			response.message = e.getMessage();
+			throw new FacebookException(e.getMessage());
 		}
 		return response;
 	}
 
 	@Override
-	public List<SocialAdSet> getAdSets(SocialChannel socialChannel, long l, String s) throws FacebookException, TException {
-		List<SocialAdSet> socialAdSets = new ArrayList<>();
-		Random rand = new Random();
-		int size = rand.nextInt(10);
-		for (int i = 0; i < size; i++) {
-			SocialAdSet socialAdSet = new SocialAdSet();
-			socialAdSet.setId("12345" + rand.nextInt(100));
-			socialAdSet.setName("FB_ADS_" + rand.nextInt(100));
-			socialAdSet.setCampaignId(String.valueOf(rand.nextInt(25)));
-			socialAdSet.setStartTime(rand.nextLong());
-			AdSetStatus status = AdSetStatus.findByValue(rand.nextInt(4));
-			socialAdSet.setStatus(AdSetStatus.ACTIVE);
-			socialAdSets.add(socialAdSet);
+	public List<SocialAdSet> getAdSets(SocialChannel socialChannel, long orgId, String requestId) throws FacebookException, TException {
+		MDC.put("requestOrgId", "ORG_ID_" + orgId);
+		MDC.put("requestId", requestId);
+		logger.info("received call for getAdsets for orgId {} socialChannel {}", orgId, socialChannel);
+		try{
+			AdsetsReportsBuilder adsetsReportsBuilder = this.adsetsReportBuilderFactory.getBulder(socialChannel);
+			return adsetsReportsBuilder.buildAll(orgId);
 		}
-		return socialAdSets;
+		catch (Exception e){
+			logger.error("error occurred while fetching adsets",e);
+			throw new FacebookException(e.getMessage());
+		}
 	}
+
+	@Override
+	public AdInsight getAdsetInsights(SocialChannel socialChannel, long orgId, String adsetId, boolean clearCache, String requestId) throws FacebookException, TException {
+		MDC.put("requestOrgId", "ORG_ID_" + orgId);
+		MDC.put("requestId", requestId);
+		logger.info("received call for getAdsetInsights for orgId {} socialChannel {}", orgId, socialChannel);
+		Guard.notNullOrEmpty(adsetId, "adsetId");
+		AdInsight adsInsights;
+		try {
+			AdsetInsightsReportBuilder builder = adsetInsightsReportBuilderFactory.getBulder(socialChannel);
+			adsInsights = builder.build(orgId, adsetId, clearCache);
+			if (adsInsights == null ) {
+				logger.warn("could not fetch insights from facebook");
+				throw new RuntimeException("Insights are not available");
+			}
+		} catch (Exception e) {
+			logger.error("error occurred while fetching facebook adset with id {}", adsetId, e);
+			throw new FacebookException(e.getMessage());
+		}
+		return adsInsights;
+	}
+
 
 }

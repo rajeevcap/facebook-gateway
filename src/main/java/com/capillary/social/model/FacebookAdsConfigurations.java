@@ -7,7 +7,7 @@ package com.capillary.social.model;
  * Created By able
  * Created On 8/9/17
  */
-public class FacebookAdsConfigrations {
+public class FacebookAdsConfigurations {
 	long orgId;
 	boolean dataloaded;
 
@@ -29,7 +29,7 @@ public class FacebookAdsConfigrations {
 
 	String adsAccountId;
 	String accessToken;
-	public FacebookAdsConfigrations(long orgId){
+	public FacebookAdsConfigurations(long orgId){
 		this.orgId = orgId;
 	}
 

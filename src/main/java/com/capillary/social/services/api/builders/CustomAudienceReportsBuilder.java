@@ -11,7 +11,7 @@ import java.util.List;
  * Created By able
  * Created On 20/9/17
  */
-public interface CustomAudienceReportsBuilder {
-	public List<CustomAudienceList> buildAll(long orgId);
-	public CustomAudienceList build(long orgId, String listId);
+public interface CustomAudienceReportsBuilder extends CustomAudienceListBuilderBase {
+	public List<CustomAudienceList> buildAll(long orgId,boolean fetch);
+	public CustomAudienceList build(long orgId, String listId, boolean fetch);
 }

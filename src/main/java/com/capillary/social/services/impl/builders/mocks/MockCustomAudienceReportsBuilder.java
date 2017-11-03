@@ -1,6 +1,7 @@
 package com.capillary.social.services.impl.builders.mocks;
 
 import com.capillary.social.CustomAudienceList;
+import com.capillary.social.commons.model.SocialAudienceList;
 import com.capillary.social.services.api.builders.CustomAudienceReportsBuilder;
 
 import java.util.List;
@@ -14,12 +15,17 @@ import java.util.List;
  */
 public class MockCustomAudienceReportsBuilder implements CustomAudienceReportsBuilder{
 	@Override
-	public List<CustomAudienceList> buildAll(long orgId) {
+	public List<CustomAudienceList> buildAll(long orgId, boolean fetch) {
 		return null;
 	}
 
 	@Override
-	public CustomAudienceList build(long orgId,String listId) {
+	public CustomAudienceList build(long orgId, String listId, boolean fetch) {
 		return null;
+	}
+
+	@Override
+	public boolean save(List<SocialAudienceList> socialAudienceLists) {
+		return false;
 	}
 }
