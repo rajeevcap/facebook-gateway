@@ -7,6 +7,7 @@ import com.capillary.social.commons.dao.api.FacebookAdsetInsightsDao;
 import com.capillary.social.commons.dao.api.SocialAudienceListDao;
 import com.capillary.social.handler.ApplicationContextAwareHandler;
 import com.capillary.social.library.api.OrgConfigurations;
+import com.capillary.social.model.FBFilter;
 import com.capillary.social.model.FacebookAdsConfigurations;
 import com.capillary.social.services.api.builders.AdsetInsightsReportBuilder;
 import com.capillary.social.services.impl.FacebookConstants;
@@ -16,10 +17,17 @@ import com.facebook.ads.sdk.APIException;
 import com.facebook.ads.sdk.APINodeList;
 import com.facebook.ads.sdk.AdAccount;
 import com.facebook.ads.sdk.AdsInsights;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.mongodb.util.JSON;
 import edu.emory.mathcs.backport.java.util.Arrays;
+import org.codehaus.jackson.map.util.JSONPObject;
 import org.springframework.context.ApplicationContext;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -115,13 +123,15 @@ public class FacebookAdsetInsightsReportBuilder implements AdsetInsightsReportBu
 		Guard.notNullOrEmpty(facebookAdsConfigurations.getAdsAccountId(),"facebookadsAccountId");
 		ApplicationContext applicationContext = ApplicationContextAwareHandler.getApplicationContext();
 		FacebookAdsetInsightsDao facebookAdsetInsightsDao = (FacebookAdsetInsightsDao) applicationContext.getBean("facebookAdsetInsightsDaoImpl");
-		com.capillary.social.commons.model.AdsInsights adsInsights = facebookAdsetInsightsDao.findByAdsetId(orgId,facebookAdsConfigurations.getAdsAccountId(),adsetId);
+		com.capillary.social.commons.model.AdsInsights adsInsights = facebookAdsetInsightsDao.findByAdsetId(orgId, com.capillary.social.commons.model.AdsInsights.Type.FACEBOOK,facebookAdsConfigurations.getAdsAccountId(),adsetId);
 		if(adsInsights == null || clearCache){
 			Guard.notNullOrEmpty(facebookAdsConfigurations.getAccessToken(),"facebookAccessToken");
 			APIContext context = new APIContext(facebookAdsConfigurations.getAccessToken()).enableDebug(true);
+			FBFilter fbFilter = new FBFilter();
+			fbFilter.addFilter("adset.id", FBFilter.Operator.EQUAL,adsetId);
 			APINodeList<AdsInsights> adsInsightsList = new AdAccount(facebookAdsConfigurations.getAdsAccountId(), context).
 					getInsights()
-					.setLevel(AdsInsights.EnumLevel.VALUE_ADSET).requestFields(fields).execute();
+					.setLevel(AdsInsights.EnumLevel.VALUE_ADSET).setFiltering(fbFilter.toString()).requestFields(fields).setParam("date_preset","lifetime").execute();
 			for (AdsInsights adsInsight:adsInsightsList) {
 				if(adsetId.equals(adsInsight.getFieldAdsetId())){
 					adsInsights = converttoDbModel(adsInsight,orgId);
@@ -144,7 +154,8 @@ public class FacebookAdsetInsightsReportBuilder implements AdsetInsightsReportBu
 		dbObject.setAdsetId(adsInsights.getFieldAdsetId());
 		dbObject.setInsights(adsInsights.toString());
 		dbObject.setActive(true);
-		dbObject.setCachedOn(new Timestamp(System.currentTimeMillis()));
+		dbObject.setCachedOn(new Date());
+		dbObject.setAutoUpdateTime(new Date());
 		return dbObject;
 	}
 
