@@ -240,6 +240,7 @@ public class FacebookServiceListener implements Iface {
 	public CreateCustomAudienceListResponse createCustomList(List<UserDetails> userDetailsList, CustomAudienceListDetails customAudienceListDetails, SocialAccountDetails socialAccountDetails, long orgId,String recipientListId, String requestId) throws FacebookException, TException {
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
 		MDC.put("requestId", requestId);
+		if(socialAccountDetails.channel == SocialChannel.google) return dummyAudienceList();
 		logger.info("createCustomList called for userslist of size: "
 				+ userDetailsList.size()
 				+ " "
@@ -272,10 +273,16 @@ public class FacebookServiceListener implements Iface {
 		return createCustomUserListResponse;
 	}
 
-	@Override
+    private CreateCustomAudienceListResponse dummyAudienceList() {
+        return new CreateCustomAudienceListResponse("somelistid", "custom audience list has been created successfully", GatewayResponseType.success);
+    }
+
+    @Override
 	public GetCustomAudienceListsResponse getCustomAudienceLists(long orgId, SocialChannel socialChannel,boolean clearCache, String requestId) throws FacebookException, TException {
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
 		MDC.put("requestId", requestId);
+		if(socialChannel == SocialChannel.google) return dummyGetAudienceList();
+
 		logger.info("received call for getCustomAudienceLists for orgId {} socialChannel {} clearche {}",new Object[]{orgId, socialChannel, clearCache});
 		ShardContext.set((int) orgId);
 		GetCustomAudienceListsResponse response = new GetCustomAudienceListsResponse();
@@ -296,10 +303,17 @@ public class FacebookServiceListener implements Iface {
 		return response;
 	}
 
-	@Override
+    private GetCustomAudienceListsResponse dummyGetAudienceList() {
+        List<CustomAudienceList> customAudienceLists = new ArrayList<>();
+        customAudienceLists.add(new CustomAudienceList((long)786, SocialChannel.google, "adAccountId", "12345", "remoteListId", "name", "description", 1234, 1510142193, 1510142193, 1510142193l));
+        return new GetCustomAudienceListsResponse(GatewayResponseType.success, "customAudienceLists has been fetched successfully", customAudienceLists);
+    }
+
+    @Override
 	public List<SocialAdSet> getAdSets(SocialChannel socialChannel, long orgId, String requestId) throws FacebookException, TException {
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
 		MDC.put("requestId", requestId);
+		if(socialChannel == SocialChannel.google) return getDummyAdset();
 		logger.info("received call for getAdsets for orgId {} socialChannel {}", orgId, socialChannel);
 		try{
 			AdsetsReportsBuilder adsetsReportsBuilder = this.adsetsReportBuilderFactory.getBulder(socialChannel);
@@ -311,7 +325,14 @@ public class FacebookServiceListener implements Iface {
 		}
 	}
 
-	@Override
+    private List<SocialAdSet> getDummyAdset() {
+        List<SocialAdSet> socialAdSets = new ArrayList<>();
+        socialAdSets.add(new SocialAdSet("120330000012183703", "Apps 1509948283832", "120330000012183203", 1509948895, 1511568000, AdSetStatus.ACTIVE));
+        socialAdSets.add(new SocialAdSet("120330000012183705", "Apps 1509948283834", "120330000012185436", 1509948895, 1510142193, AdSetStatus.ACTIVE));
+        return socialAdSets;
+    }
+
+    @Override
 	public AdInsight getAdsetInsights(SocialChannel socialChannel, long orgId, String adsetId, boolean clearCache, String requestId) throws FacebookException, TException {
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
 		MDC.put("requestId", requestId);
