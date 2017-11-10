@@ -26,7 +26,7 @@ import java.util.Map;
 public class FacebookCustomAudienceBuilderBase implements CustomAudienceListBuilderBase{
 	private static Logger logger = LoggerFactory.getLogger(FacebookCustomAudienceBuilderBase.class);
 
-	protected static List<String> customAudienceListFields = Arrays.asList(
+	protected static List customAudienceListFields = Arrays.asList(
 			new String[]{
 					CustomAudience.EnumFields.VALUE_ACCOUNT_ID.toString(),
 					CustomAudience.EnumFields.VALUE_ID.toString(),

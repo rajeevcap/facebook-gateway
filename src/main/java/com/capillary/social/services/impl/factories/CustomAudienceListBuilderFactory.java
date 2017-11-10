@@ -3,12 +3,8 @@ package com.capillary.social.services.impl.factories;
 import com.capillary.social.SocialChannel;
 import com.capillary.social.services.api.builders.CustomAudienceListBuider;
 import com.capillary.social.services.api.factories.BuilderFactory;
-import com.capillary.social.services.impl.builders.mocks.MockCustomAudienceBuilder;
 import com.capillary.social.services.impl.builders.FacebookCustomAudienceBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 
 import java.util.HashMap;
 import java.util.Map;

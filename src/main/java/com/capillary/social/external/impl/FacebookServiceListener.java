@@ -2,17 +2,26 @@ package com.capillary.social.external.impl;
 
 import com.capillary.social.*;
 import com.capillary.social.commons.data.manager.ShardContext;
-import com.capillary.social.services.api.builders.AdsetInsightsReportBuilder;
-import com.capillary.social.services.api.builders.AdsetsReportsBuilder;
-import com.capillary.social.services.api.builders.CustomAudienceListBuider;
-import com.capillary.social.services.api.builders.CustomAudienceReportsBuilder;
+import com.capillary.social.services.api.builders.*;
+import com.capillary.social.services.impl.builders.GoogleListAccessor;
+import com.capillary.social.services.impl.builders.GoogleListBuilder;
+import com.capillary.social.services.impl.builders.SocialListAccessor;
 import com.capillary.social.services.impl.factories.AdsetInsightsReportBuilderFactory;
 import com.capillary.social.services.impl.factories.AdsetsReportBuilderFactory;
 import com.capillary.social.services.impl.factories.CustomAudienceListBuilderFactory;
 import com.capillary.social.services.impl.factories.CustomAudienceReportsBuilderFactory;
 import com.capillary.social.systems.config.LockHolder;
 import com.capillary.social.utils.Guard;
+import com.google.api.ads.common.lib.auth.OfflineCredentials;
+import com.google.api.ads.common.lib.auth.OfflineCredentials.Api;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.common.base.Preconditions;
 import org.apache.thrift.TException;
+import org.apache.thrift.protocol.TBinaryProtocol;
+import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.transport.TSocket;
+import org.apache.thrift.transport.TTransport;
+import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -257,8 +266,10 @@ public class FacebookServiceListener implements Iface {
 			Guard.notNull(socialAccountDetails, "socialAccountDetails");
 			Guard.notNullOrEmpty(userDetailsList, "userList");
 			Guard.notNullOrEmpty(recipientListId,"recipientListId");
-			CustomAudienceListBuider customAudienceListBuider = this.customAudienceListBuider.getBulder(socialAccountDetails.getChannel());
-			String listId = customAudienceListBuider.build(userDetailsList, customAudienceListDetails.name, customAudienceListDetails.description,recipientListId, orgId);
+//			CustomAudienceListBuider customAudienceListBuider = this.customAudienceListBuider.getBulder(socialAccountDetails.getChannel());
+//			String listId = customAudienceListBuider.build(userDetailsList, customAudienceListDetails.name, customAudienceListDetails.description,recipientListId, orgId);
+            ISocialListBuilder googleListBuilder = new GoogleListBuilder();
+            String listId = googleListBuilder.build(userDetailsList, customAudienceListDetails.getName(), customAudienceListDetails.getDescription(), orgId, recipientListId);
 			createCustomUserListResponse.setListid(listId);
 			createCustomUserListResponse.setResponse(GatewayResponseType.success);
 			createCustomUserListResponse.setMessage("custom audience list has been created successfully");
@@ -280,9 +291,11 @@ public class FacebookServiceListener implements Iface {
 		ShardContext.set((int) orgId);
 		GetCustomAudienceListsResponse response = new GetCustomAudienceListsResponse();
 		try {
-			CustomAudienceReportsBuilder customAudienceReportsBuilder = this.customAudienceReportsBuilder.getBulder(socialChannel);
-			List<CustomAudienceList> customAudienceLists = customAudienceReportsBuilder.buildAll(orgId,clearCache);
-			response.customAudienceLists = customAudienceLists;
+//			CustomAudienceReportsBuilder customAudienceReportsBuilder = this.customAudienceReportsBuilder.getBulder(socialChannel);
+//			List<CustomAudienceList> customAudienceLists = customAudienceReportsBuilder.buildAll(orgId,clearCache);
+            SocialListAccessor googleListAccessor = new GoogleListAccessor();
+            List<CustomAudienceList> customAudienceLists = googleListAccessor.getAll(0);
+            response.customAudienceLists = customAudienceLists;
 			response.response = GatewayResponseType.success;
 			if (customAudienceLists.isEmpty()) {
 				response.message = "social channel returned empty list";
@@ -331,6 +344,51 @@ public class FacebookServiceListener implements Iface {
 		}
 		return adsInsights;
 	}
+
+	public static void main(String[] args) throws TException, FacebookException {
+        List<UserDetails> userDetails = new ArrayList<>();
+        UserDetails ud1 = new UserDetails();
+        ud1.setEmail("em1");ud1.setMobile("mb1");
+        UserDetails ud2 = new UserDetails();
+        ud2.setEmail("em2");ud2.setMobile("mb2");
+        userDetails.add(ud1);userDetails.add(ud2);
+        try {
+            getFacebookServiceClient().getCustomAudienceLists(0, SocialChannel.google, true, "requestId");
+//            getFacebookServiceClient().createCustomList(userDetails, new CustomAudienceListDetails("calfdsdname","calddfsaesc"), new SocialAccountDetails(SocialChannel.google), 10l, "12334", "abc");
+        } catch (Exception e) {
+            logger.info("exception caught " + e);
+        }
+        /*Credential oAuth2Credential = null;
+        try {
+
+            OfflineCredentials.Api adwords = OfflineCredentials.Api.ADWORDS;
+            OfflineCredentials.Api dfp = Api.DFP;
+
+            oAuth2Credential = new OfflineCredentials.Builder().forApi(adwords).fromFile("ads.properties").build().generateCredential();
+        } catch (Exception e) {
+            logger.error("exception caught " + e);
+        } catch (Error e) {
+            logger.error("error caught " + e);
+        }*/
+        /*try {
+            Preconditions.checkNotNull("123", "abc", new Object());
+        } catch (Exception e) {
+            logger.error("exception " + e);
+        } catch (Error e) {
+            logger.error("error " + e);
+        }*/
+    }
+
+    public static FacebookService.Client getFacebookServiceClient() {
+        TTransport transport = new TSocket("192.168.33.1", 9232);
+        try {
+            transport.open();
+        } catch (TTransportException e) {
+            e.printStackTrace();
+        }
+        TProtocol protocol = new TBinaryProtocol(transport);
+        return (new FacebookService.Client(protocol));
+    }
 
 
 }
