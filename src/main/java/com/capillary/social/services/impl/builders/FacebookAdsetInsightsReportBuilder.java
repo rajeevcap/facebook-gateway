@@ -24,6 +24,8 @@ import com.google.gson.JsonObject;
 import com.mongodb.util.JSON;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.codehaus.jackson.map.util.JSONPObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.sql.Timestamp;
@@ -38,7 +40,8 @@ import java.util.List;
  * Created On 26/10/17
  */
 public class FacebookAdsetInsightsReportBuilder implements AdsetInsightsReportBuilder {
-	private static final List<String> fields= Arrays.asList(new String[]{
+	private static Logger logger = LoggerFactory.getLogger(FacebookAdsetInsightsReportBuilder.class);
+	private static final List<String> fields = Arrays.asList(new String[]{
 			"account_currency",
 			"account_id",
 			"account_name",
@@ -117,36 +120,44 @@ public class FacebookAdsetInsightsReportBuilder implements AdsetInsightsReportBu
 			"website_ctr",
 			"website_purchase_roas"
 	});
+
 	@Override
-	public AdInsight build(long orgId, String adsetId, boolean clearCache ) throws APIException {
+	public AdInsight build(long orgId, String adsetId, boolean clearCache) throws APIException {
+		logger.info("building adset insights for org {},adsetId: {} , clearcache {}", new Object[]{orgId, adsetId, clearCache});
 		FacebookAdsConfigurations facebookAdsConfigurations = OrgConfigurations.getFacebookConfigrations(orgId);
-		Guard.notNullOrEmpty(facebookAdsConfigurations.getAdsAccountId(),"facebookadsAccountId");
+		Guard.notNullOrEmpty(facebookAdsConfigurations.getAdsAccountId(), "facebookadsAccountId");
 		ApplicationContext applicationContext = ApplicationContextAwareHandler.getApplicationContext();
 		FacebookAdsetInsightsDao facebookAdsetInsightsDao = (FacebookAdsetInsightsDao) applicationContext.getBean("facebookAdsetInsightsDaoImpl");
-		com.capillary.social.commons.model.AdsInsights adsInsights = facebookAdsetInsightsDao.findByAdsetId(orgId, com.capillary.social.commons.model.AdsInsights.Type.FACEBOOK,facebookAdsConfigurations.getAdsAccountId(),adsetId);
-		if(adsInsights == null || clearCache){
-			Guard.notNullOrEmpty(facebookAdsConfigurations.getAccessToken(),"facebookAccessToken");
+		com.capillary.social.commons.model.AdsInsights adsInsights = facebookAdsetInsightsDao.findByAdsetId(orgId, com.capillary.social.commons.model.AdsInsights.Type.FACEBOOK, facebookAdsConfigurations.getAdsAccountId(), adsetId);
+		if (adsInsights == null) {
+			logger.info("no ads insights found in the local");
+		}
+		if (adsInsights == null || clearCache) {
+			logger.info("fetching adsInsights from facebook");
+			Guard.notNullOrEmpty(facebookAdsConfigurations.getAccessToken(), "facebookAccessToken");
 			APIContext context = new APIContext(facebookAdsConfigurations.getAccessToken()).enableDebug(true);
 			FBFilter fbFilter = new FBFilter();
-			fbFilter.addFilter("adset.id", FBFilter.Operator.EQUAL,adsetId);
+			fbFilter.addFilter("adset.id", FBFilter.Operator.EQUAL, adsetId);
 			APINodeList<AdsInsights> adsInsightsList = new AdAccount(facebookAdsConfigurations.getAdsAccountId(), context).
 					getInsights()
-					.setLevel(AdsInsights.EnumLevel.VALUE_ADSET).setFiltering(fbFilter.toString()).requestFields(fields).setParam("date_preset","lifetime").execute();
-			for (AdsInsights adsInsight:adsInsightsList) {
-				if(adsetId.equals(adsInsight.getFieldAdsetId())){
-					adsInsights = converttoDbModel(adsInsight,orgId);
+					.setLevel(AdsInsights.EnumLevel.VALUE_ADSET).setFiltering(fbFilter.toString()).requestFields(fields).setParam("date_preset", "lifetime").execute();
+			logger.debug("adsInsightslist from facebook " + adsInsightsList.toString());
+			for (AdsInsights adsInsight : adsInsightsList) {
+				if (adsetId.equals(adsInsight.getFieldAdsetId())) {
+					adsInsights = converttoDbModel(adsInsight, orgId);
 					facebookAdsetInsightsDao.create(adsInsights);
 					break;
 				}
+				logger.info("skipped insight of adset number" + adsInsight.getFieldAdsetId());
 			}
 		}
-		if(adsInsights==null){
+		if (adsInsights == null) {
 			return null;
 		}
 		return convertToThriftObject(adsInsights);
 	}
 
-	private static com.capillary.social.commons.model.AdsInsights converttoDbModel(AdsInsights adsInsights,long orgId){
+	private static com.capillary.social.commons.model.AdsInsights converttoDbModel(AdsInsights adsInsights, long orgId) {
 		com.capillary.social.commons.model.AdsInsights dbObject = new com.capillary.social.commons.model.AdsInsights();
 		dbObject.setOrgId(orgId);
 		dbObject.setType(com.capillary.social.commons.model.AdsInsights.Type.FACEBOOK);
@@ -159,13 +170,13 @@ public class FacebookAdsetInsightsReportBuilder implements AdsetInsightsReportBu
 		return dbObject;
 	}
 
-	private static AdInsight convertToThriftObject(com.capillary.social.commons.model.AdsInsights dbObject){
+	private static AdInsight convertToThriftObject(com.capillary.social.commons.model.AdsInsights dbObject) {
 		AdInsight adInsight = new AdInsight();
 		adInsight.setOrgId(dbObject.getOrgId());
 		adInsight.setSocialChannel(SocialChannel.valueOf(dbObject.getType().name().toLowerCase()));
 		adInsight.setAdsetId(dbObject.getAdsetId());
 		adInsight.setInsights(dbObject.getInsights());
 		adInsight.setCachedon(dbObject.getCachedOn().getTime());
-		return  adInsight;
+		return adInsight;
 	}
 }
