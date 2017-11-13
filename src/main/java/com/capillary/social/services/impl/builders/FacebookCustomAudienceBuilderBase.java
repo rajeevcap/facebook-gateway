@@ -47,7 +47,12 @@ public class FacebookCustomAudienceBuilderBase implements CustomAudienceListBuil
 		socialAudienceList.setAccuntId(customAudience.getFieldAccountId());
 		socialAudienceList.setName(customAudience.getFieldName());
 		socialAudienceList.setDescription(customAudience.getFieldDescription());
-		socialAudienceList.setApproximateCount(customAudience.getFieldApproximateCount());
+		if(customAudience.getFieldDeliveryStatus().getFieldCode()==300){
+			socialAudienceList.setApproximateCount(0L);
+		}
+		else {
+			socialAudienceList.setApproximateCount(customAudience.getFieldApproximateCount());
+		}
 		socialAudienceList.setRemoteUpdatedOn(customAudience.getFieldTimeContentUpdated() == 0?new Date():new Date(customAudience.getFieldTimeContentUpdated()* 1000));
 		socialAudienceList.setCreatedOn(customAudience.getFieldTimeCreated()==0?new Date():new Date(customAudience.getFieldTimeCreated() * 100));
 		socialAudienceList.setCachedOn(new Date());
@@ -75,7 +80,7 @@ public class FacebookCustomAudienceBuilderBase implements CustomAudienceListBuil
 		Guard.notNull(socialAudienceLists,"socialAudienceList");
 		Map<String,String> localRemoteListMap = new HashMap<>();
 		for (SocialAudienceList socialAudienceList: socialAudienceLists) {
-			localRemoteListMap.put(socialAudienceList.getCampaignReceipientListId(),socialAudienceList.getRemoteListId());
+			localRemoteListMap.put(socialAudienceList.getRemoteListId(),socialAudienceList.getCampaignReceipientListId());
 		}
 		return localRemoteListMap;
 	}
