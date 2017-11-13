@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Created by rajeev on 6/11/17.
  */
-public abstract class SocialListAccessor implements ISocialListAccessor {
+public abstract class SocialListAccessor extends SocialProcessor implements ISocialListAccessor {
 
     private static final Logger logger = LoggerFactory.getLogger(SocialListAccessor.class);
 
@@ -33,7 +33,7 @@ public abstract class SocialListAccessor implements ISocialListAccessor {
 
     protected abstract List<CustomAudienceList> getAllSocialList() throws RemoteException;
 
-    private void setFields(int orgId) {
+    private void setFields(long orgId) {
         this.orgId = orgId;
         fetchAdAccountId();
         getBeans();
@@ -49,14 +49,14 @@ public abstract class SocialListAccessor implements ISocialListAccessor {
     }
 
     @Override
-    public List<CustomAudienceList> getAll(int orgId) throws ConfigurationLoadException, OAuthException, ValidationException, RemoteException {
+    public List<CustomAudienceList> getAll(long orgId) throws ConfigurationLoadException, OAuthException, ValidationException, RemoteException {
         setFields(orgId);
         generateAuthentication();
         return getAllSocialList();
     }
 
     @Override
-    public CustomAudienceList getList(int orgId, String remoteListId) throws ConfigurationLoadException, OAuthException, RemoteException, ValidationException {
+    public CustomAudienceList getList(long orgId, String remoteListId) throws ConfigurationLoadException, OAuthException, RemoteException, ValidationException {
         List<CustomAudienceList> audienceLists = getAll(orgId);
         for(CustomAudienceList audienceList : audienceLists) {
             if(audienceList.getRemoteListId().equalsIgnoreCase(remoteListId)) {

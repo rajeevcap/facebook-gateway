@@ -26,7 +26,7 @@ import static com.google.api.ads.adwords.axis.v201710.cm.AdGroupStatus.PAUSED;
 /**
  * Created by rajeev on 10/11/17.
  */
-public abstract class SocialAdBatchAccessor implements ISocialAdBatchAccessor {
+public abstract class SocialAdBatchAccessor extends SocialProcessor implements ISocialAdBatchAccessor {
 
     private static final Logger logger = LoggerFactory.getLogger(SocialListAccessor.class);
 

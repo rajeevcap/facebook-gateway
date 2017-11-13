@@ -16,6 +16,7 @@ import com.google.api.ads.common.lib.conf.ConfigurationLoadException;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.api.client.auth.oauth2.Credential;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +37,9 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
 
     @Override
     protected void generateAuthentication() throws ConfigurationLoadException, ValidationException, OAuthException {
-        Credential oAuth2Credential = new OfflineCredentials.Builder().forApi(OfflineCredentials.Api.ADWORDS).fromFile().build().generateCredential();
-        session = new AdWordsSession.Builder().fromFile().withOAuth2Credential(oAuth2Credential).build();
+        PropertiesConfiguration config = getPropertiesConfiguration();
+        Credential oAuth2Credential = new OfflineCredentials.Builder().forApi(OfflineCredentials.Api.ADWORDS).from(config).build().generateCredential();
+        session = new AdWordsSession.Builder().from(config).withOAuth2Credential(oAuth2Credential).build();
         AdWordsServicesInterface adWordsServices = AdWordsServices.getInstance();
         reportDownloader = adWordsServices.getUtility(session, ReportDownloaderInterface.class);
     }

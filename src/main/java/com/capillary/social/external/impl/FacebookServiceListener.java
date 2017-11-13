@@ -264,10 +264,14 @@ public class FacebookServiceListener implements Iface {
 			Guard.notNull(socialAccountDetails, "socialAccountDetails");
 			Guard.notNullOrEmpty(userDetailsList, "userList");
 			Guard.notNullOrEmpty(recipientListId,"recipientListId");
-//			CustomAudienceListBuider customAudienceListBuider = this.customAudienceListBuider.getBulder(socialAccountDetails.getChannel());
-//			String listId = customAudienceListBuider.build(userDetailsList, customAudienceListDetails.name, customAudienceListDetails.description,recipientListId, orgId);
-            ISocialListBuilder googleListBuilder = new GoogleListBuilder();
-            String listId = googleListBuilder.build(userDetailsList, customAudienceListDetails.getName(), customAudienceListDetails.getDescription(), orgId, recipientListId);
+			String listId = null;
+			if(socialAccountDetails.channel == SocialChannel.facebook) {
+			    FacebookCustomAudienceBuilder builder = new FacebookCustomAudienceBuilder();
+			    listId = builder.build(userDetailsList, customAudienceListDetails.getName(), customAudienceListDetails.getDescription(), recipientListId, orgId);
+            } else {
+			    SocialListBuilder builder = new GoogleListBuilder();
+                listId = builder.build(userDetailsList, customAudienceListDetails.getName(), customAudienceListDetails.getDescription(), orgId, recipientListId);
+            }
 			createCustomUserListResponse.setListid(listId);
 			createCustomUserListResponse.setResponse(GatewayResponseType.success);
 			createCustomUserListResponse.setMessage("custom audience list has been created successfully");
@@ -289,10 +293,14 @@ public class FacebookServiceListener implements Iface {
 		ShardContext.set((int) orgId);
 		GetCustomAudienceListsResponse response = new GetCustomAudienceListsResponse();
 		try {
-//			CustomAudienceReportsBuilder customAudienceReportsBuilder = this.customAudienceReportsBuilder.getBulder(socialChannel);
-//			List<CustomAudienceList> customAudienceLists = customAudienceReportsBuilder.buildAll(orgId,clearCache);
-            SocialListAccessor googleListAccessor = new GoogleListAccessor();
-            List<CustomAudienceList> customAudienceLists = googleListAccessor.getAll(0);
+		    List<CustomAudienceList> customAudienceLists = null;
+		    if(socialChannel == SocialChannel.facebook) {
+		        FacebookCustomAudienceReportsBuilder builder = new FacebookCustomAudienceReportsBuilder();
+		        customAudienceLists = builder.buildAll(orgId, clearCache);
+            } else {
+		        SocialListAccessor accessor = new GoogleListAccessor();
+		        customAudienceLists = accessor.getAll(orgId);
+            }
             response.customAudienceLists = customAudienceLists;
 			response.response = GatewayResponseType.success;
 			if (customAudienceLists.isEmpty()) {
@@ -313,10 +321,13 @@ public class FacebookServiceListener implements Iface {
 		MDC.put("requestId", requestId);
 		logger.info("received call for getAdsets for orgId {} socialChannel {}", orgId, socialChannel);
 		try{
-//			AdsetsReportsBuilder adsetsReportsBuilder = this.adsetsReportBuilderFactory.getBulder(socialChannel);
-//			return adsetsReportsBuilder.buildAll(orgId);
-            SocialAdBatchAccessor googleAdGroupAccessor = new GoogleAdGroupAccessor();
-            return googleAdGroupAccessor.getAll(0);
+		    if(socialChannel == SocialChannel.facebook) {
+		        AdsetsReportsBuilder builder = new FacebookAdsetsReportBuilder();
+		        return builder.buildAll(orgId);
+            } else {
+		        SocialAdBatchAccessor accessor = new GoogleAdGroupAccessor();
+		        return accessor.getAll(orgId);
+            }
 		}
 		catch (Exception e){
 			logger.error("error occurred while fetching adsets",e);
@@ -332,10 +343,13 @@ public class FacebookServiceListener implements Iface {
 		Guard.notNullOrEmpty(adsetId, "adsetId");
 		AdInsight adsInsights = null;
 		try {
-		    SocialAdReportAccessor googleAdReportAccessor = new GoogleAdReportAccessor();
-		    googleAdReportAccessor.getAll(orgId, adsetId);
-//			AdsetInsightsReportBuilder builder = adsetInsightsReportBuilderFactory.getBulder(socialChannel);
-//			adsInsights = builder.build(orgId, adsetId, clearCache);
+		    if(socialChannel == SocialChannel.facebook) {
+		        AdsetInsightsReportBuilder builder = new FacebookAdsetInsightsReportBuilder();
+		        adsInsights = builder.build(orgId, adsetId, clearCache);
+            } else {
+		        SocialAdReportAccessor accessor = new GoogleAdReportAccessor();
+		        accessor.getAll(orgId, adsetId);
+            }
 			if (adsInsights == null ) {
 				logger.warn("could not fetch insights from facebook");
 				throw new RuntimeException("Insights are not available");

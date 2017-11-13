@@ -25,7 +25,7 @@ import java.util.List;
  * Created by rajeev on 3/11/17.
  */
 
-public abstract class SocialListBuilder implements ISocialListBuilder {
+public abstract class SocialListBuilder extends SocialProcessor implements ISocialListBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(SocialListBuilder.class);
 

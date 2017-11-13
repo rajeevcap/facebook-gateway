@@ -19,7 +19,7 @@ public interface ISocialListAccessor {
      * @param orgId
      * @return
      */
-    public List<CustomAudienceList> getAll(int orgId) throws ConfigurationLoadException, OAuthException, ValidationException, RemoteException;
+    public List<CustomAudienceList> getAll(long orgId) throws ConfigurationLoadException, OAuthException, ValidationException, RemoteException;
 
     /**
      * fetch specific list with given social list id
@@ -27,6 +27,6 @@ public interface ISocialListAccessor {
      * @param remoteListId id of social list
      * @return
      */
-    public CustomAudienceList getList(int orgId, String remoteListId) throws ConfigurationLoadException, OAuthException, RemoteException, ValidationException;
+    public CustomAudienceList getList(long orgId, String remoteListId) throws ConfigurationLoadException, OAuthException, RemoteException, ValidationException;
 
 }

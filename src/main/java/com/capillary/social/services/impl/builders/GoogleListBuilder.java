@@ -32,8 +32,9 @@ public class GoogleListBuilder extends SocialListBuilder {
 
     @Override
     protected void generateAuthentication() throws ConfigurationLoadException, ValidationException, OAuthException {
-        Credential oAuth2Credential = new OfflineCredentials.Builder().forApi(OfflineCredentials.Api.ADWORDS).fromFile().build().generateCredential();
-        AdWordsSession session = new AdWordsSession.Builder().fromFile().withOAuth2Credential(oAuth2Credential).build();
+        PropertiesConfiguration config = getPropertiesConfiguration();
+        Credential oAuth2Credential = new OfflineCredentials.Builder().forApi(OfflineCredentials.Api.ADWORDS).from(config).build().generateCredential();
+        AdWordsSession session = new AdWordsSession.Builder().from(config).withOAuth2Credential(oAuth2Credential).build();
         AdWordsServicesInterface adWordsServices = AdWordsServices.getInstance();
         userListService = adWordsServices.get(session, AdwordsUserListServiceInterface.class);
     }

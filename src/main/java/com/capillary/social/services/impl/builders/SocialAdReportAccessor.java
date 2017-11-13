@@ -19,7 +19,7 @@ import java.io.IOException;
 /**
  * Created by rajeev on 10/11/17.
  */
-public abstract class SocialAdReportAccessor implements ISocialAdReportAccessor {
+public abstract class SocialAdReportAccessor extends SocialProcessor implements ISocialAdReportAccessor {
 
     private static final Logger logger = LoggerFactory.getLogger(SocialListAccessor.class);
 
