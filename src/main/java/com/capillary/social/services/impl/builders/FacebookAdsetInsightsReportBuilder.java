@@ -17,6 +17,8 @@ import com.facebook.ads.sdk.APINodeList;
 import com.facebook.ads.sdk.AdAccount;
 import com.facebook.ads.sdk.AdsInsights;
 import edu.emory.mathcs.backport.java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.sql.Timestamp;
@@ -30,6 +32,7 @@ import java.util.List;
  * Created On 26/10/17
  */
 public class FacebookAdsetInsightsReportBuilder implements AdsetInsightsReportBuilder {
+	private static Logger logger = LoggerFactory.getLogger(FacebookAdsetInsightsReportBuilder.class);
 	private static final List<String> fields= Arrays.asList(new String[]{
 			"account_currency",
 			"account_id",
@@ -111,23 +114,30 @@ public class FacebookAdsetInsightsReportBuilder implements AdsetInsightsReportBu
 	});
 	@Override
 	public AdInsight build(long orgId, String adsetId, boolean clearCache ) throws APIException {
+		logger.info("building adset insights for org {},adsetId: {} , clearcache {}",new Object[]{orgId,adsetId,clearCache});
 		FacebookAdsConfigurations facebookAdsConfigurations = OrgConfigurations.getFacebookConfigrations(orgId);
 		Guard.notNullOrEmpty(facebookAdsConfigurations.getAdsAccountId(),"facebookadsAccountId");
 		ApplicationContext applicationContext = ApplicationContextAwareHandler.getApplicationContext();
 		FacebookAdsetInsightsDao facebookAdsetInsightsDao = (FacebookAdsetInsightsDao) applicationContext.getBean("facebookAdsetInsightsDaoImpl");
 		com.capillary.social.commons.model.AdsInsights adsInsights = facebookAdsetInsightsDao.findByAdsetId(orgId,facebookAdsConfigurations.getAdsAccountId(),adsetId);
+		if(adsInsights==null){
+			logger.info("no ads insights found in the local");
+		}
 		if(adsInsights == null || clearCache){
+			logger.info("fetching adsInsights from facebook");
 			Guard.notNullOrEmpty(facebookAdsConfigurations.getAccessToken(),"facebookAccessToken");
 			APIContext context = new APIContext(facebookAdsConfigurations.getAccessToken()).enableDebug(true);
 			APINodeList<AdsInsights> adsInsightsList = new AdAccount(facebookAdsConfigurations.getAdsAccountId(), context).
 					getInsights()
 					.setLevel(AdsInsights.EnumLevel.VALUE_ADSET).requestFields(fields).execute();
+			logger.debug("adsInsightslist from facebook "+adsInsightsList.toString());
 			for (AdsInsights adsInsight:adsInsightsList) {
 				if(adsetId.equals(adsInsight.getFieldAdsetId())){
 					adsInsights = converttoDbModel(adsInsight,orgId);
 					facebookAdsetInsightsDao.create(adsInsights);
 					break;
 				}
+				logger.info("skipped insight of adset number"+adsInsight.getFieldAdsetId());
 			}
 		}
 		if(adsInsights==null){
