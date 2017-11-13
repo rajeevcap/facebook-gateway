@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.capillary.social</groupId>
 	<artifactId>facebook-gateway-service</artifactId>
-	<version>y-SNAPSHOT</version>
+	<version>y</version>
 	<name>FacebookGatewayService</name>
 	<url>http://maven.apache.org</url>
 
