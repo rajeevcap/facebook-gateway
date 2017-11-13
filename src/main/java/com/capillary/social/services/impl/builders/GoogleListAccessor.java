@@ -19,10 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.Date;
 
 /**
  * Created by rajeev on 6/11/17.
@@ -37,7 +35,7 @@ public class GoogleListAccessor extends SocialListAccessor {
 
     @Override
     protected void generateAuthentication() throws ConfigurationLoadException, ValidationException, OAuthException {
-        Credential oAuth2Credential = new OfflineCredentials.Builder().forApi(OfflineCredentials.Api.ADWORDS).fromFile("ads.properties").build().generateCredential();
+        Credential oAuth2Credential = new OfflineCredentials.Builder().forApi(OfflineCredentials.Api.ADWORDS).fromFile().build().generateCredential();
         AdWordsSession session = new AdWordsSession.Builder().fromFile().withOAuth2Credential(oAuth2Credential).build();
         AdWordsServicesInterface adWordsServices = AdWordsServices.getInstance();
         userListService = adWordsServices.get(session, AdwordsUserListServiceInterface.class);
@@ -49,16 +47,18 @@ public class GoogleListAccessor extends SocialListAccessor {
         if(audienceLists == null || audienceLists.isEmpty()) {
             return Collections.emptyList();
         }
+        // TODO - match with result from db with that from API result
         SelectorBuilder selectorBuilder = new SelectorBuilder();
         Selector selector = selectorBuilder.fields(AdwordsUserListField.Id, AdwordsUserListField.Status, AdwordsUserListField.Description, AdwordsUserListField.Size, AdwordsUserListField.SizeRange).build();
         UserListPage userLists = userListService.get(selector);
         if(userLists.getEntries() != null){
             for(UserList userList : userLists) {
-
-                System.out.println(userList.getId() + " : " + userList.getStatus() + " : " + userList.getDescription() + " : " + userList.getSize() + " : " + userList.getSizeRange());
+                logger.info("user list obtained with id {} status {} and size range {}", new Object[]{userList.getId(), userList.getStatus(), userList.getSizeRange()});
             }
         }
-        List<SocialAudienceList> socialAudienceLists = SocialAudienceList.toSocialAudienceLists(userLists.getEntries(), getAdAccountId(), getOrgId(), "");
+        List<SocialAudienceList> socialAudienceLists = SocialAudienceList.toSocialAudienceLists(userLists.getEntries(), getAdAccountId(), getOrgId(), "12342", new Date());
+        getSocialAudienceListDao().updateBatch(socialAudienceLists);
         return SocialAudienceList.toCustomAudienceListLists(socialAudienceLists);
     }
+
 }

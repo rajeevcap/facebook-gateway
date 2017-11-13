@@ -53,12 +53,12 @@ public abstract class SocialListBuilder implements ISocialListBuilder {
         this.listName = listName;
         this.listDescription = listDescription;
         this.userDetails = userDetails;
-        getAdAccountId();
+        fetchAdAccountId();
         getBeans();
     }
 
-    private void getAdAccountId() {
-        this.adAccountId = "someId";
+    private void fetchAdAccountId() {
+        this.adAccountId = "118772362192973";
     }
 
     private static void getBeans() {
@@ -89,11 +89,13 @@ public abstract class SocialListBuilder implements ISocialListBuilder {
     }
 
     void saveToDatabase(List<SocialAudienceList> socialAudienceLists) {
-        /*try {
-            socialAudienceListDao.create(socialAudienceLists);
+        try {
+            for (SocialAudienceList socialAudienceList : socialAudienceLists) {
+                socialAudienceListDao.create(socialAudienceList);
+            }
         } catch (Exception e) {
             logger.error("exception occured while saving audience list " + e);
-        }*/
+        }
     }
 
     //// helper static functions ////
@@ -160,4 +162,11 @@ public abstract class SocialListBuilder implements ISocialListBuilder {
         return userDetails;
     }
 
+    String getAdAccountId() {
+        return adAccountId;
+    }
+
+    long getOrgId() {
+        return orgId;
+    }
 }

@@ -35,11 +35,12 @@ public abstract class SocialListAccessor implements ISocialListAccessor {
 
     private void setFields(int orgId) {
         this.orgId = orgId;
+        fetchAdAccountId();
         getBeans();
     }
 
-    private void getAccountId() {
-        this.adAccountId = "accountId";
+    private void fetchAdAccountId() {
+        this.adAccountId = "118772362192973";
     }
 
     private static void getBeans() {
@@ -88,6 +89,10 @@ public abstract class SocialListAccessor implements ISocialListAccessor {
 
     long getOrgId() {
         return orgId;
+    }
+
+    public static SocialAudienceListDao getSocialAudienceListDao() {
+        return socialAudienceListDao;
     }
 
 }

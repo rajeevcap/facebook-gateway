@@ -3,9 +3,7 @@ package com.capillary.social.external.impl;
 import com.capillary.social.*;
 import com.capillary.social.commons.data.manager.ShardContext;
 import com.capillary.social.services.api.builders.*;
-import com.capillary.social.services.impl.builders.GoogleListAccessor;
-import com.capillary.social.services.impl.builders.GoogleListBuilder;
-import com.capillary.social.services.impl.builders.SocialListAccessor;
+import com.capillary.social.services.impl.builders.*;
 import com.capillary.social.services.impl.factories.AdsetInsightsReportBuilderFactory;
 import com.capillary.social.services.impl.factories.AdsetsReportBuilderFactory;
 import com.capillary.social.services.impl.factories.CustomAudienceListBuilderFactory;
@@ -315,8 +313,10 @@ public class FacebookServiceListener implements Iface {
 		MDC.put("requestId", requestId);
 		logger.info("received call for getAdsets for orgId {} socialChannel {}", orgId, socialChannel);
 		try{
-			AdsetsReportsBuilder adsetsReportsBuilder = this.adsetsReportBuilderFactory.getBulder(socialChannel);
-			return adsetsReportsBuilder.buildAll(orgId);
+//			AdsetsReportsBuilder adsetsReportsBuilder = this.adsetsReportBuilderFactory.getBulder(socialChannel);
+//			return adsetsReportsBuilder.buildAll(orgId);
+            SocialAdBatchAccessor googleAdGroupAccessor = new GoogleAdGroupAccessor();
+            return googleAdGroupAccessor.getAll(0);
 		}
 		catch (Exception e){
 			logger.error("error occurred while fetching adsets",e);
@@ -330,10 +330,12 @@ public class FacebookServiceListener implements Iface {
 		MDC.put("requestId", requestId);
 		logger.info("received call for getAdsetInsights for orgId {} socialChannel {}", orgId, socialChannel);
 		Guard.notNullOrEmpty(adsetId, "adsetId");
-		AdInsight adsInsights;
+		AdInsight adsInsights = null;
 		try {
-			AdsetInsightsReportBuilder builder = adsetInsightsReportBuilderFactory.getBulder(socialChannel);
-			adsInsights = builder.build(orgId, adsetId, clearCache);
+		    SocialAdReportAccessor googleAdReportAccessor = new GoogleAdReportAccessor();
+		    googleAdReportAccessor.getAll(orgId, adsetId);
+//			AdsetInsightsReportBuilder builder = adsetInsightsReportBuilderFactory.getBulder(socialChannel);
+//			adsInsights = builder.build(orgId, adsetId, clearCache);
 			if (adsInsights == null ) {
 				logger.warn("could not fetch insights from facebook");
 				throw new RuntimeException("Insights are not available");
@@ -355,6 +357,8 @@ public class FacebookServiceListener implements Iface {
         try {
             getFacebookServiceClient().getCustomAudienceLists(0, SocialChannel.google, true, "requestId");
 //            getFacebookServiceClient().createCustomList(userDetails, new CustomAudienceListDetails("calfdsdname","calddfsaesc"), new SocialAccountDetails(SocialChannel.google), 10l, "12334", "abc");
+//            getFacebookServiceClient().getAdSets(SocialChannel.google, 0, "requestId");
+//            getFacebookServiceClient().getAdsetInsights(SocialChannel.google, 0, "adSetId", false ,"requestId");
         } catch (Exception e) {
             logger.info("exception caught " + e);
         }

@@ -4,6 +4,7 @@ import com.capillary.social.SocialChannel;
 import com.capillary.social.services.api.builders.CustomAudienceListBuider;
 import com.capillary.social.services.api.factories.BuilderFactory;
 import com.capillary.social.services.impl.builders.FacebookCustomAudienceBuilder;
+import com.capillary.social.services.impl.builders.GoogleListBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -22,6 +23,7 @@ public class CustomAudienceListBuilderFactory extends BuilderFactory<CustomAudie
 	protected Map<SocialChannel,CustomAudienceListBuider> buildersList() {
 		Map<SocialChannel,CustomAudienceListBuider> buiderMap = new HashMap<>();
 		buiderMap.put(SocialChannel.facebook, new FacebookCustomAudienceBuilder());
+//		buiderMap.put(SocialChannel.google, new GoogleListBuilder());
 		return buiderMap;
 	}
 }

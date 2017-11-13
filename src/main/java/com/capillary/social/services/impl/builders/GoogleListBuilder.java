@@ -1,9 +1,6 @@
 package com.capillary.social.services.impl.builders;
 
-import com.capillary.social.UserDetails;
-import com.capillary.social.commons.model.SocialAudienceList;
 import com.google.api.ads.adwords.axis.factory.AdWordsServices;
-import com.google.api.ads.adwords.axis.v201710.cm.ApiException;
 import com.google.api.ads.adwords.axis.v201710.cm.Operator;
 import com.google.api.ads.adwords.axis.v201710.rm.*;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
@@ -13,13 +10,16 @@ import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.ads.common.lib.auth.OfflineCredentials;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import static com.capillary.social.commons.model.SocialAudienceList.toSocialAudienceLists;
 
 /**
  * Created by rajeev on 3/11/17.
@@ -38,22 +38,12 @@ public class GoogleListBuilder extends SocialListBuilder {
         userListService = adWordsServices.get(session, AdwordsUserListServiceInterface.class);
     }
 
-    /*public static void main(String[] args) throws Exception {
-        UserDetails userDetails = new UserDetails();
-        userDetails.setEmail("abc");
-        userDetails.setMobile("moo");
-        List<UserDetails> userDetailsList = new ArrayList<>();
-        userDetailsList.add(userDetails);
-        GoogleListBuilder googleListBuilder = new GoogleListBuilder();
-        googleListBuilder.build(userDetailsList, "list", "description", 123, "123");
-    }*/
-
     @Override
     protected void createNewList() throws Exception {
         CrmBasedUserList userList = new CrmBasedUserList();
         userList.setName(getListName());
         userList.setDescription(getListDescription());
-        userList.setMembershipLifeSpan(30L); // check this
+        userList.setMembershipLifeSpan(10000L); // never expiring
 
         UserListOperation operation = new UserListOperation();
         operation.setOperand(userList);
@@ -71,6 +61,7 @@ public class GoogleListBuilder extends SocialListBuilder {
 
     @Override
     protected void appendMembersToList() throws UnsupportedEncodingException, RemoteException {
+        logger.info("received call to append members to the list {}", getRecipientListId());
         MutateMembersOperand operand = new MutateMembersOperand();
         operand.setUserListId(getRemoteListId());
         List<Member> members = getMemberList(getUserDetails());
@@ -79,17 +70,12 @@ public class GoogleListBuilder extends SocialListBuilder {
         mutateMembersOperation.setOperand(operand);
         mutateMembersOperation.setOperator(Operator.ADD);
         MutateMembersReturnValue mutateMembersReturnValue = userListService.mutateMembers(new MutateMembersOperation[]{mutateMembersOperation});
-        saveToDatabase(getSocialAudienceList(mutateMembersReturnValue.getUserLists()));
-        // add logger
+        // google user List doesn't have last updated or auto update time so using own updated time
+        Date remoteUpdatedOn = new Date();
+        saveToDatabase(toSocialAudienceLists(mutateMembersReturnValue.getUserLists(), getAdAccountId(), getOrgId(), getRecipientListId(), remoteUpdatedOn));
         for(UserList userList : mutateMembersReturnValue.getUserLists()) {
             logger.info("{} users were uploaded to google list with id {}", getUserDetails().size(), userList.getId());
         }
     }
 
-    private List<SocialAudienceList> getSocialAudienceList(UserList[] userLists) {
-        for (UserList userList : userLists) {
-
-        }
-        return null;
-    }
 }
