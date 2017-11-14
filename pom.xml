@@ -169,6 +169,22 @@
 			<artifactId>facebook-java-ads-sdk</artifactId>
 			<version>2.10.0</version>
 		</dependency>
+		<!-- google dependency -->
+		<dependency>
+			<groupId>com.google.api-ads</groupId>
+			<artifactId>ads-lib</artifactId>
+			<version>3.9.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>20.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.api-ads</groupId>
+			<artifactId>adwords-axis</artifactId>
+			<version>3.9.0</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->
 		<dependency>
 			<groupId>org.mockito</groupId>

@@ -1,6 +1,9 @@
 package com.capillary.social.validator;
 
 import static com.capillary.social.FacebookEntityGenerator.generateReceiptMessage;
+
+import com.google.api.ads.common.lib.auth.OfflineCredentials;
+import com.google.common.base.Preconditions;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -63,6 +66,13 @@ public class AddressValidatorTest extends FacebookMessageStub {
         receiptMessage.address = FacebookEntityGenerator.generateAddress();
         Assert.assertEquals(true,
                 getValidation(new FacebookReceiptMessageStub(receiptMessage), MessageType.receiptMessage));
+    }
+
+    @Test
+    public void testEnum(){
+        String abc = Preconditions.checkNotNull("ABC", "Null entity", "null value1");
+        String str = Preconditions.checkNotNull("api.adwords.", "Null property key prefix for", this);
+        Assert.assertEquals(null, OfflineCredentials.Api.ADWORDS);
     }
 
 }

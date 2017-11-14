@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.joda.time.DateTime;
 
 public class FacebookGatewayUtils {
@@ -48,13 +47,6 @@ public class FacebookGatewayUtils {
             return new DateTime(timestamp.getTime()).toDate();
         }
         return null;
-    }
-
-    public static String getDateAsYMDHMS(Date date, boolean addDoubleQuotes) {
-        if (date == null)
-            return addDoubleQuotes ? "NULL" : null;
-        String dateStr = DateFormatUtils.format(date, "yyyy-MM-dd HH:mm:ss");
-        return addDoubleQuotes ? ('"' + dateStr + '"') : dateStr;
     }
 
 }
