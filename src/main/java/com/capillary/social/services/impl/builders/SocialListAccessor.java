@@ -40,7 +40,7 @@ public abstract class SocialListAccessor extends SocialProcessor implements ISoc
     }
 
     private void fetchAdAccountId() {
-        this.adAccountId = "118772362192973";
+        this.adAccountId = API_ADWORDS_CLIENT_CONSUMER_ID_VALUE;
     }
 
     private static void getBeans() {
@@ -73,12 +73,12 @@ public abstract class SocialListAccessor extends SocialProcessor implements ISoc
 
     //// helper static functions ////
 
-    static Map<String, String> getLocalRemoteListMap (List<SocialAudienceList> audienceLists) {
-        Map<String, String> localRemoteListMap = new HashMap<>();
+    static Map<String, String> getRemoteLocalListMap(List<SocialAudienceList> audienceLists) {
+        Map<String, String> remoteLocalListMap = new HashMap<>();
         for(SocialAudienceList audienceList : audienceLists) {
-            localRemoteListMap.put(audienceList.getCampaignReceipientListId(), audienceList.getRemoteListId());
+            remoteLocalListMap.put(audienceList.getRemoteListId(), audienceList.getCampaignReceipientListId());
         }
-        return localRemoteListMap;
+        return remoteLocalListMap;
     }
 
     //// getters ////

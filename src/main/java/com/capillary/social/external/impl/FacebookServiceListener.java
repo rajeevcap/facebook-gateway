@@ -370,10 +370,10 @@ public class FacebookServiceListener implements Iface {
         ud2.setEmail("em2");ud2.setMobile("mb2");
         userDetails.add(ud1);userDetails.add(ud2);
         try {
-            getFacebookServiceClient().getCustomAudienceLists(0, SocialChannel.google, true, "requestId");
-//            getFacebookServiceClient().createCustomList(userDetails, new CustomAudienceListDetails("calfdsdname","calddfsaesc"), new SocialAccountDetails(SocialChannel.google), 10l, "12334", "abc");
+//            getFacebookServiceClient().getCustomAudienceLists(0, SocialChannel.google, true, "requestId");
+//            getFacebookServiceClient().createCustomList(userDetails, new CustomAudienceListDetails("calfdsdname","calddfsaesc"), new SocialAccountDetails(SocialChannel.google), 0l, "5", "abc");
 //            getFacebookServiceClient().getAdSets(SocialChannel.google, 0, "requestId");
-//            getFacebookServiceClient().getAdsetInsights(SocialChannel.google, 0, "adSetId", false ,"requestId");
+            getFacebookServiceClient().getAdsetInsights(SocialChannel.google, 0, "adSetId", false ,"requestId");
         } catch (Exception e) {
             logger.info("exception caught " + e);
         }

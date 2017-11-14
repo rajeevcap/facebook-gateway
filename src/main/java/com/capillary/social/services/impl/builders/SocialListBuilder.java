@@ -58,7 +58,7 @@ public abstract class SocialListBuilder extends SocialProcessor implements ISoci
     }
 
     private void fetchAdAccountId() {
-        this.adAccountId = "118772362192973";
+        this.adAccountId = API_ADWORDS_CLIENT_CONSUMER_ID_VALUE;
     }
 
     private static void getBeans() {

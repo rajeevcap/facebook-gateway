@@ -47,11 +47,7 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
     @Override
     protected void generateReport() throws IOException, ReportDownloadResponseException, ReportException {
         logger.info("received call for generate report");
-        ReportDefinition reportDefinition = new ReportDefinition();
-        reportDefinition.setReportName("Criteria performance report #" + System.currentTimeMillis());
-        reportDefinition.setDateRangeType(ReportDefinitionDateRangeType.YESTERDAY);
-        reportDefinition.setReportType(ReportDefinitionReportType.CRITERIA_PERFORMANCE_REPORT);
-        reportDefinition.setDownloadFormat(DownloadFormat.CSV);
+        ReportDefinition reportDefinition = getReportDefinition();
         logger.debug("report definition created {}", reportDefinition);
         ReportingConfiguration reportingConfiguration = new ReportingConfiguration.Builder().skipReportHeader(false).skipColumnHeader(false).skipReportSummary(false).includeZeroImpressions(false).build();
         session.setReportingConfiguration(reportingConfiguration);
@@ -61,6 +57,15 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
         ReportDownloadResponse reportDownloadResponse = reportDownloader.downloadReport(reportDefinition);
         reportDownloadResponse.saveToFile(getReportFilePath());
         logger.info("Report successfully downloaded to {}", getReportFilePath());
+    }
+
+    private ReportDefinition getReportDefinition() {
+        ReportDefinition reportDefinition = new ReportDefinition();
+        reportDefinition.setReportName("Criteria performance report #" + System.currentTimeMillis());
+        reportDefinition.setDateRangeType(ReportDefinitionDateRangeType.ALL_TIME);
+        reportDefinition.setReportType(ReportDefinitionReportType.CRITERIA_PERFORMANCE_REPORT);
+        reportDefinition.setDownloadFormat(DownloadFormat.CSV);
+        return reportDefinition;
     }
 
 }

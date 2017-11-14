@@ -41,7 +41,13 @@ public class GoogleAdGroupAccessor extends SocialAdBatchAccessor {
     protected List<SocialAdSet> getAllAdBatch() throws RemoteException {
         SelectorBuilder selectorBuilder = new SelectorBuilder();
         Selector selector = selectorBuilder.fields(AdGroupField.Id, AdGroupField.Name, AdGroupField.CampaignId, AdGroupField.Status).build();
-        AdGroupPage adGroupPage = adGroupService.get(selector);
+        AdGroupPage adGroupPage = null;
+        try {
+            adGroupPage = adGroupService.get(selector);
+        } catch (ApiException e) {
+            logger.error("exception occured while get ad batch " + e.getFaultString());
+            throw e;
+        }
         if(adGroupPage.getEntries() != null) {
             for(AdGroup adGroup : adGroupPage.getEntries()) {
                 logger.info("ad group with name {} and id {} was found", adGroup.getName(), adGroup.getId());

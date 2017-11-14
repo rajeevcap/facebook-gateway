@@ -62,6 +62,7 @@ public class FacebookCustomAudienceReportsBuilder extends FacebookCustomAudience
 			if (customAudiences.isEmpty()) {
 				logger.info("facebook returned empty list");
 			} else {
+				socialAudienceLists= new ArrayList<>();
 				for (CustomAudience customAudience : customAudiences) {
 					if(!remoteLocalMap.containsKey(customAudience.getId())){
 						logger.info("ignoring unknown list {}",customAudience.getId());

@@ -1,5 +1,7 @@
 package com.capillary.social.services.impl.builders;
 
+import com.capillary.social.commons.model.SocialAudienceList;
+import com.capillary.social.commons.model.SocialAudienceList.Type;
 import com.google.api.ads.adwords.axis.factory.AdWordsServices;
 import com.google.api.ads.adwords.axis.v201710.cm.Operator;
 import com.google.api.ads.adwords.axis.v201710.rm.*;
@@ -73,7 +75,7 @@ public class GoogleListBuilder extends SocialListBuilder {
         MutateMembersReturnValue mutateMembersReturnValue = userListService.mutateMembers(new MutateMembersOperation[]{mutateMembersOperation});
         // google user List doesn't have last updated or auto update time so using own updated time
         Date remoteUpdatedOn = new Date();
-        saveToDatabase(toSocialAudienceLists(mutateMembersReturnValue.getUserLists(), getAdAccountId(), getOrgId(), getRecipientListId(), remoteUpdatedOn));
+        saveToDatabase(toSocialAudienceLists(mutateMembersReturnValue.getUserLists(), getAdAccountId(), getOrgId(), getRecipientListId(), remoteUpdatedOn, Type.GOOGLE));
         for(UserList userList : mutateMembersReturnValue.getUserLists()) {
             logger.info("{} users were uploaded to google list with id {}", getUserDetails().size(), userList.getId());
         }

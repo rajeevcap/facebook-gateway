@@ -9,7 +9,6 @@ import com.google.api.ads.adwords.axis.v201710.rm.*;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.adwords.lib.factory.AdWordsServicesInterface;
 import com.google.api.ads.adwords.lib.selectorfields.v201710.cm.AdwordsUserListField;
-import com.google.api.ads.adwords.lib.selectorfields.v201710.cm.CampaignField;
 import com.google.api.ads.common.lib.auth.OfflineCredentials;
 import com.google.api.ads.common.lib.conf.ConfigurationLoadException;
 import com.google.api.ads.common.lib.exception.OAuthException;
@@ -49,18 +48,24 @@ public class GoogleListAccessor extends SocialListAccessor {
         if(audienceLists == null || audienceLists.isEmpty()) {
             return Collections.emptyList();
         }
-        // TODO - match with result from db with that from API result
+        Map<String, String> remoteLocalListMap = getRemoteLocalListMap(audienceLists);
+        List<SocialAudienceList> updatedAudienceLists = new ArrayList<>();
         SelectorBuilder selectorBuilder = new SelectorBuilder();
         Selector selector = selectorBuilder.fields(AdwordsUserListField.Id, AdwordsUserListField.Status, AdwordsUserListField.Description, AdwordsUserListField.Size, AdwordsUserListField.SizeRange).build();
         UserListPage userLists = userListService.get(selector);
         if(userLists.getEntries() != null){
             for(UserList userList : userLists) {
+                String remoteUserListId = userList.getId().toString();
+                if(!remoteLocalListMap.containsKey(remoteUserListId)) {
+                    logger.info("ignoring unknown list {}",userList.getId());
+                    continue;
+                }
+                updatedAudienceLists.add(SocialAudienceList.toSocialAudienceList(userList, getAdAccountId(), getOrgId(), remoteLocalListMap.get(remoteUserListId), new Date(), SocialAudienceList.Type.GOOGLE));
                 logger.info("user list obtained with id {} status {} and size range {}", new Object[]{userList.getId(), userList.getStatus(), userList.getSizeRange()});
             }
         }
-        List<SocialAudienceList> socialAudienceLists = SocialAudienceList.toSocialAudienceLists(userLists.getEntries(), getAdAccountId(), getOrgId(), "12342", new Date());
-        getSocialAudienceListDao().updateBatch(socialAudienceLists);
-        return SocialAudienceList.toCustomAudienceListLists(socialAudienceLists);
+        getSocialAudienceListDao().updateBatch(updatedAudienceLists);
+        return SocialAudienceList.toCustomAudienceListLists(updatedAudienceLists);
     }
 
 }
