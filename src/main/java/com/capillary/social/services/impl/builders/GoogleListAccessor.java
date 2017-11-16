@@ -61,7 +61,7 @@ public class GoogleListAccessor extends SocialListAccessor {
                     continue;
                 }
                 updatedAudienceLists.add(SocialAudienceList.toSocialAudienceList(userList, getAdAccountId(), getOrgId(), remoteLocalListMap.get(remoteUserListId), new Date(), SocialAudienceList.Type.GOOGLE));
-                logger.info("user list obtained with id {} status {} and size range {}", new Object[]{userList.getId(), userList.getStatus(), userList.getSizeRange()});
+                logger.info("user list obtained with id {} name {} status {} and size range {}", new Object[]{userList.getId(), userList.getName(), userList.getStatus(), userList.getSizeRange()});
             }
         }
         getSocialAudienceListDao().updateBatch(updatedAudienceLists);

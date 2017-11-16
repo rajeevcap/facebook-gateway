@@ -277,10 +277,10 @@ public class FacebookServiceListener implements Iface {
             createCustomUserListResponse.setResponse(GatewayResponseType.success);
             createCustomUserListResponse.setMessage("custom audience list has been created successfully");
         } catch (ApiException e) {
-            logger.error("api exception occurred while creating a custom user list", e);
+            logger.error("api exception occurred while creating a custom user list", e.getFaultString());
             throw new FacebookException(e.getFaultString());
         } catch (Exception e) {
-            logger.error("exception occured while creating a custom user list");
+            logger.error("exception occured while creating a custom user list", e.getMessage());
             throw new FacebookException(e.getMessage());
         } finally {
             MDC.remove("requestOrgId");
@@ -374,10 +374,10 @@ public class FacebookServiceListener implements Iface {
         ud2.setEmail("em2");ud2.setMobile("mb2");
         userDetails.add(ud1);userDetails.add(ud2);
         try {
-//            getFacebookServiceClient().getCustomAudienceLists(0, SocialChannel.google, true, "requestId");
+            getFacebookServiceClient().getCustomAudienceLists(0, SocialChannel.google, true, "requestId");
 //            getFacebookServiceClient().createCustomList(userDetails, new CustomAudienceListDetails("calfdsdname","calddfsaesc"), new SocialAccountDetails(SocialChannel.google), 0l, "5", "abc");
 //            getFacebookServiceClient().getAdSets(SocialChannel.google, 0, "requestId");
-            getFacebookServiceClient().getAdsetInsights(SocialChannel.google, 0, "adSetId", false ,"requestId");
+//            getFacebookServiceClient().getAdsetInsights(SocialChannel.google, 0, "adSetId", false ,"requestId");
         } catch (Exception e) {
             logger.info("exception caught " + e);
         }
