@@ -10,6 +10,7 @@ import com.capillary.social.services.impl.factories.CustomAudienceListBuilderFac
 import com.capillary.social.services.impl.factories.CustomAudienceReportsBuilderFactory;
 import com.capillary.social.systems.config.LockHolder;
 import com.capillary.social.utils.Guard;
+import com.google.api.ads.adwords.axis.v201710.cm.ApiException;
 import com.google.api.ads.common.lib.auth.OfflineCredentials;
 import com.google.api.ads.common.lib.auth.OfflineCredentials.Api;
 import com.google.api.client.auth.oauth2.Credential;
@@ -243,47 +244,50 @@ public class FacebookServiceListener implements Iface {
         return gtwResponse;
     }
 
-	@Override
-	public CreateCustomAudienceListResponse createCustomList(List<UserDetails> userDetailsList, CustomAudienceListDetails customAudienceListDetails, SocialAccountDetails socialAccountDetails, long orgId,String recipientListId, String requestId) throws FacebookException, TException {
-		MDC.put("requestOrgId", "ORG_ID_" + orgId);
-		MDC.put("requestId", requestId);
-		logger.info("createCustomList called for userslist of size: "
-				+ userDetailsList.size()
-				+ " "
-				+ customAudienceListDetails.toString()
-				+ socialAccountDetails.toString()
-				+ "orgId" + orgId
-				+ "recipient list id :"+recipientListId
-				+ "request Id "+requestId
-				+ "for org"
-				+ " orgId : "
-				+ orgId);
-		ShardContext.set((int) orgId);
-		CreateCustomAudienceListResponse createCustomUserListResponse = new CreateCustomAudienceListResponse();
-		try {
-			Guard.notNull(socialAccountDetails, "socialAccountDetails");
-			Guard.notNullOrEmpty(userDetailsList, "userList");
-			Guard.notNullOrEmpty(recipientListId,"recipientListId");
-			String listId = null;
-			if(socialAccountDetails.channel == SocialChannel.facebook) {
-			    FacebookCustomAudienceBuilder builder = new FacebookCustomAudienceBuilder();
-			    listId = builder.build(userDetailsList, customAudienceListDetails.getName(), customAudienceListDetails.getDescription(), recipientListId, orgId);
+    @Override
+    public CreateCustomAudienceListResponse createCustomList(List<UserDetails> userDetailsList, CustomAudienceListDetails customAudienceListDetails, SocialAccountDetails socialAccountDetails, long orgId,String recipientListId, String requestId) throws FacebookException, TException {
+        MDC.put("requestOrgId", "ORG_ID_" + orgId);
+        MDC.put("requestId", requestId);
+        logger.info("createCustomList called for userslist of size: "
+                + userDetailsList.size()
+                + " "
+                + customAudienceListDetails.toString()
+                + socialAccountDetails.toString()
+                + "orgId" + orgId
+                + "recipient list id :"+recipientListId
+                + "request Id "+requestId
+                + "for org"
+                + " orgId : "
+                + orgId);
+        ShardContext.set((int) orgId);
+        CreateCustomAudienceListResponse createCustomUserListResponse = new CreateCustomAudienceListResponse();
+        try {
+            Guard.notNull(socialAccountDetails, "socialAccountDetails");
+            Guard.notNullOrEmpty(userDetailsList, "userList");
+            Guard.notNullOrEmpty(recipientListId,"recipientListId");
+            String listId = null;
+            if(socialAccountDetails.channel == SocialChannel.facebook) {
+                FacebookCustomAudienceBuilder builder = new FacebookCustomAudienceBuilder();
+                listId = builder.build(userDetailsList, customAudienceListDetails.getName(), customAudienceListDetails.getDescription(), recipientListId, orgId);
             } else {
-			    SocialListBuilder builder = new GoogleListBuilder();
+                SocialListBuilder builder = new GoogleListBuilder();
                 listId = builder.build(userDetailsList, customAudienceListDetails.getName(), customAudienceListDetails.getDescription(), orgId, recipientListId);
             }
-			createCustomUserListResponse.setListid(listId);
-			createCustomUserListResponse.setResponse(GatewayResponseType.success);
-			createCustomUserListResponse.setMessage("custom audience list has been created successfully");
-		} catch (Exception e) {
-			logger.error("exception occurred while creating a custom user list", e);
-			throw new FacebookException(e.getMessage());
-		} finally {
-			MDC.remove("requestOrgId");
-			MDC.remove("requestId");
-		}
-		return createCustomUserListResponse;
-	}
+            createCustomUserListResponse.setListid(listId);
+            createCustomUserListResponse.setResponse(GatewayResponseType.success);
+            createCustomUserListResponse.setMessage("custom audience list has been created successfully");
+        } catch (ApiException e) {
+            logger.error("api exception occurred while creating a custom user list", e);
+            throw new FacebookException(e.getFaultString());
+        } catch (Exception e) {
+            logger.error("exception occured while creating a custom user list");
+            throw new FacebookException(e.getMessage());
+        } finally {
+            MDC.remove("requestOrgId");
+            MDC.remove("requestId");
+        }
+        return createCustomUserListResponse;
+    }
 
     @Override
 	public GetCustomAudienceListsResponse getCustomAudienceLists(long orgId, SocialChannel socialChannel,boolean clearCache, String requestId) throws FacebookException, TException {
