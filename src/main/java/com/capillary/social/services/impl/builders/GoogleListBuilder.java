@@ -74,11 +74,20 @@ public class GoogleListBuilder extends SocialListBuilder {
         mutateMembersOperation.setOperator(Operator.ADD);
         MutateMembersReturnValue mutateMembersReturnValue = userListService.mutateMembers(new MutateMembersOperation[]{mutateMembersOperation});
         // google user List doesn't have last updated or auto update time so using own updated time
-        Date remoteUpdatedOn = new Date();
-        saveToDatabase(toSocialAudienceLists(mutateMembersReturnValue.getUserLists(), getAdAccountId(), getOrgId(), getRecipientListId(), remoteUpdatedOn, Type.GOOGLE));
+        Date now = new Date();
+        Date createdOn = getCreatedOn(now);
+        Date remoteUpdatedOn = new Date(now.getTime());
+        saveToDatabase(toSocialAudienceLists(mutateMembersReturnValue.getUserLists(), getAdAccountId(), getOrgId(), getRecipientListId(), createdOn, remoteUpdatedOn, Type.GOOGLE));
         for(UserList userList : mutateMembersReturnValue.getUserLists()) {
             logger.info("{} users were uploaded to google list with id {}", getUserDetails().size(), userList.getId());
         }
+    }
+
+    private Date getCreatedOn(Date now) {
+        SocialAudienceList existingSocialAudienceList = getSocialAudienceListDao().findByRecepientListId(getRecipientListId(), getAdAccountId());
+        if(existingSocialAudienceList != null)
+            return existingSocialAudienceList.getCreatedOn();
+        else return new Date(now.getTime());
     }
 
 }

@@ -45,14 +45,16 @@ public class GoogleListAccessor extends SocialListAccessor {
     @Override
     protected List<CustomAudienceList> getAllSocialList() throws RemoteException {
         List<SocialAudienceList> audienceLists = getExistingListFromDatabase(getAdAccountId(), getOrgId(), GOOGLE);
+        logger.debug("exisiting lists from db : {}", audienceLists);
         if(audienceLists == null || audienceLists.isEmpty()) {
             return Collections.emptyList();
         }
-        Map<String, String> remoteLocalListMap = getRemoteLocalListMap(audienceLists);
+        Map<String, SocialAudienceList> remoteLocalListMap = getRemoteLocalListMap(audienceLists);
         List<SocialAudienceList> updatedAudienceLists = new ArrayList<>();
         SelectorBuilder selectorBuilder = new SelectorBuilder();
         Selector selector = selectorBuilder.fields(AdwordsUserListField.Id, AdwordsUserListField.Status, AdwordsUserListField.Description, AdwordsUserListField.Size, AdwordsUserListField.SizeRange).build();
         UserListPage userLists = userListService.get(selector);
+        logger.debug("total user lists obtained from google api call : {}", userLists);
         if(userLists.getEntries() != null){
             for(UserList userList : userLists) {
                 String remoteUserListId = userList.getId().toString();
@@ -60,7 +62,8 @@ public class GoogleListAccessor extends SocialListAccessor {
                     logger.info("ignoring unknown list {}",userList.getId());
                     continue;
                 }
-                updatedAudienceLists.add(SocialAudienceList.toSocialAudienceList(userList, getAdAccountId(), getOrgId(), remoteLocalListMap.get(remoteUserListId), new Date(), SocialAudienceList.Type.GOOGLE));
+                SocialAudienceList oldSocialAudienceList = remoteLocalListMap.get(remoteUserListId);
+                updatedAudienceLists.add(SocialAudienceList.toSocialAudienceList(userList, getAdAccountId(), getOrgId(), oldSocialAudienceList.getCampaignReceipientListId(), oldSocialAudienceList.getCreatedOn(), new Date(), SocialAudienceList.Type.GOOGLE));
                 logger.info("user list obtained with id {} name {} status {} and size range {}", new Object[]{userList.getId(), userList.getName(), userList.getStatus(), userList.getSizeRange()});
             }
         }

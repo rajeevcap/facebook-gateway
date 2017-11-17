@@ -73,10 +73,10 @@ public abstract class SocialListAccessor extends SocialProcessor implements ISoc
 
     //// helper static functions ////
 
-    static Map<String, String> getRemoteLocalListMap(List<SocialAudienceList> audienceLists) {
-        Map<String, String> remoteLocalListMap = new HashMap<>();
+    static Map<String, SocialAudienceList> getRemoteLocalListMap(List<SocialAudienceList> audienceLists) {
+        Map<String, SocialAudienceList> remoteLocalListMap = new HashMap<>();
         for(SocialAudienceList audienceList : audienceLists) {
-            remoteLocalListMap.put(audienceList.getRemoteListId(), audienceList.getCampaignReceipientListId());
+            remoteLocalListMap.put(audienceList.getRemoteListId(), audienceList);
         }
         return remoteLocalListMap;
     }

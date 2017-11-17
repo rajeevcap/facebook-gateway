@@ -169,4 +169,8 @@ public abstract class SocialListBuilder extends SocialProcessor implements ISoci
     long getOrgId() {
         return orgId;
     }
+
+    static SocialAudienceListDao getSocialAudienceListDao() {
+        return socialAudienceListDao;
+    }
 }
