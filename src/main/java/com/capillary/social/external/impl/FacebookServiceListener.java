@@ -8,13 +8,8 @@ import com.capillary.social.services.impl.factories.AdsetInsightsReportBuilderFa
 import com.capillary.social.services.impl.factories.AdsetsReportBuilderFactory;
 import com.capillary.social.services.impl.factories.CustomAudienceListBuilderFactory;
 import com.capillary.social.services.impl.factories.CustomAudienceReportsBuilderFactory;
-import com.capillary.social.systems.config.LockHolder;
 import com.capillary.social.utils.Guard;
 import com.google.api.ads.adwords.axis.v201710.cm.ApiException;
-import com.google.api.ads.common.lib.auth.OfflineCredentials;
-import com.google.api.ads.common.lib.auth.OfflineCredentials.Api;
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.common.base.Preconditions;
 import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
@@ -27,7 +22,6 @@ import org.slf4j.MDC;
 
 import com.capillary.social.FacebookService.Iface;
 
-import com.capillary.social.handler.ApplicationContextAwareHandler;
 import com.capillary.social.services.impl.FacebookButtonMessage;
 import com.capillary.social.services.impl.FacebookGenericMessage;
 import com.capillary.social.services.impl.FacebookListMessage;
@@ -39,8 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
+
 @Service
 public class FacebookServiceListener implements Iface {
 
@@ -304,7 +297,7 @@ public class FacebookServiceListener implements Iface {
 		        customAudienceLists = builder.buildAll(orgId, clearCache);
             } else {
 		        SocialListAccessor accessor = new GoogleListAccessor();
-		        customAudienceLists = accessor.getAll(orgId);
+		        customAudienceLists = accessor.getAll(orgId, clearCache);
             }
             response.customAudienceLists = customAudienceLists;
 			response.response = GatewayResponseType.success;
@@ -353,7 +346,7 @@ public class FacebookServiceListener implements Iface {
 		        adsInsights = builder.build(orgId, adsetId, clearCache);
             } else {
 		        SocialAdReportAccessor accessor = new GoogleAdReportAccessor();
-		        accessor.getAll(orgId, adsetId);
+		        accessor.getAll(orgId, adsetId, clearCache);
             }
 			if (adsInsights == null ) {
 				logger.warn("could not fetch insights from facebook");
@@ -375,7 +368,7 @@ public class FacebookServiceListener implements Iface {
         userDetails.add(ud1);userDetails.add(ud2);
         try {
             getFacebookServiceClient().getCustomAudienceLists(0, SocialChannel.google, true, "requestId");
-//            getFacebookServiceClient().createCustomList(userDetails, new CustomAudienceListDetails("calfdsdname","calddfsaesc"), new SocialAccountDetails(SocialChannel.google), 0l, "5", "abc");
+//            getFacebookServiceClient().createCustomList(userDetails, new CustomAudienceListDetails("calfindfdsafdsdna213321me","calddfsaesc"), new SocialAccountDetails(SocialChannel.google), 0l, "5", "abc");
 //            getFacebookServiceClient().getAdSets(SocialChannel.google, 0, "requestId");
 //            getFacebookServiceClient().getAdsetInsights(SocialChannel.google, 0, "adSetId", false ,"requestId");
         } catch (Exception e) {

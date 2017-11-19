@@ -1,8 +1,5 @@
 package com.capillary.social.services.impl.builders;
 
-import com.capillary.social.AdInsight;
-import com.capillary.social.commons.dao.api.SocialAudienceListDao;
-import com.capillary.social.handler.ApplicationContextAwareHandler;
 import com.capillary.social.services.api.builders.ISocialAdReportAccessor;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponseException;
 import com.google.api.ads.adwords.lib.utils.ReportException;
@@ -11,7 +8,6 @@ import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,15 +21,17 @@ public abstract class SocialAdReportAccessor extends SocialProcessor implements 
 
     private long orgId;
     private String adSetId;
+    private boolean clearCache;
     private String reportFilePath;
 
     protected abstract void generateAuthentication() throws ConfigurationLoadException, ValidationException, OAuthException;
 
     protected abstract void generateReport() throws IOException, ReportDownloadResponseException, ReportException;
 
-    private void setFields(long orgId, String adSetId) {
+    private void setFields(long orgId, String adSetId, boolean clearCache) {
         this.orgId = orgId;
         this.adSetId = adSetId;
+        this.clearCache = clearCache;
         generateReportFilePath();
     }
 
@@ -43,8 +41,8 @@ public abstract class SocialAdReportAccessor extends SocialProcessor implements 
     }
 
     @Override
-    public void getAll(long orgId, String adSetId) throws ConfigurationLoadException, OAuthException, ValidationException, IOException, ReportDownloadResponseException, ReportException {
-        setFields(orgId, adSetId);
+    public void getAll(long orgId, String adSetId, boolean clearCache) throws ConfigurationLoadException, OAuthException, ValidationException, IOException, ReportDownloadResponseException, ReportException {
+        setFields(orgId, adSetId, clearCache);
         generateAuthentication();
         generateReport();
     }
@@ -53,6 +51,10 @@ public abstract class SocialAdReportAccessor extends SocialProcessor implements 
 
     String getReportFilePath() {
         return reportFilePath;
+    }
+
+    boolean fetchListFromAPICall() {
+        return clearCache;
     }
 
 }

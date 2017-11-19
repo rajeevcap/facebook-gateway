@@ -17,9 +17,10 @@ public interface ISocialListAccessor {
     /**
      * fetch all list belonging to an org
      * @param orgId
+     * @param clearCache
      * @return
      */
-    public List<CustomAudienceList> getAll(long orgId) throws ConfigurationLoadException, OAuthException, ValidationException, RemoteException;
+    public List<CustomAudienceList> getAll(long orgId, boolean clearCache) throws ConfigurationLoadException, OAuthException, ValidationException, RemoteException;
 
     /**
      * fetch specific list with given social list id

@@ -1,8 +1,6 @@
 package com.capillary.social.services.impl.builders;
 
-import com.capillary.social.SocialAdSet;
 import com.google.api.ads.adwords.axis.factory.AdWordsServices;
-import com.google.api.ads.adwords.axis.v201710.rm.AdwordsUserListServiceInterface;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.adwords.lib.client.reporting.ReportingConfiguration;
 import com.google.api.ads.adwords.lib.factory.AdWordsServicesInterface;
@@ -21,9 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by rajeev on 10/11/17.

@@ -27,14 +27,16 @@ public abstract class SocialListAccessor extends SocialProcessor implements ISoc
     private long orgId;
     private String remoteListId;
     private String adAccountId;
+    private boolean clearCache;
     private static SocialAudienceListDao socialAudienceListDao;
 
     protected abstract void generateAuthentication() throws ConfigurationLoadException, ValidationException, OAuthException;
 
     protected abstract List<CustomAudienceList> getAllSocialList() throws RemoteException;
 
-    private void setFields(long orgId) {
+    private void setFields(long orgId, boolean clearCache) {
         this.orgId = orgId;
+        this.clearCache = clearCache;
         fetchAdAccountId();
         getBeans();
     }
@@ -49,15 +51,15 @@ public abstract class SocialListAccessor extends SocialProcessor implements ISoc
     }
 
     @Override
-    public List<CustomAudienceList> getAll(long orgId) throws ConfigurationLoadException, OAuthException, ValidationException, RemoteException {
-        setFields(orgId);
+    public List<CustomAudienceList> getAll(long orgId, boolean clearCache) throws ConfigurationLoadException, OAuthException, ValidationException, RemoteException {
+        setFields(orgId, clearCache);
         generateAuthentication();
         return getAllSocialList();
     }
 
     @Override
     public CustomAudienceList getList(long orgId, String remoteListId) throws ConfigurationLoadException, OAuthException, RemoteException, ValidationException {
-        List<CustomAudienceList> audienceLists = getAll(orgId);
+        List<CustomAudienceList> audienceLists = getAll(orgId, false);
         for(CustomAudienceList audienceList : audienceLists) {
             if(audienceList.getRemoteListId().equalsIgnoreCase(remoteListId)) {
                 return audienceList;
@@ -93,6 +95,10 @@ public abstract class SocialListAccessor extends SocialProcessor implements ISoc
 
     public static SocialAudienceListDao getSocialAudienceListDao() {
         return socialAudienceListDao;
+    }
+
+    boolean fetchListFromAPICall() {
+        return clearCache;
     }
 
 }

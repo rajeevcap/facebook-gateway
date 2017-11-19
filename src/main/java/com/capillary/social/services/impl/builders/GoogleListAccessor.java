@@ -45,16 +45,17 @@ public class GoogleListAccessor extends SocialListAccessor {
     @Override
     protected List<CustomAudienceList> getAllSocialList() throws RemoteException {
         List<SocialAudienceList> audienceLists = getExistingListFromDatabase(getAdAccountId(), getOrgId(), GOOGLE);
-        logger.debug("exisiting lists from db : {}", audienceLists);
+        logger.info("exisiting lists size from db : {}", audienceLists.size());
         if(audienceLists == null || audienceLists.isEmpty()) {
             return Collections.emptyList();
+        } else if(!fetchListFromAPICall()) {
+            return SocialAudienceList.toCustomAudienceListLists(audienceLists);
         }
         Map<String, SocialAudienceList> remoteLocalListMap = getRemoteLocalListMap(audienceLists);
         List<SocialAudienceList> updatedAudienceLists = new ArrayList<>();
-        SelectorBuilder selectorBuilder = new SelectorBuilder();
-        Selector selector = selectorBuilder.fields(AdwordsUserListField.Id, AdwordsUserListField.Status, AdwordsUserListField.Description, AdwordsUserListField.Size, AdwordsUserListField.SizeRange).build();
+        Selector selector = buildSelector();
         UserListPage userLists = userListService.get(selector);
-        logger.debug("total user lists obtained from google api call : {}", userLists);
+        logger.info("user lists count obtained from google api call : {}", userLists.getEntries().length);
         if(userLists.getEntries() != null){
             for(UserList userList : userLists) {
                 String remoteUserListId = userList.getId().toString();
@@ -69,6 +70,11 @@ public class GoogleListAccessor extends SocialListAccessor {
         }
         getSocialAudienceListDao().updateBatch(updatedAudienceLists);
         return SocialAudienceList.toCustomAudienceListLists(updatedAudienceLists);
+    }
+
+    private Selector buildSelector() {
+        SelectorBuilder selectorBuilder = new SelectorBuilder();
+        return selectorBuilder.fields(AdwordsUserListField.Id, AdwordsUserListField.Status, AdwordsUserListField.Description, AdwordsUserListField.Size, AdwordsUserListField.SizeRange).build();
     }
 
 }
