@@ -6,6 +6,7 @@ import com.google.api.ads.adwords.lib.utils.ReportException;
 import com.google.api.ads.common.lib.conf.ConfigurationLoadException;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
+import org.apache.commons.configuration.ConfigurationException;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -20,6 +21,6 @@ public interface ISocialAdBatchAccessor {
      * @param orgId
      * @return list of social ad set
      */
-    public List<SocialAdSet> getAll(long orgId) throws RemoteException, ConfigurationLoadException, OAuthException, ValidationException, ReportDownloadResponseException, ReportException;
+    public List<SocialAdSet> getAll(long orgId) throws RemoteException, ConfigurationLoadException, OAuthException, ValidationException, ReportDownloadResponseException, ReportException, ConfigurationException;
 
 }

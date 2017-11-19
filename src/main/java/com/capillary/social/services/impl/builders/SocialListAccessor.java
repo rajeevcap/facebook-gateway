@@ -1,64 +1,55 @@
 package com.capillary.social.services.impl.builders;
 
 import com.capillary.social.CustomAudienceList;
-import com.capillary.social.commons.dao.api.SocialAudienceListDao;
 import com.capillary.social.commons.model.SocialAudienceList;
-import com.capillary.social.handler.ApplicationContextAwareHandler;
 import com.capillary.social.services.api.builders.ISocialListAccessor;
 import com.google.api.ads.common.lib.conf.ConfigurationLoadException;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
+import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 import java.rmi.RemoteException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import static com.capillary.social.services.impl.builders.SocialProcessorHelper.socialAudienceListDao;
 
 /**
  * Created by rajeev on 6/11/17.
  */
-public abstract class SocialListAccessor extends SocialProcessor implements ISocialListAccessor {
+public abstract class SocialListAccessor implements ISocialListAccessor {
 
     private static final Logger logger = LoggerFactory.getLogger(SocialListAccessor.class);
 
-    private long orgId;
-    private String remoteListId;
-    private String adAccountId;
-    private boolean clearCache;
-    private static SocialAudienceListDao socialAudienceListDao;
+    long orgId;
+    boolean clearCache;
 
-    protected abstract void generateAuthentication() throws ConfigurationLoadException, ValidationException, OAuthException;
+    String adAccountId;
+
+    private List<SocialAudienceList> socialAudienceLists;
+
+    protected abstract void prepareAPICallContext() throws ConfigurationLoadException, OAuthException, ConfigurationException, ValidationException;
 
     protected abstract List<CustomAudienceList> getAllSocialList() throws RemoteException;
+
+    protected abstract void fetchAdAccountId();
 
     private void setFields(long orgId, boolean clearCache) {
         this.orgId = orgId;
         this.clearCache = clearCache;
-        fetchAdAccountId();
-        getBeans();
-    }
-
-    private void fetchAdAccountId() {
-        this.adAccountId = API_ADWORDS_CLIENT_CONSUMER_ID_VALUE;
-    }
-
-    private static void getBeans() {
-        ApplicationContext applicationContext = ApplicationContextAwareHandler.getApplicationContext();
-        socialAudienceListDao = (SocialAudienceListDao) applicationContext.getBean("socialAudienceListDaoImpl");
     }
 
     @Override
-    public List<CustomAudienceList> getAll(long orgId, boolean clearCache) throws ConfigurationLoadException, OAuthException, ValidationException, RemoteException {
+    public List<CustomAudienceList> getAll(long orgId, boolean clearCache) throws ConfigurationLoadException, OAuthException, ValidationException, RemoteException, ConfigurationException {
         setFields(orgId, clearCache);
-        generateAuthentication();
+        prepareAPICallContext();
+        fetchAdAccountId();
         return getAllSocialList();
     }
 
     @Override
-    public CustomAudienceList getList(long orgId, String remoteListId) throws ConfigurationLoadException, OAuthException, RemoteException, ValidationException {
+    public CustomAudienceList getList(long orgId, String remoteListId) throws ConfigurationLoadException, OAuthException, RemoteException, ValidationException, ConfigurationException {
         List<CustomAudienceList> audienceLists = getAll(orgId, false);
         for(CustomAudienceList audienceList : audienceLists) {
             if(audienceList.getRemoteListId().equalsIgnoreCase(remoteListId)) {
@@ -69,36 +60,11 @@ public abstract class SocialListAccessor extends SocialProcessor implements ISoc
         return null;
     }
 
-    List<SocialAudienceList> getExistingListFromDatabase(String adAccountId, long orgId, String type) {
-        return socialAudienceListDao.findByAccountIdOrgId(adAccountId, orgId, type);
-    }
-
-    //// helper static functions ////
-
-    static Map<String, SocialAudienceList> getRemoteLocalListMap(List<SocialAudienceList> audienceLists) {
-        Map<String, SocialAudienceList> remoteLocalListMap = new HashMap<>();
-        for(SocialAudienceList audienceList : audienceLists) {
-            remoteLocalListMap.put(audienceList.getRemoteListId(), audienceList);
+    List<SocialAudienceList> getExistingAudienceLists(String adAccountId, long orgId, String type) {
+        if(socialAudienceLists == null) {
+            socialAudienceLists = socialAudienceListDao.findByAccountIdOrgId(adAccountId, orgId, type);
         }
-        return remoteLocalListMap;
-    }
-
-    //// getters ////
-
-    String getAdAccountId() {
-        return adAccountId;
-    }
-
-    long getOrgId() {
-        return orgId;
-    }
-
-    public static SocialAudienceListDao getSocialAudienceListDao() {
-        return socialAudienceListDao;
-    }
-
-    boolean fetchListFromAPICall() {
-        return clearCache;
+        return socialAudienceLists;
     }
 
 }

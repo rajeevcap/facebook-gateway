@@ -273,7 +273,7 @@ public class FacebookServiceListener implements Iface {
             logger.error("api exception occurred while creating a custom user list", e.getFaultString());
             throw new FacebookException(e.getFaultString());
         } catch (Exception e) {
-            logger.error("exception occured while creating a custom user list", e.getMessage());
+            logger.error("exception occured while creating a custom user list", e);
             throw new FacebookException(e.getMessage());
         } finally {
             MDC.remove("requestOrgId");
@@ -346,7 +346,7 @@ public class FacebookServiceListener implements Iface {
 		        adsInsights = builder.build(orgId, adsetId, clearCache);
             } else {
 		        SocialAdReportAccessor accessor = new GoogleAdReportAccessor();
-		        accessor.getAll(orgId, adsetId, clearCache);
+		        adsInsights = accessor.getAll(orgId, adsetId, clearCache);
             }
 			if (adsInsights == null ) {
 				logger.warn("could not fetch insights from facebook");
@@ -367,10 +367,10 @@ public class FacebookServiceListener implements Iface {
         ud2.setEmail("em2");ud2.setMobile("mb2");
         userDetails.add(ud1);userDetails.add(ud2);
         try {
-            getFacebookServiceClient().getCustomAudienceLists(0, SocialChannel.google, true, "requestId");
-//            getFacebookServiceClient().createCustomList(userDetails, new CustomAudienceListDetails("calfindfdsafdsdna213321me","calddfsaesc"), new SocialAccountDetails(SocialChannel.google), 0l, "5", "abc");
+//            getFacebookServiceClient().getCustomAudienceLists(0, SocialChannel.google, true, "requestId");
+//            getFacebookServiceClient().createCustomList(userDetails, new CustomAudienceListDetails("list111","calddfsaesc"), new SocialAccountDetails(SocialChannel.google), 0l, "5", "abc");
 //            getFacebookServiceClient().getAdSets(SocialChannel.google, 0, "requestId");
-//            getFacebookServiceClient().getAdsetInsights(SocialChannel.google, 0, "adSetId", false ,"requestId");
+            getFacebookServiceClient().getAdsetInsights(SocialChannel.google, 0, "adSetId", false ,"requestId");
         } catch (Exception e) {
             logger.info("exception caught " + e);
         }
@@ -393,6 +393,10 @@ public class FacebookServiceListener implements Iface {
         } catch (Error e) {
             logger.error("error " + e);
         }*/
+//        String xml = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?><report><report-name name='Criteria performance report #1510721807035'/><date-range date='All Time'/><table><columns><column name='campaignID' display='Campaign ID'>12342</column><column name='adGroupID' display='Ad group ID'>12342</column><column name='keywordID' display='Keyword ID'>12342</column><column name='criteriaType' display='Criteria Type'>12342</column><column name='keywordPlacement' display='Keyword / Placement'>12342</column><column name='finalURL' display='Final URL'>12342</column><column name='impressions' display='Impressions'>12342</column><column name='clicks' display='Clicks'>12342</column><column name='cost' display='Cost'>12342</column></columns></table></report>";
+//        JSONObject xmlJSONObj = XML.toJSONObject(xml);
+//        String result = xmlJSONObj.toString(4);
+//        System.out.println(result);
     }
 
     public static FacebookService.Client getFacebookServiceClient() {
