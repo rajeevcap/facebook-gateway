@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import static com.capillary.social.services.impl.builders.GoogleProcessorHelper.GoogleAPIKeys.GOOGLE_ADS_CLIENT_CUSTOMER_ID;
+import static com.capillary.social.services.impl.builders.SocialProcessorHelper.facebookAdsetInsightsDao;
 import static com.capillary.social.services.impl.builders.SocialProcessorHelper.xmlToJsonParser;
 
 /**
@@ -40,16 +41,25 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
     @Override
     protected AdInsight generateReport() throws IOException, ReportDownloadResponseException, ReportException {
         logger.info("received call for generate report");
+        AdsInsights existingReport = facebookAdsetInsightsDao.findByAdsetId(orgId, AdsInsights.Type.GOOGLE, adAccountId, adSetId);
+        if(existingReport == null) {
+            logger.info("no existing report found for org {} type {} ad account id {} and sd set id {}", new Object[]{orgId, AdsInsights.Type.GOOGLE, adAccountId, adSetId});
+        }
+        if(!clearCache) {
+            if(existingReport == null) return null;
+            return googleHelper.convertToThriftObject(existingReport);
+        }
         ReportingConfiguration reportingConfiguration = new ReportingConfiguration.Builder().skipReportHeader(false).skipColumnHeader(false).skipReportSummary(false).includeZeroImpressions(false).build();
         googleHelper.session.setReportingConfiguration(reportingConfiguration);
         Selector selector = getSelector();
         ReportDefinition reportDefinition = getReportDefinition();
         reportDefinition.setSelector(selector);
         ReportDownloadResponse reportDownloadResponse = googleHelper.reportDownloader.downloadReport(reportDefinition);
-        String reportString = xmlToJsonParser(reportDownloadResponse.getAsString());
-        logger.info("report download response : {}", reportString);
-        AdsInsights adsInsights = getAdInsightFromDownloadResponse(reportString);
-        SocialProcessorHelper.facebookAdsetInsightsDao.create(adsInsights);
+        String reportXML = reportDownloadResponse.getAsString();
+        logger.info("report download response : {}", reportXML);
+        String reportJson = xmlToJsonParser(reportXML);
+        AdsInsights adsInsights = getAdInsightFromDownloadResponse(reportJson);
+        facebookAdsetInsightsDao.create(adsInsights);
         return googleHelper.convertToThriftObject(adsInsights);
     }
 
