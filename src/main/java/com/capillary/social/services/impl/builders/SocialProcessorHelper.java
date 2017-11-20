@@ -73,10 +73,7 @@ public class SocialProcessorHelper {
     }
 
     static String toNormalizedString(String value) {
-        if(value != null) {
-            return value.trim().toLowerCase();
-        }
-        return null;
+        return value.trim().toLowerCase();
     }
 
     static String xmlToJsonParser(String xml) {

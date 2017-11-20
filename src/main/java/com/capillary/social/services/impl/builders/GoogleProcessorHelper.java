@@ -15,6 +15,7 @@ import com.google.api.ads.common.lib.auth.OfflineCredentials;
 import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.api.client.auth.oauth2.Credential;
+import com.google.common.base.Strings;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
@@ -93,10 +94,16 @@ class GoogleProcessorHelper extends SocialProcessorHelper {
         List<Member> members = new ArrayList<>();
         for(UserDetails userDetail : userDetails) {
             Member member = new Member();
-            String normalizedEmail = toNormalizedString(userDetail.getEmail());
-            String normalizedMobile = toNormalizedString(userDetail.getMobile());
-            member.setHashedEmail(toSHA256String(normalizedEmail));
-            member.setHashedPhoneNumber(toSHA256String(normalizedMobile));
+            String email = userDetail.getEmail();
+            if(!Strings.isNullOrEmpty(email)) {
+                String normalizedEmail = toNormalizedString(userDetail.getEmail());
+                member.setHashedEmail(toSHA256String(normalizedEmail));
+            }
+            String mobile = userDetail.getMobile();
+            if(!Strings.isNullOrEmpty(mobile)) {
+                String normalizedMobile = toNormalizedString(userDetail.getMobile());
+                member.setHashedPhoneNumber(toSHA256String(normalizedMobile));
+            }
             members.add(member);
         }
         return members.toArray(new Member[members.size()]);
