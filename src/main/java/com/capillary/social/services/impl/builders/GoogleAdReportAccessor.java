@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import static com.capillary.social.services.impl.builders.GoogleProcessorHelper.GoogleAPIKeys.GOOGLE_ADS_CLIENT_CUSTOMER_ID;
+import static com.capillary.social.services.impl.builders.SocialProcessorHelper.xmlToJsonParser;
 
 /**
  * Created by rajeev on 10/11/17.
@@ -45,7 +46,7 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
         ReportDefinition reportDefinition = getReportDefinition();
         reportDefinition.setSelector(selector);
         ReportDownloadResponse reportDownloadResponse = googleHelper.reportDownloader.downloadReport(reportDefinition);
-        String reportString = reportDownloadResponse.getAsString();
+        String reportString = xmlToJsonParser(reportDownloadResponse.getAsString());
         logger.info("report download response : {}", reportString);
         AdsInsights adsInsights = getAdInsightFromDownloadResponse(reportString);
         SocialProcessorHelper.facebookAdsetInsightsDao.create(adsInsights);

@@ -16,6 +16,8 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
+import org.json.JSONObject;
+import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -395,7 +397,7 @@ public class FacebookServiceListener implements Iface {
         }*/
 //        String xml = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?><report><report-name name='Criteria performance report #1510721807035'/><date-range date='All Time'/><table><columns><column name='campaignID' display='Campaign ID'>12342</column><column name='adGroupID' display='Ad group ID'>12342</column><column name='keywordID' display='Keyword ID'>12342</column><column name='criteriaType' display='Criteria Type'>12342</column><column name='keywordPlacement' display='Keyword / Placement'>12342</column><column name='finalURL' display='Final URL'>12342</column><column name='impressions' display='Impressions'>12342</column><column name='clicks' display='Clicks'>12342</column><column name='cost' display='Cost'>12342</column></columns></table></report>";
 //        JSONObject xmlJSONObj = XML.toJSONObject(xml);
-//        String result = xmlJSONObj.toString(4);
+//        String result = xmlJSONObj.toString(2);
 //        System.out.println(result);
     }
 

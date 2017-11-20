@@ -7,6 +7,8 @@ import com.capillary.social.commons.dao.api.FacebookAdsetInsightsDao;
 import com.capillary.social.commons.dao.api.SocialAudienceListDao;
 import com.capillary.social.commons.model.SocialAudienceList;
 import com.capillary.social.handler.ApplicationContextAwareHandler;
+import org.json.JSONObject;
+import org.json.XML;
 import org.springframework.context.ApplicationContext;
 
 import java.io.UnsupportedEncodingException;
@@ -72,6 +74,11 @@ public class SocialProcessorHelper {
 
     static String toNormalizedString(String value) {
         return value.trim().toLowerCase();
+    }
+
+    static String xmlToJsonParser(String xml) {
+        JSONObject xmlJsonObject = XML.toJSONObject(xml);
+        return xmlJsonObject.toString(3);
     }
 
     static Map<String, SocialAudienceList> getRemoteLocalListMap(List<SocialAudienceList> audienceLists) {
