@@ -31,6 +31,14 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
 
     private GoogleProcessorHelper googleHelper;
 
+    private enum GoogleReportAttribute {
+        CampaignId, CampaignName, AdGroupName, AdGroupId
+    }
+
+    private enum GoogleReportMetric {
+        Interactions, Impressions, Cost
+    }
+
     @Override
     protected void prepareAPICallContext() throws ConfigurationLoadException, ValidationException, OAuthException, ConfigurationException {
         googleHelper = new GoogleProcessorHelper(orgId);
@@ -70,7 +78,7 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
 
     private Selector getSelector() {
         Selector selector = new Selector();
-        selector.getFields().addAll(Arrays.asList("CampaignId","AdGroupId","Id","CriteriaType","Criteria","FinalUrls","Impressions","Clicks","Cost"));
+        selector.getFields().addAll(Arrays.asList(GoogleReportAttribute.CampaignId.name(), GoogleReportAttribute.CampaignName.name(), GoogleReportAttribute.AdGroupName.name(), GoogleReportAttribute.AdGroupId.name(), GoogleReportMetric.Cost.name(), GoogleReportMetric.Impressions.name(), GoogleReportMetric.Interactions.name()));
         return selector;
     }
 
