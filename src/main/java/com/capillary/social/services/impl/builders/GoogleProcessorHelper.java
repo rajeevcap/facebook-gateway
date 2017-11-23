@@ -16,8 +16,12 @@ import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.common.base.Strings;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -134,6 +138,23 @@ class GoogleProcessorHelper extends SocialProcessorHelper {
         } else {
             return AdSetStatus.DELETED;
         }
+    }
+
+    static String getFieldsForGoogle(String jsonFields) {
+        JsonParser parser = new JsonParser();
+        JsonObject returnObject = new JsonObject();
+        JsonObject json = parser.parse(jsonFields).getAsJsonObject();
+        json = json.get("report").getAsJsonObject();
+        returnObject.addProperty("adset_name", json.get("report-name").getAsJsonObject().get("name").getAsString());
+        json = json.get("table").getAsJsonObject();
+        json = json.get("row").getAsJsonObject();
+        returnObject.addProperty("reach", json.get("impressions").getAsString());
+        returnObject.addProperty("spend", json.get("cost").getAsString());
+        returnObject.addProperty("clicks", json.get("clicks").getAsString());
+        returnObject.addProperty("impressions", json.get("impressions").getAsString());
+        returnObject.addProperty("account_id", json.get("customerID").getAsString());
+        returnObject.addProperty("account_name", json.get("clientName").getAsString());
+        return returnObject.toString();
     }
 
 }

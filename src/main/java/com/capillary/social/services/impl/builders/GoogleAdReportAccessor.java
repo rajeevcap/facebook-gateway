@@ -1,5 +1,7 @@
 package com.capillary.social.services.impl.builders;
 
+import com.capillary.social.utils.FacebookGatewayUtils;
+import com.capillary.social.utils.GoogleReportParameter;
 import com.google.api.ads.common.lib.conf.ConfigurationLoadException;
 import com.capillary.social.AdInsight;
 import com.capillary.social.commons.model.AdsInsights;
@@ -15,12 +17,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static com.capillary.social.services.impl.builders.GoogleProcessorHelper.GoogleAPIKeys.GOOGLE_ADS_CLIENT_CUSTOMER_ID;
 import static com.capillary.social.services.impl.builders.SocialProcessorHelper.facebookAdsetInsightsDao;
 import static com.capillary.social.services.impl.builders.SocialProcessorHelper.xmlToJsonParser;
+import static com.capillary.social.utils.FacebookGatewayUtils.merge;
 
 /**
  * Created by rajeev on 10/11/17.
@@ -30,14 +35,6 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
     private static final Logger logger = LoggerFactory.getLogger(GoogleListAccessor.class);
 
     private GoogleProcessorHelper googleHelper;
-
-    private enum GoogleReportAttribute {
-        CampaignId, CampaignName, AdGroupName, AdGroupId
-    }
-
-    private enum GoogleReportMetric {
-        Interactions, Impressions, Cost
-    }
 
     @Override
     protected void prepareAPICallContext() throws ConfigurationLoadException, ValidationException, OAuthException, ConfigurationException {
@@ -78,7 +75,7 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
 
     private Selector getSelector() {
         Selector selector = new Selector();
-        selector.getFields().addAll(Arrays.asList(GoogleReportAttribute.CampaignId.name(), GoogleReportAttribute.CampaignName.name(), GoogleReportAttribute.AdGroupName.name(), GoogleReportAttribute.AdGroupId.name(), GoogleReportMetric.Cost.name(), GoogleReportMetric.Impressions.name(), GoogleReportMetric.Interactions.name()));
+        selector.getFields().addAll(Arrays.asList(merge(GoogleReportParameter.getAttributes(), GoogleReportParameter.getMetric(), GoogleReportParameter.getSegments())));
         return selector;
     }
 
@@ -86,7 +83,7 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
         ReportDefinition reportDefinition = new ReportDefinition();
         reportDefinition.setReportName("Criteria performance report #" + System.currentTimeMillis());
         reportDefinition.setDateRangeType(ReportDefinitionDateRangeType.ALL_TIME);
-        reportDefinition.setReportType(ReportDefinitionReportType.CRITERIA_PERFORMANCE_REPORT);
+        reportDefinition.setReportType(ReportDefinitionReportType.CAMPAIGN_PERFORMANCE_REPORT);
         reportDefinition.setDownloadFormat(DownloadFormat.XML);
         return reportDefinition;
     }

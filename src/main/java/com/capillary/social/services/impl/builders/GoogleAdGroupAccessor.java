@@ -36,7 +36,7 @@ public class GoogleAdGroupAccessor extends SocialAdBatchAccessor {
         AdGroupPage adGroupPage = googleHelper.adGroupService.get(selector);
         if(adGroupPage.getEntries() != null) {
             for(AdGroup adGroup : adGroupPage.getEntries()) {
-                logger.info("ad group with name {} and id {} was found", adGroup.getName(), adGroup.getId());
+                logger.info("ad group with name {}, id {} and campaign id {} was found", new Object[]{adGroup.getName(), adGroup.getId(), adGroup.getCampaignId()});
             }
         }
         return googleHelper.toSocialAdSet(adGroupPage.getEntries());
