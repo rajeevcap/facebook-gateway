@@ -167,7 +167,7 @@
 		<dependency>
 			<groupId>com.facebook.ads.sdk</groupId>
 			<artifactId>facebook-java-ads-sdk</artifactId>
-			<version>2.10.0</version>
+			<version>2.11.0</version>
 		</dependency>
 		<!-- google dependency -->
 		<dependency>
