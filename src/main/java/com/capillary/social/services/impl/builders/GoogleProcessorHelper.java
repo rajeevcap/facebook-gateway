@@ -148,12 +148,13 @@ class GoogleProcessorHelper extends SocialProcessorHelper {
         returnObject.addProperty("adset_name", json.get("report-name").getAsJsonObject().get("name").getAsString());
         json = json.get("table").getAsJsonObject();
         json = json.get("row").getAsJsonObject();
-        returnObject.addProperty("reach", json.get("impressions").getAsString());
+        returnObject.addProperty("reach", json.get("interactions").getAsString());
         returnObject.addProperty("spend", json.get("cost").getAsString());
         returnObject.addProperty("clicks", json.get("clicks").getAsString());
         returnObject.addProperty("impressions", json.get("impressions").getAsString());
         returnObject.addProperty("account_id", json.get("customerID").getAsString());
         returnObject.addProperty("account_name", json.get("clientName").getAsString());
+        returnObject.addProperty("adset_id", json.get("campaignID").getAsString());
         return returnObject.toString();
     }
 
