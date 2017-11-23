@@ -11,6 +11,7 @@ import com.facebook.ads.sdk.APIException;
 import com.facebook.ads.sdk.APINodeList;
 import com.facebook.ads.sdk.AdAccount;
 import com.facebook.ads.sdk.AdSet;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,7 @@ import java.util.List;
  */
 public class FacebookAdsetsReportBuilder implements AdsetsReportsBuilder{
 	private static Logger logger= LoggerFactory.getLogger(FacebookAdsetsReportBuilder.class);
+	private static final List<String> FIELDS = Arrays.asList(new String[]{"account_id", "actor_id", "adlabels", "applink_treatment", "body", "call_to_action_type", "effective_object_story_id", "id", "image_crops", "image_hash", "image_url", "link_og_id", "link_url", "name", "object_id", "object_story_id", "object_story_spec", "object_type", "object_url", "platform_customizations", "product_set_id", "status", "template_url", "template_url_spec", "thumbnail_url", "title", "url_tags", "use_page_actor_override", "video_id"});
 	@Override
 	public List<SocialAdSet> buildAll(long orgId) {
 		logger.info("received calls to build report of social adsets");
@@ -45,7 +47,7 @@ public class FacebookAdsetsReportBuilder implements AdsetsReportsBuilder{
 		List<SocialAdSet> socialAdSets = new ArrayList<>();
 		try {
 			APIContext context = new APIContext(accessToken);
-			APINodeList<AdSet> adSets = new AdAccount(advertAccountId, context).getAdSets().setParam("date_format", "U").requestAllFields().execute();
+			APINodeList<AdSet> adSets = new AdAccount(advertAccountId, context).getAdSets().setParam("date_format", "U").requestFields(FIELDS).execute();
 			for (AdSet adSet:adSets){
 				SocialAdSet socialAdSet = new SocialAdSet();
 				socialAdSet.setId(adSet.getId());
