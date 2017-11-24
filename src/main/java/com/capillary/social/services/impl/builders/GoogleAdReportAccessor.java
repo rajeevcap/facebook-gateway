@@ -43,27 +43,27 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
     @Override
     protected AdInsight generateReport() throws IOException, ReportDownloadResponseException, ReportException {
         logger.info("received call for generate report");
-        AdsInsights existingReport = facebookAdsetInsightsDao.findByAdsetId(orgId, AdsInsights.Type.GOOGLE, adAccountId, adSetId);
-        if(existingReport == null) {
+        AdsInsights report = facebookAdsetInsightsDao.findByAdsetId(orgId, AdsInsights.Type.GOOGLE, adAccountId, adSetId);
+        if(report == null) {
             logger.info("no existing report found for org {} type {} ad account id {} and sd set id {}", new Object[]{orgId, AdsInsights.Type.GOOGLE, adAccountId, adSetId});
         }
-        if(!clearCache) {
-            if(existingReport == null) return null;
-            logger.debug("got existing report from db {}", existingReport);
-            return googleHelper.convertToThriftObject(existingReport);
+        if(report == null || clearCache) {
+            ReportingConfiguration reportingConfiguration = new ReportingConfiguration.Builder().skipReportHeader(false).skipColumnHeader(false).skipReportSummary(false).includeZeroImpressions(false).build();
+            googleHelper.session.setReportingConfiguration(reportingConfiguration);
+            Selector selector = getSelector();
+            ReportDefinition reportDefinition = getReportDefinition();
+            reportDefinition.setSelector(selector);
+            ReportDownloadResponse reportDownloadResponse = googleHelper.reportDownloader.downloadReport(reportDefinition);
+            String reportXML = reportDownloadResponse.getAsString();
+            String reportJson = xmlToJsonParser(reportXML);
+            logger.info("report download response json : {}", reportJson);
+            report = getAdInsightFromDownloadResponse(reportJson);
+            facebookAdsetInsightsDao.create(report);
         }
-        ReportingConfiguration reportingConfiguration = new ReportingConfiguration.Builder().skipReportHeader(false).skipColumnHeader(false).skipReportSummary(false).includeZeroImpressions(false).build();
-        googleHelper.session.setReportingConfiguration(reportingConfiguration);
-        Selector selector = getSelector();
-        ReportDefinition reportDefinition = getReportDefinition();
-        reportDefinition.setSelector(selector);
-        ReportDownloadResponse reportDownloadResponse = googleHelper.reportDownloader.downloadReport(reportDefinition);
-        String reportXML = reportDownloadResponse.getAsString();
-        String reportJson = xmlToJsonParser(reportXML);
-        logger.info("report download response json : {}", reportJson);
-        AdsInsights adsInsights = getAdInsightFromDownloadResponse(reportJson);
-        facebookAdsetInsightsDao.create(adsInsights);
-        return googleHelper.convertToThriftObject(adsInsights);
+        if(report == null) {
+            return null;
+        }
+        return googleHelper.convertToThriftObject(report);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
         String guid = messageAdsetMappingDao.getGUIDfromAdsetMapping(orgId, adSetId);
         message = communicationDetailsDao.findByGuid(orgId, guid);
         if(message ==null){
-            logger.error("could not fetch communication details for orgid {} adsetis {}",new Object[]{orgId, adSetId});
+            logger.error("could not fetch communication details for orgid {} adset id {}",new Object[]{orgId, adSetId});
             throw new RuntimeException("could not fetch communication details");
         }
     }
@@ -90,7 +90,7 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
 
     private ReportDefinition getReportDefinition() {
         ReportDefinition reportDefinition = new ReportDefinition();
-        reportDefinition.setReportName("Criteria performance report #" + System.currentTimeMillis());
+        reportDefinition.setReportName("Campaign performance report #" + System.currentTimeMillis());
         reportDefinition.setDateRangeType(ReportDefinitionDateRangeType.ALL_TIME);
         reportDefinition.setReportType(ReportDefinitionReportType.CAMPAIGN_PERFORMANCE_REPORT);
         reportDefinition.setDownloadFormat(DownloadFormat.XML);

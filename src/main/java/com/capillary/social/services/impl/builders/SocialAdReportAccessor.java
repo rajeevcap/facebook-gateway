@@ -19,8 +19,6 @@ import java.io.IOException;
  */
 public abstract class SocialAdReportAccessor implements ISocialAdReportAccessor {
 
-    private static final Logger logger = LoggerFactory.getLogger(SocialListAccessor.class);
-
     long orgId;
     String adSetId;
     boolean clearCache;

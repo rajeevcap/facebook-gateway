@@ -19,8 +19,6 @@ import java.util.List;
  */
 public abstract class SocialAdBatchAccessor implements ISocialAdBatchAccessor {
 
-    private static final Logger logger = LoggerFactory.getLogger(SocialListAccessor.class);
-
     long orgId;
 
     protected abstract void prepareAPICallContext() throws ConfigurationLoadException, ValidationException, OAuthException, ConfigurationException;
