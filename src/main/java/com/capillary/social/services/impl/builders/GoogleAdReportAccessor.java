@@ -98,6 +98,7 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
         adsInsights.setInsights(report);
         adsInsights.setCachedOn(new Date());
         adsInsights.setAutoUpdateTime(new Date());
+        logger.debug("ad insight created {}", adsInsights.toString());
         return adsInsights;
     }
 
