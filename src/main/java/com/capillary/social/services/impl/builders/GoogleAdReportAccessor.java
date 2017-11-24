@@ -61,8 +61,8 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
         reportDefinition.setSelector(selector);
         ReportDownloadResponse reportDownloadResponse = googleHelper.reportDownloader.downloadReport(reportDefinition);
         String reportXML = reportDownloadResponse.getAsString();
-        logger.info("report download response : {}", reportXML);
         String reportJson = xmlToJsonParser(reportXML);
+        logger.info("report download response json : {}", reportJson);
         AdsInsights adsInsights = getAdInsightFromDownloadResponse(reportJson);
         facebookAdsetInsightsDao.create(adsInsights);
         return googleHelper.convertToThriftObject(adsInsights);
@@ -71,6 +71,7 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
     @Override
     protected void fetchAdAccountId() {
         adAccountId = googleHelper.keyValueMap.get(GOOGLE_ADS_CLIENT_CUSTOMER_ID.name());
+        logger.debug("adset account id fetched : {}", adAccountId);
     }
 
     private Selector getSelector() {

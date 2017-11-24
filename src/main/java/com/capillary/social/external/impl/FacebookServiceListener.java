@@ -339,7 +339,7 @@ public class FacebookServiceListener implements Iface {
 	public AdInsight getAdsetInsights(SocialChannel socialChannel, long orgId, String adsetId, boolean clearCache, String requestId) throws FacebookException, TException {
 		MDC.put("requestOrgId", "ORG_ID_" + orgId);
 		MDC.put("requestId", requestId);
-		logger.info("received call for getAdsetInsights for orgId {} socialChannel {}", orgId, socialChannel);
+		logger.info("received call for getAdsetInsights for orgId {} socialChannel {} adset id {} and clear cache {}", new Object[]{orgId, socialChannel, adsetId, clearCache});
 		Guard.notNullOrEmpty(adsetId, "adsetId");
 		AdInsight adsInsights = null;
 		try {
@@ -370,9 +370,9 @@ public class FacebookServiceListener implements Iface {
         userDetails.add(ud1);userDetails.add(ud2);
         try {
 //            getFacebookServiceClient().getCustomAudienceLists(1, SocialChannel.google, true, "requestId");
-            getFacebookServiceClient().createCustomList(userDetails, new CustomAudienceListDetails("list112","calddfsaesc"), new SocialAccountDetails(SocialChannel.google), 0l, "5", "abc");
+//            getFacebookServiceClient().createCustomList(userDetails, new CustomAudienceListDetails("list112","calddfsaesc"), new SocialAccountDetails(SocialChannel.google), 0l, "5", "abc");
 //            getFacebookServiceClient().getAdSets(SocialChannel.google, 1, "requestId");
-//            getFacebookServiceClient().getAdsetInsights(SocialChannel.google, 1, "adSetId", true ,"requestId");
+            getFacebookServiceClient().getAdsetInsights(SocialChannel.google, 1, "adSetId", true ,"requestId");
         } catch (Exception e) {
             logger.info("exception caught " + e);
         }
