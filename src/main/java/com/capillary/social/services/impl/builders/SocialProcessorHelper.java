@@ -2,13 +2,14 @@ package com.capillary.social.services.impl.builders;
 
 import com.capillary.social.AdInsight;
 import com.capillary.social.SocialChannel;
-import com.capillary.social.commons.dao.api.ConfigKeyValuesDao;
-import com.capillary.social.commons.dao.api.FacebookAdsetInsightsDao;
-import com.capillary.social.commons.dao.api.SocialAudienceListDao;
+import com.capillary.social.commons.dao.api.*;
+import com.capillary.social.commons.model.CommunicationDetails;
 import com.capillary.social.commons.model.SocialAudienceList;
 import com.capillary.social.handler.ApplicationContextAwareHandler;
 import org.json.JSONObject;
 import org.json.XML;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.io.UnsupportedEncodingException;
@@ -28,6 +29,8 @@ import static com.capillary.social.services.impl.builders.GoogleProcessorHelper.
  */
 public class SocialProcessorHelper {
 
+    private static Logger logger = LoggerFactory.getLogger(SocialProcessorHelper.class);
+
     protected long orgId;
     Map<String, String> keyValueMap;
     private static final MessageDigest digest = getSHA256MessageDigest();
@@ -35,11 +38,15 @@ public class SocialProcessorHelper {
     static SocialAudienceListDao socialAudienceListDao;
     static FacebookAdsetInsightsDao facebookAdsetInsightsDao;
     static ConfigKeyValuesDao configKeyValuesDao;
+    static MessageAdsetMappingDao messageAdsetMappingDao;
+    static CommunicationDetailsDao communicationDetailsDao;
 
     static {
         socialAudienceListDao = (SocialAudienceListDao) getBean("socialAudienceListDaoImpl");
         facebookAdsetInsightsDao = (FacebookAdsetInsightsDao) getBean("facebookAdsetInsightsDaoImpl");
         configKeyValuesDao = (ConfigKeyValuesDao) getBean("configKeyValuesDaoImpl");
+        messageAdsetMappingDao = (MessageAdsetMappingDao) getBean("messageAdsetMappingDaoImpl");
+        communicationDetailsDao = (CommunicationDetailsDao) getBean("communicationDetailsDaoImpl");
     }
 
     SocialProcessorHelper(long orgId, String... keys) {

@@ -1,5 +1,6 @@
 package com.capillary.social.services.impl.builders;
 
+import com.capillary.social.commons.model.CommunicationDetails;
 import com.capillary.social.services.api.builders.ISocialAdReportAccessor;
 import org.apache.commons.configuration.ConfigurationException;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ public abstract class SocialAdReportAccessor implements ISocialAdReportAccessor 
     String adSetId;
     boolean clearCache;
     String adAccountId;
+    CommunicationDetails message;
 
     protected abstract void fetchAdAccountId();
 
@@ -31,10 +33,13 @@ public abstract class SocialAdReportAccessor implements ISocialAdReportAccessor 
 
     protected abstract AdInsight generateReport() throws IOException, ReportDownloadResponseException, ReportException;
 
+    protected abstract void fetchCommunicationDetails();
+
     private void setFields(long orgId, String adSetId, boolean clearCache) {
         this.orgId = orgId;
         this.adSetId = adSetId;
         this.clearCache = clearCache;
+        fetchCommunicationDetails();
     }
 
     @Override

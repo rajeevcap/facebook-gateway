@@ -1,6 +1,6 @@
 package com.capillary.social.services.impl.builders;
 
-import com.capillary.social.utils.FacebookGatewayUtils;
+import com.capillary.social.commons.model.CommunicationDetails;
 import com.capillary.social.utils.GoogleReportParameter;
 import com.google.api.ads.common.lib.conf.ConfigurationLoadException;
 import com.capillary.social.AdInsight;
@@ -17,14 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import static com.capillary.social.services.impl.builders.GoogleProcessorHelper.GoogleAPIKeys.GOOGLE_ADS_CLIENT_CUSTOMER_ID;
-import static com.capillary.social.services.impl.builders.SocialProcessorHelper.facebookAdsetInsightsDao;
-import static com.capillary.social.services.impl.builders.SocialProcessorHelper.xmlToJsonParser;
+import static com.capillary.social.services.impl.builders.SocialProcessorHelper.*;
 import static com.capillary.social.utils.FacebookGatewayUtils.merge;
 
 /**
@@ -32,7 +29,7 @@ import static com.capillary.social.utils.FacebookGatewayUtils.merge;
  */
 public class GoogleAdReportAccessor extends SocialAdReportAccessor {
 
-    private static final Logger logger = LoggerFactory.getLogger(GoogleListAccessor.class);
+    private static final Logger logger = LoggerFactory.getLogger(GoogleAdGroupAccessor.class);
 
     private GoogleProcessorHelper googleHelper;
 
@@ -52,6 +49,7 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
         }
         if(!clearCache) {
             if(existingReport == null) return null;
+            logger.debug("got existing report from db {}", existingReport);
             return googleHelper.convertToThriftObject(existingReport);
         }
         ReportingConfiguration reportingConfiguration = new ReportingConfiguration.Builder().skipReportHeader(false).skipColumnHeader(false).skipReportSummary(false).includeZeroImpressions(false).build();
@@ -74,6 +72,16 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
         logger.debug("adset account id fetched : {}", adAccountId);
     }
 
+    @Override
+    protected void fetchCommunicationDetails() {
+        String guid = messageAdsetMappingDao.getGUIDfromAdsetMapping(orgId, adSetId);
+        message = communicationDetailsDao.findByGuid(orgId, guid);
+        if(message ==null){
+            logger.error("could not fetch communication details for orgid {} adsetis {}",new Object[]{orgId, adSetId});
+            throw new RuntimeException("could not fetch communication details");
+        }
+    }
+
     private Selector getSelector() {
         Selector selector = new Selector();
         selector.getFields().addAll(Arrays.asList(merge(GoogleReportParameter.getAttributes(), GoogleReportParameter.getMetric(), GoogleReportParameter.getSegments())));
@@ -91,6 +99,8 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
 
     private AdsInsights getAdInsightFromDownloadResponse(String report) {
         AdsInsights adsInsights = new AdsInsights();
+        adsInsights.setGuid(message.getGuid());
+        adsInsights.setCommunicationDetailsId(message.getId());
         adsInsights.setOrgId(orgId);
         adsInsights.setType(AdsInsights.Type.GOOGLE);
         adsInsights.setAdsAccountId(adAccountId);
