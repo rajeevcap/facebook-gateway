@@ -1,5 +1,6 @@
 package com.capillary.social.utils;
 
+import java.lang.reflect.Array;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -8,7 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.time.DateFormatUtils;
+import com.google.common.collect.ObjectArrays;
 import org.joda.time.DateTime;
 
 public class FacebookGatewayUtils {
@@ -50,11 +51,25 @@ public class FacebookGatewayUtils {
         return null;
     }
 
-    public static String getDateAsYMDHMS(Date date, boolean addDoubleQuotes) {
-        if (date == null)
-            return addDoubleQuotes ? "NULL" : null;
-        String dateStr = DateFormatUtils.format(date, "yyyy-MM-dd HH:mm:ss");
-        return addDoubleQuotes ? ('"' + dateStr + '"') : dateStr;
+    public static String[] merge(String[]...arrays) {
+        int arrayCount = arrays.length;
+        if(arrayCount == 1) {
+            return arrays[0];
+        }
+        /*int arraySumLength = 0;
+        for(String[] array : arrays) {
+            arraySumLength += array.length;
+        }
+        String[] result = (String[]) Array.newInstance(String.class, arraySumLength);*/
+        String[] result = arrays[0];
+        for(int i = 1; i < arrayCount; i++) {
+            result = merge(result, arrays[i]);
+        }
+        return result;
+    }
+
+    public static String[] merge(String[] a1, String[] a2) {
+        return ObjectArrays.concat(a1, a2, String.class);
     }
 
 }
