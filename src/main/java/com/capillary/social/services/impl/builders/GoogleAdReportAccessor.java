@@ -34,14 +34,14 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
     private GoogleProcessorHelper googleHelper;
 
     @Override
-    protected void prepareAPICallContext() throws ConfigurationLoadException, ValidationException, OAuthException, ConfigurationException {
+    protected void prepareAPICallContext() throws Exception {
         googleHelper = new GoogleProcessorHelper(orgId);
         googleHelper.authenticate();
         googleHelper.generateServices();
     }
 
     @Override
-    protected AdInsight generateReport() throws IOException, ReportDownloadResponseException, ReportException {
+    protected AdInsight generateReport() throws Exception {
         logger.info("received call for generate report");
         AdsInsights report = facebookAdsetInsightsDao.findByAdsetId(orgId, AdsInsights.Type.GOOGLE, adAccountId, adSetId);
         if(report == null) {
@@ -55,8 +55,8 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
             reportDefinition.setSelector(selector);
             ReportDownloadResponse reportDownloadResponse = googleHelper.reportDownloader.downloadReport(reportDefinition);
             String reportXML = reportDownloadResponse.getAsString();
+            logger.info("report download response : {}", reportXML);
             String reportJson = xmlToJsonParser(reportXML);
-            logger.info("report download response json : {}", reportJson);
             report = getAdInsightFromDownloadResponse(reportJson);
             facebookAdsetInsightsDao.create(report);
         }
@@ -74,8 +74,11 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
 
     @Override
     protected void fetchCommunicationDetails() {
-        String guid = messageAdsetMappingDao.getGUIDfromAdsetMapping(orgId, adSetId);
-        message = communicationDetailsDao.findByGuid(orgId, guid);
+//        String guid = messageAdsetMappingDao.getGUIDfromAdsetMapping(orgId, adSetId);
+//        message = communicationDetailsDao.findByGuid(orgId, guid);
+        message = new CommunicationDetails();
+        message.setId(123);
+        message.setGuid("fasdfjghsadjd");
         if(message ==null){
             logger.error("could not fetch communication details for orgid {} adset id {}",new Object[]{orgId, adSetId});
             throw new RuntimeException("could not fetch communication details");
@@ -90,9 +93,9 @@ public class GoogleAdReportAccessor extends SocialAdReportAccessor {
 
     private ReportDefinition getReportDefinition() {
         ReportDefinition reportDefinition = new ReportDefinition();
-        reportDefinition.setReportName("Campaign performance report #" + System.currentTimeMillis());
+        reportDefinition.setReportName("Ad performance report #" + System.currentTimeMillis());
         reportDefinition.setDateRangeType(ReportDefinitionDateRangeType.ALL_TIME);
-        reportDefinition.setReportType(ReportDefinitionReportType.CAMPAIGN_PERFORMANCE_REPORT);
+        reportDefinition.setReportType(ReportDefinitionReportType.AD_PERFORMANCE_REPORT);
         reportDefinition.setDownloadFormat(DownloadFormat.XML);
         return reportDefinition;
     }

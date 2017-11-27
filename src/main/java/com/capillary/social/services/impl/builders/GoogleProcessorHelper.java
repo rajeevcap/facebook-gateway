@@ -16,12 +16,10 @@ import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.common.base.Strings;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -140,22 +138,32 @@ class GoogleProcessorHelper extends SocialProcessorHelper {
         }
     }
 
-    static String getFieldsForGoogle(String jsonFields) {
+    static String getFieldsForGoogle(String jsonFields) throws Exception {
         JsonParser parser = new JsonParser();
-        JsonObject returnObject = new JsonObject();
+        JsonObject returnObject = null;
         JsonObject json = parser.parse(jsonFields).getAsJsonObject();
-        json = json.get("report").getAsJsonObject();
-        json = json.get("table").getAsJsonObject();
-        json = json.get("row").getAsJsonObject();
-        returnObject.addProperty("reach", json.get("interactions").getAsString());
-        returnObject.addProperty("spend", json.get("cost").getAsString());
-        returnObject.addProperty("clicks", json.get("clicks").getAsString());
-        returnObject.addProperty("impressions", json.get("impressions").getAsString());
-        returnObject.addProperty("account_id", json.get("customerID").getAsString());
-        returnObject.addProperty("account_name", json.get("clientName").getAsString());
-        returnObject.addProperty("adset_id", json.get("campaignID").getAsString());
-        returnObject.addProperty("adset_name", json.get("campaign").getAsString());
-        return returnObject.toString();
+        json = getFieldFromJson(json, "report");
+        if(json != null) {
+            json = getFieldFromJson(json, "table");
+            if(json != null) {
+                json = getFieldFromJson(json, "row");
+                if(json != null) {
+                    returnObject = new JsonObject();
+                    returnObject.addProperty("reach", getStringFromJson(json, "interactions"));
+                    returnObject.addProperty("spend", getStringFromJson(json, "cost"));
+                    returnObject.addProperty("clicks", getStringFromJson(json, "clicks"));
+                    returnObject.addProperty("impressions", getStringFromJson(json ,"impressions"));
+                    returnObject.addProperty("account_id", getStringFromJson(json, "customerID"));
+                    returnObject.addProperty("account_name", getStringFromJson(json, "clientName"));
+                    returnObject.addProperty("adset_id", getStringFromJson(json, "adGroupID")); // campaignID
+                    returnObject.addProperty("adset_name", getStringFromJson(json, "adGroup")); // campaign
+                }
+            }
+        }
+        if(returnObject != null) {
+            returnObject.toString();
+        }
+        throw new Exception("could not find insights");
     }
 
 }

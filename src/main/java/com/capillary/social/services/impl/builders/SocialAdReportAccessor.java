@@ -27,9 +27,9 @@ public abstract class SocialAdReportAccessor implements ISocialAdReportAccessor 
 
     protected abstract void fetchAdAccountId();
 
-    protected abstract void prepareAPICallContext() throws ConfigurationLoadException, ValidationException, OAuthException, ConfigurationException;
+    protected abstract void prepareAPICallContext() throws Exception;
 
-    protected abstract AdInsight generateReport() throws IOException, ReportDownloadResponseException, ReportException;
+    protected abstract AdInsight generateReport() throws Exception;
 
     protected abstract void fetchCommunicationDetails();
 
@@ -41,7 +41,7 @@ public abstract class SocialAdReportAccessor implements ISocialAdReportAccessor 
     }
 
     @Override
-    public AdInsight getAll(long orgId, String adSetId, boolean clearCache) throws ConfigurationLoadException, OAuthException, ValidationException, IOException, ReportDownloadResponseException, ReportException, ConfigurationException {
+    public AdInsight getAll(long orgId, String adSetId, boolean clearCache) throws Exception {
         setFields(orgId, adSetId, clearCache);
         prepareAPICallContext();
         fetchAdAccountId();

@@ -6,6 +6,7 @@ import com.capillary.social.commons.dao.api.*;
 import com.capillary.social.commons.model.CommunicationDetails;
 import com.capillary.social.commons.model.SocialAudienceList;
 import com.capillary.social.handler.ApplicationContextAwareHandler;
+import com.google.gson.JsonObject;
 import org.json.JSONObject;
 import org.json.XML;
 import org.slf4j.Logger;
@@ -98,7 +99,7 @@ public class SocialProcessorHelper {
         return remoteLocalListMap;
     }
 
-    AdInsight convertToThriftObject(com.capillary.social.commons.model.AdsInsights dbObject) {
+    AdInsight convertToThriftObject(com.capillary.social.commons.model.AdsInsights dbObject) throws Exception {
         AdInsight adInsight = new AdInsight();
         adInsight.setOrgId(dbObject.getOrgId());
         adInsight.setSocialChannel(SocialChannel.valueOf(dbObject.getType().name().toLowerCase()));
@@ -106,6 +107,20 @@ public class SocialProcessorHelper {
         adInsight.setInsights(getFieldsForGoogle(dbObject.getInsights()));
         adInsight.setCachedon(dbObject.getCachedOn().getTime());
         return adInsight;
+    }
+
+    static JsonObject getFieldFromJson(JsonObject json, String field) {
+        if(json.get(field) != null) {
+            return json.get(field).getAsJsonObject();
+        }
+        return null;
+    }
+
+    static String getStringFromJson(JsonObject json, String field) {
+        if(json.get(field) != null) {
+            return json.get(field).getAsString();
+        }
+        return null;
     }
 
 }
