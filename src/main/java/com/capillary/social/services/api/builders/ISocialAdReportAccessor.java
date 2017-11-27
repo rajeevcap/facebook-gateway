@@ -22,6 +22,6 @@ public interface ISocialAdReportAccessor {
      * @Param adSetId
      * @return list of
      */
-    public AdInsight getAll(long orgId, String adSetId, boolean clearCache) throws Exception;
+    public AdInsight getAll(long orgId, String adSetId, boolean clearCache) throws ConfigurationLoadException, OAuthException, ValidationException, IOException, ReportDownloadResponseException, ReportException, ConfigurationException;
 
 }
