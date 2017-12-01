@@ -57,6 +57,7 @@ public class SocialProcessorHelper {
 
     private void loadKeys(String ...keys) {
         keyValueMap = configKeyValuesDao.findAllKeyValueMapForOrg(orgId, keys);
+        logger.info("key values loaded for org {} : {}", orgId, keyValueMap);
     }
 
     private static Object getBean(String beanName) {
