@@ -40,9 +40,10 @@ public class GoogleListBuilder extends SocialListBuilder {
     protected void createNewList() throws Exception {
         logger.info("create new list call with list name {} and description {}", listName, listDescription);
         CrmBasedUserList userList = getCrmBasedUserList();
-        UserListOperation operation = getUserListOperation(userList);
+        UserListOperation operation = getUserListOperation(userList, Operator.ADD);
         UserListReturnValue result = googleHelper.userListService.mutate(new UserListOperation[]{operation});
         remoteListId = result.getValue(0).getId();
+        result.getValue(0).getSizeRange();
         logger.info("created empty list with name {} recipient list id {} and remote list id {}", new Object[]{listName, recipientListId, remoteListId});
     }
 
@@ -78,10 +79,10 @@ public class GoogleListBuilder extends SocialListBuilder {
         return userList;
     }
 
-    private UserListOperation getUserListOperation(CrmBasedUserList userList) {
+    private UserListOperation getUserListOperation(CrmBasedUserList userList, Operator operator) {
         UserListOperation operation = new UserListOperation();
         operation.setOperand(userList);
-        operation.setOperator(Operator.ADD);
+        operation.setOperator(operator);
         return operation;
     }
 
