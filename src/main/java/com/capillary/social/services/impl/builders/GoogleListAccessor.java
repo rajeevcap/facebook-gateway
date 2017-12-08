@@ -72,7 +72,7 @@ public class GoogleListAccessor extends SocialListAccessor {
                 }
                 SocialAudienceList updatedAudience = getUpdatedAudience(remoteLocalListMap, userList, remoteUserListId);
                 updatedAudiences.add(updatedAudience);
-                logger.info("user list obtained with id {} name {} status {} and size range {}", new Object[]{userList.getId(), userList.getName(), userList.getStatus(), userList.getSizeRange()});
+                logger.info("user list obtained with id {} name {} status {} size range {} and size for search {}", new Object[]{userList.getId(), userList.getName(), userList.getStatus(), userList.getSizeRange(), userList.getSizeForSearch()});
             }
         }
         return updatedAudiences;
@@ -85,7 +85,7 @@ public class GoogleListAccessor extends SocialListAccessor {
 
     private Selector buildSelector() {
         SelectorBuilder selectorBuilder = new SelectorBuilder();
-        return selectorBuilder.fields(AdwordsUserListField.Id, AdwordsUserListField.Status, AdwordsUserListField.Description, AdwordsUserListField.Size, AdwordsUserListField.SizeRange).build();
+        return selectorBuilder.fields(AdwordsUserListField.Id, AdwordsUserListField.Status, AdwordsUserListField.Description, AdwordsUserListField.Size, AdwordsUserListField.SizeRange, AdwordsUserListField.SizeForSearch).build();
     }
 
 }
