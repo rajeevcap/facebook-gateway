@@ -80,7 +80,7 @@ class GoogleProcessorHelper extends SocialProcessorHelper {
         PropertiesConfiguration config = new PropertiesConfiguration();
         for(String adwordsKey : API_ADWORDS_KEYSET) {
             if(!keyValueMap.containsKey(adwordsKey)) {
-                throw new ConfigurationException("key " + adwordsKey + " not found for org " + orgId);
+                throw new ConfigurationException("value for key " + adwordsKey + " not found for org " + orgId);
             }
             config.setProperty(GoogleAPIKeys.valueOf(adwordsKey).key, keyValueMap.get(adwordsKey));
         }
